@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mokkikodit.controller.MainController">
+
+    <left>
+        <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #2c3e50;">
+            <Label text="Valikko" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+
+            <Button text="Varaukset" fx:id="btnVaraukset"/>
+            <Button text="Mökit" fx:id="btnMokit"/>
+            <Button text="Asiakkaat" fx:id="btnAsiakkaat"/>
+            <Button text="Laskutus" fx:id="btnLaskutus"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-padding: 20; -fx-background-color: #ecf0f1;">
+            <Label text="Varaukset (oletus)" style="-fx-font-size: 18px;"/>
+        </StackPane>
+    </center>
+
+</BorderPane>
