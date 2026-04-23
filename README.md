@@ -11,4 +11,7 @@
 
 4. Tarkista:
    - Maven-paneeli näkyy
-   - mvn clean compile toimii
+   - .mvn\wrapper kansio olemassa
+   - .\mvnw clean compile    toimii
+  
+5. Huom! Maven wrapper käytössä, joten käytetään maven-komentoihin terminaalissa .\mvnw EIKÄ mvn
