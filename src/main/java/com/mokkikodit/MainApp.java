@@ -16,7 +16,7 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(loader.load(), 800, 500);
 
-        stage.setTitle("Mökkikodit");
+        stage.setTitle("Mökkikodit OY");
         stage.setScene(scene);
         stage.show();
     }
