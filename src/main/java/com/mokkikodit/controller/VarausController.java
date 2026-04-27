@@ -37,6 +37,12 @@ public class VarausController {
     @FXML
     private Button saveButton;
 
+    @FXML
+    private TextField emailField;
+
+    @FXML
+    private TextField phoneField;
+
     // Varauksen muokkaustila
     private boolean editMode = false;
 
@@ -83,6 +89,8 @@ public class VarausController {
         // TextFieldit
         asiakasField.setEditable(editable);
         mokkiField.setEditable(editable);
+        emailField.setEditable(editable);
+        phoneField.setEditable(editable);
 
         // DatePickerit
         alkuDatePicker.setDisable(!editable);

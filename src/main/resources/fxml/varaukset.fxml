@@ -110,7 +110,7 @@
                         <HBox.margin>
                             <Insets right="20.0" />
                         </HBox.margin></Button>
-                    <Button mnemonicParsing="false" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista" />
+                    <Button mnemonicParsing="false" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Peru varaus" />
                 </children>
             </HBox>
 
@@ -121,34 +121,32 @@
                     <ColumnConstraints hgrow="ALWAYS" />
                 </columnConstraints>
 
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
                 <children>
 
                     <Label text="Varauksen ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
-                    <Label text="Asiakas:" GridPane.rowIndex="1" />
+                    <Label text="Nimi:" GridPane.rowIndex="1" />
 
-                    <Label text="Mökki:" GridPane.rowIndex="2" />
+                    <Label text="Mökki:" GridPane.rowIndex="4" />
 
-                    <Label text="Alku:" GridPane.rowIndex="3" />
+                    <Label text="Alku:" GridPane.rowIndex="5" />
 
-                    <Label text="Loppu:" GridPane.rowIndex="4" />
+                    <Label text="Loppu:" GridPane.rowIndex="6" />
 
-                    <Label text="Tila:" GridPane.rowIndex="5" />
+                    <Label text="Tila:" GridPane.rowIndex="7" />
                     <TextField fx:id="asiakasField" editable="false" focusTraversable="false" maxWidth="280.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <TextField fx:id="mokkiField" editable="false" focusTraversable="false" maxWidth="280.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <ComboBox fx:id="tilaComboBox" disable="true" focusTraversable="false" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                    <DatePicker fx:id="alkuDatePicker" disable="true" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <DatePicker fx:id="loppuDatePicker" disable="true" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <TextField fx:id="mokkiField" editable="false" focusTraversable="false" maxWidth="280.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <ComboBox fx:id="tilaComboBox" disable="true" focusTraversable="false" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                    <DatePicker fx:id="alkuDatePicker" disable="true" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <DatePicker fx:id="loppuDatePicker" disable="true" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                     <Label fx:id="varausIdLabel" text="-" GridPane.columnIndex="1" />
+               <Label text="Sähköposti:" GridPane.rowIndex="2" />
+               <Label text="Puhelinnumero:" GridPane.rowIndex="3" />
+               <TextField fx:id="phoneField" maxWidth="280.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label text="Hinta:" GridPane.rowIndex="8" />
+               <Label fx:id="hintaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+               <TextField fx:id="emailField" maxWidth="280.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                 </children>
             </GridPane>
