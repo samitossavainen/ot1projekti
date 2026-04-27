@@ -1,48 +1,74 @@
 package com.mokkikodit.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.Label;
+
+import java.io.IOException;
 
 public class MainController {
 
+    @FXML private StackPane contentArea;
     @FXML private Button btnVaraukset;
     @FXML private Button btnMokit;
     @FXML private Button btnAsiakkaat;
-    @FXML private Button btnLaskutus;
-
-    @FXML private StackPane contentArea;
+    @FXML private Button btnLaskut;
+    @FXML private Button btnRaportit;
 
     @FXML
     public void initialize() {
-
         showVaraukset();
-
-        btnVaraukset.setOnAction(e -> showVaraukset());
-        btnMokit.setOnAction(e -> showMokit());
-        btnAsiakkaat.setOnAction(e -> showAsiakkaat());
-        btnLaskutus.setOnAction(e -> showLaskutus());
     }
 
+    @FXML
     private void showVaraukset() {
-        setContent("Varaukset (oletus)");
+        loadView("/fxml/varaukset.fxml");
+        setActive(btnVaraukset);
     }
 
+    @FXML
     private void showMokit() {
-        setContent("Mökit");
+        loadView("/fxml/mokit.fxml");
+        setActive(btnMokit);
     }
 
+    @FXML
     private void showAsiakkaat() {
-        setContent("Asiakkaat");
+        loadView("/fxml/asiakkaat.fxml");
+        setActive(btnAsiakkaat);
     }
 
+    @FXML
     private void showLaskutus() {
-        setContent("Laskutus");
+        loadView("/fxml/laskut.fxml");
+        setActive(btnLaskut);
     }
 
-    private void setContent(String text) {
-        contentArea.getChildren().clear();
-        contentArea.getChildren().add(new Label(text));
+    @FXML
+    private void showRaportit() {
+        loadView("/fxml/raportit.fxml");
+        setActive(btnRaportit);
+    }
+
+    private void loadView(String fxmlPath) {
+        try {
+            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+            contentArea.getChildren().clear();
+        }
+    }
+    private void setActive(Button activeButton) {
+
+        btnVaraukset.getStyleClass().remove("nav-button-active");
+        btnMokit.getStyleClass().remove("nav-button-active");
+        btnAsiakkaat.getStyleClass().remove("nav-button-active");
+        btnLaskut.getStyleClass().remove("nav-button-active");
+        btnRaportit.getStyleClass().remove("nav-button-active");
+
+        activeButton.getStyleClass().add("nav-button-active");
     }
 }

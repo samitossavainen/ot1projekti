@@ -14,10 +14,22 @@ public class MainApp extends Application {
                 getClass().getResource("/fxml/main.fxml")
         );
 
-        Scene scene = new Scene(loader.load(), 800, 500);
+        Scene scene = new Scene(loader.load());
+
+        //CSS tyylit
+        scene.getStylesheets().add(
+                getClass().getResource("/css/styles.css").toExternalForm()
+        );
 
         stage.setTitle("Mökkikodit");
         stage.setScene(scene);
+
+        stage.setWidth(1100);
+        stage.setHeight(750);
+
+        stage.setMinWidth(900);
+        stage.setMinHeight(650);
+
         stage.show();
     }
 
