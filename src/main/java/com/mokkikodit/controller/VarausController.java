@@ -12,48 +12,111 @@ import javafx.stage.Stage;
 import com.mokkikodit.logiikka.VarausService;
 import com.mokkikodit.mallit.Varaus;
 
-import java.time.LocalDate;
-
 public class VarausController {
 
-    @FXML
-    private TableView<Varaus> tableVaraukset;
+    @FXML private TableView<Varaus> tableVaraukset;
+
+    @FXML private TableColumn<Varaus, String> colId;
+    @FXML private TableColumn<Varaus, String> colMokki;
+    @FXML private TableColumn<Varaus, String> colAsiakas;
+    @FXML private TableColumn<Varaus, String> colAlku;
+    @FXML private TableColumn<Varaus, String> colLoppu;
+    @FXML private TableColumn<Varaus, String> colTila;
+
+    @FXML private Label varausIdLabel;
+    @FXML private TextField asiakasField;
+    @FXML private TextField mokkiField;
+    @FXML private DatePicker alkuDatePicker;
+    @FXML private DatePicker loppuDatePicker;
+    @FXML private ComboBox<String> tilaComboBox;
+    @FXML private Button editButton;
+    @FXML private Button saveButton;
 
     private final VarausService varausService = new VarausService();
-
-    @FXML
-    private Label varausIdLabel;
-
-    @FXML
-    private TextField asiakasField;
-
-    @FXML
-    private TextField mokkiField;
-
-    @FXML
-    private DatePicker alkuDatePicker;
-
-    @FXML
-    private DatePicker loppuDatePicker;
-
-    @FXML
-    private ComboBox<String> tilaComboBox;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button saveButton;
-
     private boolean editMode = false;
 
     @FXML
+    public void initialize() {
+
+        // -------------------------
+        // TABLE BINDING
+        // -------------------------
+
+        colId.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        String.valueOf(d.getValue().getId())
+                )
+        );
+
+        colMokki.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        d.getValue().getMokki().getNimi()
+                )
+        );
+
+        colAsiakas.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        d.getValue().getAsiakas().getNimi()
+                )
+        );
+
+        colAlku.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        d.getValue().getAlku().toString()
+                )
+        );
+
+        colLoppu.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        d.getValue().getLoppu().toString()
+                )
+        );
+
+        colTila.setCellValueFactory(d ->
+                new javafx.beans.property.SimpleStringProperty(
+                        d.getValue().getTila()
+                )
+        );
+
+        // -------------------------
+        // COMBOBOX
+        // -------------------------
+        tilaComboBox.setItems(FXCollections.observableArrayList(
+                "VARATTU", "PERUTTU", "MAKSETTU"
+        ));
+
+        // -------------------------
+        // DATA LOAD
+        // -------------------------
+        refreshTable();
+
+        // -------------------------
+        // ROW SELECTION
+        // -------------------------
+        tableVaraukset.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldV, v) -> {
+
+                    if (v == null) return;
+
+                    if (editMode) cancelEdit();
+
+                    varausIdLabel.setText(String.valueOf(v.getId()));
+                    asiakasField.setText(v.getAsiakas().getNimi());
+                    mokkiField.setText(v.getMokki().getNimi());
+                    alkuDatePicker.setValue(v.getAlku());
+                    loppuDatePicker.setValue(v.getLoppu());
+                    tilaComboBox.setValue(v.getTila());
+                });
+    }
+
+    // -------------------------
+    // EDIT MODE
+    // -------------------------
+    @FXML
     private void toggleEdit() {
-        if (!editMode) {
-            enterEditMode();
-        } else {
-            cancelEdit();
-        }
+        if (!editMode) enterEditMode();
+        else cancelEdit();
     }
 
     private void enterEditMode() {
@@ -68,71 +131,39 @@ public class VarausController {
         editButton.setText("Muokkaa");
     }
 
-    @FXML
-    private void saveChanges() {
-
-        Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-
-        // Päivitetään varaus (oletetaan setterit mallissa)
-        selected.setAlku(alkuDatePicker.getValue());
-        selected.setLoppu(loppuDatePicker.getValue());
-        selected.setTila(tilaComboBox.getValue());
-
-        // Backend päivitys
-        varausService.updateVaraus(selected);
-
-        tableVaraukset.refresh();
-
-        cancelEdit();
-    }
-
     private void setEditMode(boolean editable) {
-        asiakasField.setEditable(false); // yleensä ei muokata suoraan
-        mokkiField.setEditable(false);
-
+        asiakasField.setEditable(editable);
+        mokkiField.setEditable(editable);
         alkuDatePicker.setDisable(!editable);
         loppuDatePicker.setDisable(!editable);
         tilaComboBox.setDisable(!editable);
     }
 
+    // -------------------------
+    // SAVE EDIT
+    // -------------------------
     @FXML
-    public void initialize() {
+    private void saveChanges() {
 
-        editMode = false;
-        editButton.setText("Muokkaa");
-        setEditMode(false);
+        Varaus v = tableVaraukset.getSelectionModel().getSelectedItem();
+        if (v == null) return;
 
-        // ComboBox arvot
-        tilaComboBox.setItems(FXCollections.observableArrayList(
-                "VARATTU", "PERUTTU", "MAKSETTU"
-        ));
+        v.setAlku(alkuDatePicker.getValue());
+        v.setLoppu(loppuDatePicker.getValue());
+        v.setTila(tilaComboBox.getValue());
 
-        tableVaraukset.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldSelection, newSelection) -> {
+        v.getAsiakas().setNimi(asiakasField.getText());
+        v.getMokki().setNimi(mokkiField.getText());
 
-                    if (newSelection == null) return;
+        varausService.updateVaraus(v);
 
-                    if (editMode) cancelEdit();
-
-                    Varaus v = newSelection;
-
-                    varausIdLabel.setText(String.valueOf(v.getId()));
-                    asiakasField.setText(v.getAsiakas().getNimi());
-                    mokkiField.setText(v.getMokki().getNimi());
-                    alkuDatePicker.setValue(v.getAlku());
-                    loppuDatePicker.setValue(v.getLoppu());
-                    tilaComboBox.setValue(v.getTila());
-                });
-
-        tableVaraukset.setItems(
-                FXCollections.observableArrayList(
-                        varausService.getAllVaraukset()
-                )
-        );
+        refreshTable();
+        cancelEdit();
     }
 
+    // -------------------------
+    // NEW RESERVATION
+    // -------------------------
     @FXML
     private void openNewReservationWindow() {
 
@@ -140,7 +171,11 @@ public class VarausController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_varaus.fxml")
             );
+
             Parent root = loader.load();
+
+            UusiVarausController controller = loader.getController();
+            controller.setVarausService(varausService);
 
             Stage stage = new Stage();
             stage.setTitle("Uusi varaus");
@@ -149,20 +184,23 @@ public class VarausController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
 
-            stage.sizeToScene();
-            stage.setResizable(false);
-
             stage.showAndWait();
 
-            // Päivitetään taulukko
-            tableVaraukset.setItems(
-                    FXCollections.observableArrayList(
-                            varausService.getAllVaraukset()
-                    )
-            );
+            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // -------------------------
+    // REFRESH HELPER
+    // -------------------------
+    private void refreshTable() {
+        tableVaraukset.setItems(
+                FXCollections.observableArrayList(
+                        varausService.getAllVaraukset()
+                )
+        );
     }
 }

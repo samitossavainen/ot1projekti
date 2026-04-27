@@ -84,14 +84,13 @@
 
         <!-- TABLE -->
         <TableView fx:id="tableVaraukset" VBox.vgrow="ALWAYS">
-
             <columns>
-                <TableColumn text="Varaus ID" />
-                <TableColumn text="Mökki" />
-                <TableColumn text="Asiakas" />
-                <TableColumn text="Alku" />
-                <TableColumn text="Loppu" />
-                <TableColumn text="Tila" />
+                <TableColumn fx:id="colId" text="Varaus ID" />
+                <TableColumn fx:id="colMokki" text="Mökki" />
+                <TableColumn fx:id="colAsiakas" text="Asiakas" />
+                <TableColumn fx:id="colAlku" text="Alku" />
+                <TableColumn fx:id="colLoppu" text="Loppu" />
+                <TableColumn fx:id="colTila" text="Tila" />
             </columns>
         </TableView>
 

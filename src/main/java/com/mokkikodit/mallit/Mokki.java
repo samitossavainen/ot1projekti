@@ -1,20 +1,40 @@
 package com.mokkikodit.mallit;
 
 public class Mokki {
+
     private int id;
     private String nimi;
-    private int kapasiteetti;
-    private double hintaPerYo;
+    private int henkiloMaara;
+    private double hinta;
 
-    public Mokki(int id, String nimi, int kapasiteetti, double hintaPerYo) {
+    public Mokki(int id, String nimi, int henkiloMaara, double hinta) {
         this.id = id;
         this.nimi = nimi;
-        this.kapasiteetti = kapasiteetti;
-        this.hintaPerYo = hintaPerYo;
+        this.henkiloMaara = henkiloMaara;
+        this.hinta = hinta;
     }
 
-    public int getId() { return id; }
-    public String getNimi() { return nimi; }
-    public int getKapasiteetti() { return kapasiteetti; }
-    public double getHintaPerYo() { return hintaPerYo; }
+    public int getId() {
+        return id;
+    }
+
+    public String getNimi() {
+        return nimi;
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
+    }
+
+    public int getHenkiloMaara() {
+        return henkiloMaara;
+    }
+
+    public double getHintaPerYo() {
+        return hinta;
+    }
+
+    public double getHinta() {
+        return hinta;
+    }
 }
