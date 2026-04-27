@@ -1,0 +1,21 @@
+.nav-button {
+    -fx-background-color: #D8E4BC;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 2;
+    -fx-text-fill: #574520;
+}
+
+.nav-button:hover {
+    -fx-background-color: #AEBF88;
+    -fx-text-fill: #2f2a1f;
+}
+
+.nav-button:pressed {
+    -fx-background-color: #9DAE7A;
+    -fx-translate-y: 1;
+}
+.nav-button-active {
+    -fx-background-color: #AEBF88;
+    -fx-text-fill: #2f2a1f;
+}
