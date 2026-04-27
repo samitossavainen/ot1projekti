@@ -1,6 +1,7 @@
 package com.mokkikodit.mallit;
 
 public class Lasku {
+
     private int id;
     private Varaus varaus;
     private double summa;
@@ -14,8 +15,13 @@ public class Lasku {
     }
 
     public int getId() { return id; }
+
     public Varaus getVaraus() { return varaus; }
+
     public double getSumma() { return summa; }
+
+    public void setSumma(double summa) { this.summa = summa; }
+
     public boolean isMaksettu() { return maksettu; }
 
     public void setMaksettu(boolean maksettu) {

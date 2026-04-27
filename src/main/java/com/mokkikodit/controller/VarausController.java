@@ -1,5 +1,6 @@
 package com.mokkikodit.controller;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,10 +9,17 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import com.mokkikodit.logiikka.VarausService;
+import com.mokkikodit.mallit.Varaus;
+
+import java.time.LocalDate;
+
 public class VarausController {
 
     @FXML
-    private TableView<?> tableVaraukset;
+    private TableView<Varaus> tableVaraukset;
+
+    private final VarausService varausService = new VarausService();
 
     @FXML
     private Label varausIdLabel;
@@ -29,7 +37,7 @@ public class VarausController {
     private DatePicker loppuDatePicker;
 
     @FXML
-    private ComboBox tilaComboBox;
+    private ComboBox<String> tilaComboBox;
 
     @FXML
     private Button editButton;
@@ -37,7 +45,6 @@ public class VarausController {
     @FXML
     private Button saveButton;
 
-    // Varauksen muokkaustila
     private boolean editMode = false;
 
     @FXML
@@ -48,16 +55,15 @@ public class VarausController {
             cancelEdit();
         }
     }
+
     private void enterEditMode() {
         editMode = true;
-
         setEditMode(true);
         editButton.setText("Peruuta");
     }
 
     private void cancelEdit() {
         editMode = false;
-
         setEditMode(false);
         editButton.setText("Muokkaa");
     }
@@ -65,55 +71,68 @@ public class VarausController {
     @FXML
     private void saveChanges() {
 
-        // Poistutaan muokkaustilasta
-        editMode = false;
+        Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
 
-        // Lukitaan kentät
-        setEditMode(false);
+        // Päivitetään varaus (oletetaan setterit mallissa)
+        selected.setAlku(alkuDatePicker.getValue());
+        selected.setLoppu(loppuDatePicker.getValue());
+        selected.setTila(tilaComboBox.getValue());
 
-        // Palautetaan Muokkaa‑napin teksti
-        editButton.setText("Muokkaa");
+        // Backend päivitys
+        varausService.updateVaraus(selected);
 
-        // TULEVAISUUS Tässä kohtaa kutsutaan backendia
-        // esim. reservationService.save(...)
+        tableVaraukset.refresh();
+
+        cancelEdit();
     }
 
     private void setEditMode(boolean editable) {
+        asiakasField.setEditable(false); // yleensä ei muokata suoraan
+        mokkiField.setEditable(false);
 
-        // TextFieldit
-        asiakasField.setEditable(editable);
-        mokkiField.setEditable(editable);
-
-        // DatePickerit
         alkuDatePicker.setDisable(!editable);
         loppuDatePicker.setDisable(!editable);
-
-        // ComboBox
         tilaComboBox.setDisable(!editable);
-
     }
 
     @FXML
     public void initialize() {
+
         editMode = false;
         editButton.setText("Muokkaa");
         setEditMode(false);
+
+        // ComboBox arvot
+        tilaComboBox.setItems(FXCollections.observableArrayList(
+                "VARATTU", "PERUTTU", "MAKSETTU"
+        ));
 
         tableVaraukset.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
 
-                    if (newSelection == null) {
-                        return;
-                    }
+                    if (newSelection == null) return;
 
-                    // jos muokkaus oli kesken, se peruutetaan
-                    if (editMode) {
-                        cancelEdit();
-                    }
+                    if (editMode) cancelEdit();
+
+                    Varaus v = newSelection;
+
+                    varausIdLabel.setText(String.valueOf(v.getId()));
+                    asiakasField.setText(v.getAsiakas().getNimi());
+                    mokkiField.setText(v.getMokki().getNimi());
+                    alkuDatePicker.setValue(v.getAlku());
+                    loppuDatePicker.setValue(v.getLoppu());
+                    tilaComboBox.setValue(v.getTila());
                 });
 
+        tableVaraukset.setItems(
+                FXCollections.observableArrayList(
+                        varausService.getAllVaraukset()
+                )
+        );
     }
+
     @FXML
     private void openNewReservationWindow() {
 
@@ -134,6 +153,13 @@ public class VarausController {
             stage.setResizable(false);
 
             stage.showAndWait();
+
+            // Päivitetään taulukko
+            tableVaraukset.setItems(
+                    FXCollections.observableArrayList(
+                            varausService.getAllVaraukset()
+                    )
+            );
 
         } catch (Exception e) {
             e.printStackTrace();

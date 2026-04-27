@@ -1,40 +1,70 @@
 package com.mokkikodit.logiikka;
 
+import com.mokkikodit.mallit.Varaus;
 import com.mokkikodit.mallit.Asiakas;
 import com.mokkikodit.mallit.Mokki;
-import com.mokkikodit.mallit.Varaus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VarausService {
-    private List<Varaus> varaukset = new ArrayList<>();
-    private int nextId = 1;
 
-    public Varaus teeVaraus(Asiakas asiakas, Mokki mokki,
-                            java.time.LocalDate alku,
-                            java.time.LocalDate loppu) {
+    private final List<Varaus> varaukset = new ArrayList<>();
 
-        if (!onkoVapaa(mokki, alku, loppu)) {
-            throw new IllegalArgumentException("Mökki ei ole vapaa!");
+    public VarausService() {
+        lataaMockData(); // 🔹 load sample data automatically
+    }
+
+    private void lataaMockData() {
+
+        // 🔹 Mock asiakkaat
+        Asiakas a1 = new Asiakas(1, "Matti Meikäläinen", "matti@example.com", "0401234567");
+        Asiakas a2 = new Asiakas(2, "Liisa Virtanen", "liisa@example.com", "0509876543");
+
+        // 🔹 Mock mökit
+        Mokki m1 = new Mokki(1, "Rantamökki", 4, 120.0);
+        Mokki m2 = new Mokki(2, "Hirsimökki", 6, 180.0);
+
+        // 🔹 Mock varaukset
+        varaukset.add(new Varaus(
+                1,
+                a1,
+                m1,
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(5),
+                "VARATTU"
+        ));
+
+        varaukset.add(new Varaus(
+                2,
+                a2,
+                m2,
+                LocalDate.now().plusDays(3),
+                LocalDate.now().plusDays(7),
+                "MAKSETTU"
+        ));
+    }
+
+    public List<Varaus> getAllVaraukset() {
+        return new ArrayList<>(varaukset);
+    }
+
+    public void addVaraus(Varaus varaus) {
+        varaukset.add(varaus);
+    }
+
+    public void updateVaraus(Varaus updated) {
+        for (int i = 0; i < varaukset.size(); i++) {
+            if (varaukset.get(i).getId() == updated.getId()) {
+                varaukset.set(i, updated);
+                return;
+            }
         }
-
-        Varaus v = new Varaus(nextId++, asiakas, mokki, alku, loppu);
-        varaukset.add(v);
-        return v;
+        throw new IllegalArgumentException("Varausta ei löytynyt ID:llä " + updated.getId());
     }
 
-    public boolean onkoVapaa(Mokki mokki,
-                             java.time.LocalDate alku,
-                             java.time.LocalDate loppu) {
-
-        return varaukset.stream().noneMatch(v ->
-                v.getMokki().getId() == mokki.getId() &&
-                        !(loppu.isBefore(v.getAlkuPvm()) || alku.isAfter(v.getLoppuPvm()))
-        );
-    }
-
-    public List<Varaus> haeKaikki() {
-        return varaukset;
+    public void deleteVaraus(int id) {
+        varaukset.removeIf(v -> v.getId() == id);
     }
 }
