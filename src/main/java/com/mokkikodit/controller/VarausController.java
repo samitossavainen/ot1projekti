@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import com.mokkikodit.util.DialogUtil;
 
 public class VarausController {
 
@@ -17,10 +20,7 @@ public class VarausController {
     private Label varausIdLabel;
 
     @FXML
-    private TextField asiakasField;
-
-    @FXML
-    private TextField mokkiField;
+    private Label asiakasLabel;
 
     @FXML
     private DatePicker alkuDatePicker;
@@ -38,10 +38,10 @@ public class VarausController {
     private Button saveButton;
 
     @FXML
-    private TextField emailField;
+    private Label statusLabel;
 
     @FXML
-    private TextField phoneField;
+    private Button cancelButton;
 
     // Varauksen muokkaustila
     private boolean editMode = false;
@@ -58,7 +58,8 @@ public class VarausController {
         editMode = true;
 
         setEditMode(true);
-        editButton.setText("Peruuta");
+        editButton.setText("Peru muokkaus");
+        editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
     }
 
     private void cancelEdit() {
@@ -66,6 +67,7 @@ public class VarausController {
 
         setEditMode(false);
         editButton.setText("Muokkaa");
+        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
     }
 
     @FXML
@@ -79,6 +81,11 @@ public class VarausController {
 
         // Palautetaan Muokkaa‑napin teksti
         editButton.setText("Muokkaa");
+        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+
+        // Näyttää "Tallennettu" kuittauksen
+        showSavedStatus("Tallennettu");
+        statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
         // TULEVAISUUS Tässä kohtaa kutsutaan backendia
         // esim. reservationService.save(...)
@@ -86,41 +93,54 @@ public class VarausController {
 
     private void setEditMode(boolean editable) {
 
-        // TextFieldit
-        asiakasField.setEditable(editable);
-        mokkiField.setEditable(editable);
-        emailField.setEditable(editable);
-        phoneField.setEditable(editable);
-
         // DatePickerit
-        alkuDatePicker.setDisable(!editable);
-        loppuDatePicker.setDisable(!editable);
+        alkuDatePicker.setMouseTransparent(!editable);
+        loppuDatePicker.setMouseTransparent(!editable);
 
         // ComboBox
-        tilaComboBox.setDisable(!editable);
+        tilaComboBox.setMouseTransparent(!editable);
+
+        // Estää tab-focus
+        alkuDatePicker.setFocusTraversable(editable);
+        loppuDatePicker.setFocusTraversable(editable);
+        tilaComboBox.setFocusTraversable(editable);
+
+        // Tallenna nappi
+        saveButton.setVisible(editable);
+        saveButton.setManaged(editable);
+        saveButton.setStyle("-fx-base: #6B8E3A; -fx-text-fill: white;");
 
     }
 
     @FXML
     public void initialize() {
+
+        statusLabel.setVisible(false);
+        statusLabel.setManaged(false);
+
         editMode = false;
         editButton.setText("Muokkaa");
+
         setEditMode(false);
 
         tableVaraukset.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
 
-                    if (newSelection == null) {
-                        return;
-                    }
-
-                    // jos muokkaus oli kesken, se peruutetaan
-                    if (editMode) {
+                    // jos muokkaus oli kesken → perutaan
+                    if (editMode && newSelection == null) {
                         cancelEdit();
                     }
                 });
 
+        // DatePickerit: estää popupin kun ei edit-tilassa
+        alkuDatePicker.setOnShowing(e -> {
+            if (!editMode) alkuDatePicker.hide();
+        });
+
+        loppuDatePicker.setOnShowing(e -> {
+            if (!editMode) loppuDatePicker.hide();
+        });
     }
     @FXML
     private void openNewReservationWindow() {
@@ -147,4 +167,36 @@ public class VarausController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void cancelReservation() {
+
+        Stage stage = (Stage) tableVaraukset.getScene().getWindow();
+
+        boolean confirmed = DialogUtil.confirm(
+                stage,
+                "Vahvista peruutus",
+                "Haluatko varmasti perua varauksen?",
+                "Varaus #" + varausIdLabel.getText() + " perutaan."
+        );
+
+        if (confirmed) {
+
+            showSavedStatus("Varaus peruttu");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+        }
+    }
+
+    private void showSavedStatus(String text) {
+        statusLabel.setText(text);
+        statusLabel.setVisible(true);
+        statusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            statusLabel.setVisible(false);
+            statusLabel.setManaged(false);
+        });
+        pause.play();
+    }
+
 }
