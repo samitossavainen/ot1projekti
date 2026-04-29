@@ -21,9 +21,9 @@
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
-         <padding>
-            <Insets bottom="20.0" />
-         </padding>
+            <padding>
+                <Insets bottom="20.0" />
+            </padding>
         </Label>
         <GridPane hgap="10.0" vgap="8.0">
             <columnConstraints>
@@ -35,18 +35,18 @@
                 <Label alignment="CENTER_RIGHT" text="Nimi:" />
                 <Label alignment="CENTER_RIGHT" text="Puhelin:" GridPane.rowIndex="2" />
                 <Label alignment="CENTER_RIGHT" text="Osoite:" GridPane.rowIndex="3" GridPane.valignment="TOP" />
-            <TextField fx:id="nimiField" GridPane.columnIndex="1" />
-            <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Sähköposti:" GridPane.rowIndex="1" />
-            <TextArea maxHeight="60.0" minHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="nimiField" GridPane.columnIndex="1" />
+                <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Sähköposti:" GridPane.rowIndex="1" />
+                <TextArea maxHeight="60.0" minHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
             </children>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
         </GridPane>
         <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
             <children>

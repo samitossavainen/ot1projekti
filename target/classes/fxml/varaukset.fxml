@@ -154,16 +154,6 @@
                     <Label text="Luontipäivä:" GridPane.rowIndex="3" />
                     <Label fx:id="luontiLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
             </GridPane>
             <Label text="ASIAKKAAN TIEDOT" textFill="#574520">
@@ -180,15 +170,6 @@
                     <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label fx:id="phoneLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
             </GridPane>
         </VBox>

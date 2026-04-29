@@ -98,12 +98,12 @@
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
-               <TextField fx:id="nimiField" prefWidth="200.0" GridPane.columnIndex="1" />
-               <Label text="Puhelin:" GridPane.rowIndex="3" />
-               <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-               <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-               <TextArea fx:id="addressArea" minHeight="60.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-               <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <TextField fx:id="nimiField" prefWidth="200.0" GridPane.columnIndex="1" />
+                    <Label text="Puhelin:" GridPane.rowIndex="3" />
+                    <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                    <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <TextArea fx:id="addressArea" minHeight="60.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
 
             </GridPane>
