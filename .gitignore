@@ -1,5 +1,8 @@
+# tämä .gitignore tiedosto kuuluu olla aina projektin hakemiston juuressa
+
 # tämä jättää konekohtaiset IDE-asetukset pois versionhallinnasta
 .idea/
-# nämä jättää kääntäjän tuotokset pois versionhallinnasta
+# nämä jättää kääntäjän tulokset pois versionallinnasta
 target/
+# tämä jättää kääntäjän tuottamat binääritiedostot pois versionhallinnasta
 *.class
