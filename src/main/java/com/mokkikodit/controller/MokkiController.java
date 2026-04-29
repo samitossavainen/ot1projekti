@@ -54,7 +54,36 @@ public class MokkiController {
 
     private boolean editMode = false;
 
-    // Edit / View -tilan vaihto
+    // -------------------------
+    // INIT
+    // -------------------------
+
+    @FXML
+    public void initialize() {
+
+        statusLabel.setVisible(false);
+        statusLabel.setManaged(false);
+
+        editMode = false;
+        editButton.setText("Muokkaa");
+
+        // 🔥 IMPORTANT: hide fields initially
+        setFieldsVisible(false);
+
+        setEditMode(false);
+
+        tableCabins.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldSelection, newSelection) -> {
+                    if (editMode && newSelection == null) {
+                        cancelEdit();
+                    }
+                });
+    }
+
+    // -------------------------
+    // EDIT MODE TOGGLE
+    // -------------------------
 
     @FXML
     private void toggleEdit() {
@@ -81,7 +110,9 @@ public class MokkiController {
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
     }
 
-    // Tallennus
+    // -------------------------
+    // SAVE
+    // -------------------------
 
     @FXML
     private void saveChanges() {
@@ -94,13 +125,43 @@ public class MokkiController {
 
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
-
     }
 
-    // Kenttien lukitus
+    // -------------------------
+    // FIELD VISIBILITY CONTROL
+    // -------------------------
+
+    private void setFieldsVisible(boolean visible) {
+
+        cabinField.setVisible(visible);
+        capacityField.setVisible(visible);
+        roomsField.setVisible(visible);
+        vessatField.setVisible(visible);
+        pricePerNightField.setVisible(visible);
+        addressArea.setVisible(visible);
+        lisatiedotArea.setVisible(visible);
+        tilaComboBox.setVisible(visible);
+
+        cabinField.setManaged(visible);
+        capacityField.setManaged(visible);
+        roomsField.setManaged(visible);
+        vessatField.setManaged(visible);
+        pricePerNightField.setManaged(visible);
+        addressArea.setManaged(visible);
+        lisatiedotArea.setManaged(visible);
+        tilaComboBox.setManaged(visible);
+    }
+
+    // -------------------------
+    // EDIT MODE SETTINGS
+    // -------------------------
 
     private void setEditMode(boolean editable) {
 
+        // 🔥 show/hide fields
+        setFieldsVisible(editable);
+
+        // lock/unlock interaction
         cabinField.setMouseTransparent(!editable);
         capacityField.setMouseTransparent(!editable);
         roomsField.setMouseTransparent(!editable);
@@ -124,27 +185,9 @@ public class MokkiController {
         saveButton.setStyle("-fx-base: #6B8E3A; -fx-text-fill: white;");
     }
 
-    @FXML
-    public void initialize() {
-
-        statusLabel.setVisible(false);
-        statusLabel.setManaged(false);
-
-        editMode = false;
-        editButton.setText("Muokkaa");
-
-        setEditMode(false);
-
-        tableCabins.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldSelection, newSelection) -> {
-                    if (editMode && newSelection == null) {
-                        cancelEdit();
-                    }
-                });
-    }
-
-    // Uuden mökin lisäys
+    // -------------------------
+    // NEW CABIN WINDOW
+    // -------------------------
 
     @FXML
     private void openNewCabinWindow() {
@@ -171,7 +214,9 @@ public class MokkiController {
         }
     }
 
-    // Mökin poisto
+    // -------------------------
+    // DELETE
+    // -------------------------
 
     @FXML
     private void deleteCabin() {
@@ -191,7 +236,9 @@ public class MokkiController {
         }
     }
 
-    // Status-viesti
+    // -------------------------
+    // STATUS MESSAGE
+    // -------------------------
 
     private void showSavedStatus(String text) {
         statusLabel.setText(text);
