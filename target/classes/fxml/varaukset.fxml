@@ -92,6 +92,7 @@
                 <TableColumn text="Alku" />
                 <TableColumn text="Loppu" />
                 <TableColumn text="Tila" />
+                <TableColumn prefWidth="113.0" text="Kokonaishinta" />
             </columns>
         </TableView>
 

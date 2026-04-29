@@ -21,7 +21,7 @@ public class MainApp extends Application {
                 getClass().getResource("/css/styles.css").toExternalForm()
         );
 
-        stage.setTitle("Mökkikodit");
+        stage.setTitle("Mökkikodit oy");
         stage.setScene(scene);
 
         stage.setWidth(1100);
