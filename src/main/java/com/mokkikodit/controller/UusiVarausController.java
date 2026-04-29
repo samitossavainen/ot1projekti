@@ -1,14 +1,13 @@
 package com.mokkikodit.controller;
 
+import com.mokkikodit.logiikka.VarausService;
+import com.mokkikodit.mallit.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import com.mokkikodit.logiikka.VarausService;
-import com.mokkikodit.mallit.*;
 
 import java.util.Random;
 
@@ -25,35 +24,39 @@ public class UusiVarausController {
         this.varausService = service;
     }
 
+    // 🔥 BUTTON: "Vahvista"
     @FXML
-    private void create(ActionEvent event) {
+    private void vahvista(ActionEvent event) {
+        saveVaraus();
+        close(event);
+    }
 
-        Asiakas a = new Asiakas(
-                new Random().nextInt(10000),
-                asiakasField.getText(),
-                "demo@mail.com",
-                "000"
-        );
+    private void saveVaraus() {
 
-        Mokki m = new Mokki(
-                new Random().nextInt(10000),
-                mokkiField.getText(),
-                4,
-                100.0
-        );
+        if (varausService == null) {
+            throw new IllegalStateException("VarausService not set!");
+        }
 
         Varaus v = new Varaus(
                 new Random().nextInt(10000),
-                a,
-                m,
+                new Asiakas(
+                        new Random().nextInt(10000),
+                        asiakasField.getText(),
+                        "demo@mail.com",
+                        "000"
+                ),
+                new Mokki(
+                        new Random().nextInt(10000),
+                        mokkiField.getText(),
+                        4,
+                        100.0
+                ),
                 alkuDatePicker.getValue(),
                 loppuDatePicker.getValue(),
                 "VARATTU"
         );
 
         varausService.addVaraus(v);
-
-        close(event);
     }
 
     @FXML
@@ -62,7 +65,9 @@ public class UusiVarausController {
     }
 
     private void close(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
         stage.close();
     }
 }

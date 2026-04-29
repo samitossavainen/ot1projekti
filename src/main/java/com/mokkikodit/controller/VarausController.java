@@ -15,31 +15,22 @@ public class VarausController {
 
     @FXML
     private TableView<?> tableVaraukset;
-
     @FXML
     private Label varausIdLabel;
-
     @FXML
     private Label asiakasLabel;
-
     @FXML
     private DatePicker alkuDatePicker;
-
     @FXML
     private DatePicker loppuDatePicker;
-
     @FXML
     private ComboBox tilaComboBox;
-
     @FXML
     private Button editButton;
-
     @FXML
     private Button saveButton;
-
     @FXML
     private Label statusLabel;
-
     @FXML
     private Button cancelButton;
 

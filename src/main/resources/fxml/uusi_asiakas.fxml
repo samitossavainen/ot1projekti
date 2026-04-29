@@ -32,19 +32,16 @@
             </columnConstraints>
 
             <children>
-                <Label alignment="CENTER_RIGHT" text="Etunimi:" />
-                <Label alignment="CENTER_RIGHT" text="Sukunimi:" GridPane.rowIndex="1" />
-                <Label alignment="CENTER_RIGHT" text="Puhelin:" GridPane.rowIndex="3" />
-                <Label alignment="CENTER_RIGHT" text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-                <TextField GridPane.columnIndex="1" />
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label alignment="CENTER_RIGHT" text="Nimi:" />
+                <Label alignment="CENTER_RIGHT" text="Puhelin:" GridPane.rowIndex="2" />
+                <Label alignment="CENTER_RIGHT" text="Osoite:" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+                <TextField fx:id="nimiField" GridPane.columnIndex="1" />
+                <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Sähköposti:" GridPane.rowIndex="1" />
+                <TextArea maxHeight="60.0" minHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Label text="Sähköposti:" GridPane.rowIndex="2" />
-                <TextArea maxHeight="80.0" minHeight="80.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
             <rowConstraints>
-                <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
