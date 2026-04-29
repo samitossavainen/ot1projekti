@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.AsiakasController">
 
     <!-- PADDING -->
@@ -11,7 +23,104 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
-    <Label text="Asiakkaat-näkymä"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Label text="ASIAKKAIDEN HALLINTA" textFill="#574520">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+        <VBox prefWidth="100.0" spacing="10.0">
+            <children>
 
+                <!-- HAKU -->
+                <HBox spacing="10.0">
+                    <children>
+                        <TextField fx:id="searchField" promptText="Hae asiakkaita..." HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
+
+                <Button fx:id="addCustomerButton" mnemonicParsing="false" onAction="#openNewCustomerWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi asiakas">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Button>
+            </children>
+        </VBox>
+
+        <!-- TABLE -->
+        <TableView fx:id="tableAsiakkaat" VBox.vgrow="ALWAYS">
+
+            <columns>
+                <TableColumn text="Nimi" />
+                <TableColumn text="Sähköposti" />
+                <TableColumn text="Puhelin" />
+                <TableColumn text="Osoite" />
+            </columns>
+        </TableView>
+
+        <!-- DETAIL -->
+        <VBox spacing="10.0">
+            <HBox spacing="10.0">
+                <children>
+                    <Label text="ASIAKAS" textFill="#574520">
+                        <font>
+                            <Font name="System Bold" size="20.0" />
+                        </font></Label>
+                    <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
+                    <Region />
+                    <Button mnemonicParsing="false" onAction="#deleteCustomer" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista asiakas" />
+                </children>
+            </HBox>
+            <Label fx:id="summaryLabel" text="(tähän asiakkaan nimi) · (sähköposti) · (puh numero)" />
+            <Separator prefWidth="200.0" />
+            <HBox>
+                <children>
+                    <Label text="ASIAKKAAN TIEDOT" textFill="#574520">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <Region />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                </children>
+            </HBox>
+            <GridPane hgap="10.0" vgap="8.0">
+
+                <children>
+                    <Label text="Etunimi:" />
+                    <Label text="Sukunimi:" GridPane.rowIndex="1" />
+                    <Label text="Sähköposti:" GridPane.rowIndex="2" />
+                    <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                        <GridPane.margin>
+                            <Insets top="14.0" />
+                        </GridPane.margin></Button>
+                    <TextField fx:id="firstNameField" prefWidth="200.0" GridPane.columnIndex="1" />
+                    <TextField fx:id="lastNameField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <TextField fx:id="emailField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label text="Puhelin:" GridPane.rowIndex="3" />
+                    <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                    <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <TextArea fx:id="addressArea" minHeight="65.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                </children>
+                <columnConstraints>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                </rowConstraints>
+
+            </GridPane>
+        </VBox>
+
+    </children>
 </VBox>

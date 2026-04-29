@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefWidth="420.0" spacing="10.0"
+<VBox prefWidth="420.0"
+      spacing="12.0"
       xmlns="http://javafx.com/javafx/26"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.mokkikodit.controller.UusiVarausController">
 
+    <!-- PADDING -->
     <padding>
-        <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+        <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
 
-    <children>
+    <!-- TITLE -->
+    <Label text="Luo uusi varaus">
+        <font>
+            <Font name="System Bold" size="18"/>
+        </font>
+        <padding>
+            <Insets bottom="10"/>
+        </padding>
+    </Label>
 
-        <!-- TITLE -->
-        <Label text="Luo uusi varaus">
-            <font>
-                <Font name="System Bold" size="18.0"/>
-            </font>
-        </Label>
+    <!-- FORM -->
+    <GridPane hgap="10" vgap="8">
 
-        <!-- FORM -->
-        <GridPane hgap="10.0" vgap="8.0">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
 
-            <columnConstraints>
-                <ColumnConstraints prefWidth="120.0"/>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+        </rowConstraints>
 
-            <rowConstraints>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-            </rowConstraints>
+        <children>
 
-            <children>
+            <!-- LABELS -->
+            <Label text="Asiakas:" GridPane.rowIndex="0"/>
+            <Label text="Mökki:" GridPane.rowIndex="1"/>
+            <Label text="Tulo pvm:" GridPane.rowIndex="2"/>
+            <Label text="Lähtö pvm:" GridPane.rowIndex="3"/>
 
-                <Label text="Asiakas:"/>
-                <Label text="Mökki:" GridPane.rowIndex="1"/>
-                <Label text="Tulo pvm:" GridPane.rowIndex="2"/>
-                <Label text="Lähtö pvm:" GridPane.rowIndex="3"/>
+            <!-- INPUTS -->
+            <TextField fx:id="asiakasField"
+                       promptText="Anna asiakkaan nimi"
+                       GridPane.columnIndex="1"/>
 
-                <!-- INPUT FIELDS -->
-                <TextField fx:id="asiakasField" GridPane.columnIndex="1"/>
-                <TextField fx:id="mokkiField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <TextField fx:id="mokkiField"
+                       promptText="Anna mökin nimi"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="1"/>
 
-                <DatePicker fx:id="alkuDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <DatePicker fx:id="loppuDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <DatePicker fx:id="alkuDatePicker"
+                        prefWidth="170"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="2"/>
 
-            </children>
-        </GridPane>
+            <DatePicker fx:id="loppuDatePicker"
+                        prefWidth="170"
+                        GridPane.columnIndex="1"
+                        GridPane.rowIndex="3"/>
 
-        <!-- BUTTONS -->
-        <HBox alignment="BOTTOM_RIGHT" spacing="12.0">
+        </children>
+    </GridPane>
 
-            <children>
+    <!-- BUTTONS -->
+    <HBox alignment="BOTTOM_RIGHT" spacing="12">
 
-                <Button text="Peruuta" onAction="#cancel"/>
+        <children>
 
-                <Button text="Vahvista"
-                        style="-fx-base: #6B8E23; -fx-text-fill: white;"
-                        onAction="#create"/>
+            <Button text="Peruuta"
+                    onAction="#cancel"/>
 
-            </children>
+            <Button text="Vahvista"
+                    onAction="#create"
+                    style="-fx-base: #6B8E23; -fx-text-fill: white;"/>
 
-        </HBox>
+        </children>
 
-    </children>
+    </HBox>
+
 </VBox>
