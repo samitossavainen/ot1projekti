@@ -17,13 +17,10 @@ public class AsiakasController {
     private TableView<?> tableAsiakkaat;
 
     @FXML
-    private TextField firstNameField;
+    private TextField nimiField;
 
     @FXML
-    private TextField lastNameField;
-
-    @FXML
-    private TextField emailField;
+    private Label emailLabel;
 
     @FXML
     private TextField phoneField;
@@ -94,20 +91,18 @@ public class AsiakasController {
     private void setEditMode(boolean editable) {
 
         // Muokattavat kentät (ei harmaaksi!)
-        firstNameField.setMouseTransparent(!editable);
-        lastNameField.setMouseTransparent(!editable);
+        nimiField.setMouseTransparent(!editable);
         phoneField.setMouseTransparent(!editable);
         addressArea.setMouseTransparent(!editable);
 
         // Sähköposti EI ole koskaan muokattava
-        emailField.setMouseTransparent(true);
+        emailLabel.setMouseTransparent(true);
 
         // Estää tab-fokuksen view-tilassa
-        firstNameField.setFocusTraversable(editable);
-        lastNameField.setFocusTraversable(editable);
+        nimiField.setFocusTraversable(editable);
         phoneField.setFocusTraversable(editable);
         addressArea.setFocusTraversable(editable);
-        emailField.setFocusTraversable(false);
+        emailLabel.setFocusTraversable(false);
 
         // Tallenna-nappi
         saveButton.setVisible(editable);
@@ -171,7 +166,7 @@ public class AsiakasController {
                 stage,
                 "Vahvista poisto",
                 "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakkaan " + emailField.getText() + " tiedot poistetaan."
+                "Asiakkaan " + emailLabel.getText() + " tiedot poistetaan."
         );
 
         if (confirmed) {

@@ -146,10 +146,12 @@
                   <GridPane.margin>
                      <Insets />
                   </GridPane.margin></ComboBox>
-                    <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                    <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                   <GridPane.margin>
                      <Insets top="14.0" />
                   </GridPane.margin></Button>
+               <Label text="Luontipäivä:" GridPane.rowIndex="3" />
+               <Label fx:id="luontiLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
 
          </GridPane>

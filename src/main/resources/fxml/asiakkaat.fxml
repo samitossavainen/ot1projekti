@@ -92,32 +92,19 @@
             <GridPane hgap="10.0" vgap="8.0">
 
                 <children>
-                    <Label text="Etunimi:" />
-                    <Label text="Sukunimi:" GridPane.rowIndex="1" />
+                    <Label text="Nimi:" />
                     <Label text="Sähköposti:" GridPane.rowIndex="2" />
                     <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
-               <TextField fx:id="firstNameField" prefWidth="200.0" GridPane.columnIndex="1" />
-               <TextField fx:id="lastNameField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               <TextField fx:id="emailField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <TextField fx:id="nimiField" prefWidth="200.0" GridPane.columnIndex="1" />
                <Label text="Puhelin:" GridPane.rowIndex="3" />
                <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-               <TextArea fx:id="addressArea" minHeight="65.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <TextArea fx:id="addressArea" minHeight="60.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
 
             </GridPane>
         </VBox>
