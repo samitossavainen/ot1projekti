@@ -120,7 +120,7 @@
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Peru varaus" />
+                    <Button mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
                 </children>
             </HBox>
             <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö) · (tila)" />

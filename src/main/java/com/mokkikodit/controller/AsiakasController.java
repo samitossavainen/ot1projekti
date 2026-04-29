@@ -42,6 +42,35 @@ public class AsiakasController {
 
     private boolean editMode = false;
 
+    // -------------------------
+    // INIT
+    // -------------------------
+    @FXML
+    public void initialize() {
+
+        statusLabel.setVisible(false);
+        statusLabel.setManaged(false);
+
+        editMode = false;
+        editButton.setText("Muokkaa");
+
+        // 🔥 Hide customer detail fields initially
+        setFieldsVisible(false);
+
+        setEditMode(false);
+
+        tableAsiakkaat.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldSelection, newSelection) -> {
+                    if (editMode && newSelection == null) {
+                        cancelEdit();
+                    }
+                });
+    }
+
+    // -------------------------
+    // TOGGLE EDIT
+    // -------------------------
     @FXML
     private void toggleEdit() {
         if (!editMode) {
@@ -55,6 +84,7 @@ public class AsiakasController {
         editMode = true;
 
         setEditMode(true);
+
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
     }
@@ -63,74 +93,74 @@ public class AsiakasController {
         editMode = false;
 
         setEditMode(false);
+
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
     }
 
+    // -------------------------
+    // SAVE
+    // -------------------------
     @FXML
     private void saveChanges() {
 
-        // Poistutaan muokkaustilasta
         editMode = false;
 
-        // Lukitaan kentät
         setEditMode(false);
 
-        // Palautetaan Muokkaa‑napin teksti
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
-        // Näyttää "Tallennettu" kuittauksen
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
-
-        // TULEVAISUUS Tässä kohtaa kutsutaan backendia
-        // esim. reservationService.save(...)
     }
 
+    // -------------------------
+    // FIELD VISIBILITY CONTROL
+    // -------------------------
+    private void setFieldsVisible(boolean visible) {
+
+        nimiField.setVisible(visible);
+        phoneField.setVisible(visible);
+        addressArea.setVisible(visible);
+
+        nimiField.setManaged(visible);
+        phoneField.setManaged(visible);
+        addressArea.setManaged(visible);
+
+        // Email is ALWAYS visible (do nothing as requested)
+    }
+
+    // -------------------------
+    // EDIT MODE SETTINGS
+    // -------------------------
     private void setEditMode(boolean editable) {
 
-        // Muokattavat kentät (ei harmaaksi!)
+        // 🔥 show / hide fields
+        setFieldsVisible(editable);
+
+        // Editable fields behavior
         nimiField.setMouseTransparent(!editable);
         phoneField.setMouseTransparent(!editable);
         addressArea.setMouseTransparent(!editable);
 
-        // Sähköposti EI ole koskaan muokattava
-        emailLabel.setMouseTransparent(true);
-
-        // Estää tab-fokuksen view-tilassa
         nimiField.setFocusTraversable(editable);
         phoneField.setFocusTraversable(editable);
         addressArea.setFocusTraversable(editable);
+
+        // Email is always read-only
+        emailLabel.setMouseTransparent(true);
         emailLabel.setFocusTraversable(false);
 
-        // Tallenna-nappi
+        // Save button
         saveButton.setVisible(editable);
         saveButton.setManaged(editable);
         saveButton.setStyle("-fx-base: #6B8E3A; -fx-text-fill: white;");
     }
 
-    @FXML
-    public void initialize() {
-
-        statusLabel.setVisible(false);
-        statusLabel.setManaged(false);
-
-        editMode = false;
-        editButton.setText("Muokkaa");
-
-        setEditMode(false);
-
-        tableAsiakkaat.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldSelection, newSelection) -> {
-
-                    if (editMode && newSelection == null) {
-                        cancelEdit();
-                    }
-                });
-    }
-
+    // -------------------------
+    // NEW CUSTOMER
+    // -------------------------
     @FXML
     private void openNewCustomerWindow() {
 
@@ -157,6 +187,9 @@ public class AsiakasController {
         }
     }
 
+    // -------------------------
+    // DELETE CUSTOMER
+    // -------------------------
     @FXML
     private void deleteCustomer() {
 
@@ -170,12 +203,14 @@ public class AsiakasController {
         );
 
         if (confirmed) {
-
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         }
     }
 
+    // -------------------------
+    // STATUS MESSAGE
+    // -------------------------
     private void showSavedStatus(String text) {
         statusLabel.setText(text);
         statusLabel.setVisible(true);
@@ -188,5 +223,4 @@ public class AsiakasController {
         });
         pause.play();
     }
-
 }
