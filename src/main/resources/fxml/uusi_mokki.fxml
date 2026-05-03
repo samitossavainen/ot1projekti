@@ -38,15 +38,15 @@
                 <TextField fx:id="nimiField" GridPane.columnIndex="1" />
                 <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <Label text="Kapasiteetti:" GridPane.rowIndex="2" />
-                <TextArea maxHeight="40.0" minHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextArea minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
                 <Label text="Vessat:" GridPane.rowIndex="5" />
                 <Label text="Hinta per yö:" GridPane.rowIndex="6" />
                 <Label text="Lisätiedot:" GridPane.rowIndex="7" />
-                <TextArea maxHeight="40.0" minHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <TextArea maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
             </children>
 
         </GridPane>
