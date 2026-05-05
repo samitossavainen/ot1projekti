@@ -55,14 +55,10 @@
                 </HBox>
 
                 <!-- PÄIVÄMÄÄRÄT -->
-                <HBox spacing="10.0">
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
                         <DatePicker promptText="Alku" />
-                        <Label text="-" HBox.hgrow="ALWAYS">
-                            <padding>
-                                <Insets top="5.0" />
-                            </padding>
-                        </Label>
+                        <Label text="-" HBox.hgrow="ALWAYS" />
                         <DatePicker promptText="Loppu" />
                         <Button text="Reset">
                             <HBox.margin>
@@ -163,6 +159,20 @@
                     <Label text="Lisätiedot:" GridPane.rowIndex="7" />
                     <TextArea fx:id="lisatiedotArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>

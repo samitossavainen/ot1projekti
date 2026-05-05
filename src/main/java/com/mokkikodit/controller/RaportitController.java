@@ -1,35 +1,46 @@
 package com.mokkikodit.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class RaportitController {
 
     @FXML
-    private VBox root;           // koko raportit-näkymä
-
+    private VBox varausRapCard;
     @FXML
-    private VBox varausRapCard;  // VARAUSRAPORTTI-kortti
+    private VBox mokkiRapCard;
+    @FXML
+    private VBox asiakasRapCard;
+    @FXML
+    private VBox laskuRapCard;
 
     @FXML
     public void initialize() {
         varausRapCard.setOnMouseClicked(this::openVarausRaportti);
+        mokkiRapCard.setOnMouseClicked(this::openMokkiRaportti);
+        asiakasRapCard.setOnMouseClicked(this::openAsiakasRaportti);
+        laskuRapCard.setOnMouseClicked(this::openLaskutRaportti);
     }
 
     private void openVarausRaportti(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/fxml/varaukset_raportti.fxml")
-            );
-            Parent varausRaporttiView = loader.load();
-
-            root.getChildren().setAll(varausRaporttiView);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MainController.getInstance()
+                .showCustomView("/fxml/varaukset_raportti.fxml");
     }
+
+    private void openMokkiRaportti(MouseEvent event) {
+        MainController.getInstance()
+                .showCustomView("/fxml/mokit_raportti.fxml");
+    }
+
+    private void openAsiakasRaportti(MouseEvent event) {
+        MainController.getInstance()
+                .showCustomView("/fxml/asiakas_raportti.fxml");
+    }
+
+    private void openLaskutRaportti(MouseEvent event) {
+        MainController.getInstance()
+                .showCustomView("/fxml/laskut_raportti.fxml");
+    }
+
 }

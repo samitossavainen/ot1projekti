@@ -77,4 +77,10 @@ public class MainController {
     public static MainController getInstance() {
         return instance;
     }
+
+    public void showCustomView(String fxmlPath) {
+        loadView(fxmlPath);
+        setActive(btnRaportit); // pysyy Raportit-tilassa
+    }
+
 }

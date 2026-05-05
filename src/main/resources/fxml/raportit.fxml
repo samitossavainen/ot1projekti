@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.RaportitController">
+<VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.RaportitController">
 
     <!-- PADDING -->
     <padding>
@@ -28,12 +28,12 @@
                 </Label>
             </children>
         </HBox>
-      <Label text="Valitse raportti, jonka haluat muodostaa">
+      <Label text="Valitse raportti">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Region prefHeight="20.0" prefWidth="200.0" />
+      <Region prefHeight="40.0" prefWidth="200.0" />
       <GridPane hgap="20.0" vgap="20.0" VBox.vgrow="NEVER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
@@ -45,60 +45,60 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <VBox fx:id="varausRapCard" alignment="CENTER" focusTraversable="true" prefHeight="160.0" prefWidth="200.0" spacing="8.0" style="-fx-background-color: #B0B0B0;; -fx-border-radius: 6;; -fx-background-radius: 6;;">
+            <VBox fx:id="varausRapCard" alignment="CENTER" focusTraversable="true" prefHeight="160.0" prefWidth="200.0" spacing="8.0" styleClass="report-card">
                <children>
                   <Label text="VARAUSRAPORTTI">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                   <Label text="- Varaukset ajanjaksolla" />
                   <Label text="- Varausten määrä ja tila" />
                </children>
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="DEFAULT" />
                </cursor>
             </VBox>
-            <VBox fx:id="asiakasRapCard" alignment="CENTER" focusTraversable="true" layoutX="10.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" style="-fx-background-color: #B0B0B0;; -fx-border-radius: 6;; -fx-background-radius: 6;;" GridPane.rowIndex="1">
+            <VBox fx:id="asiakasRapCard" alignment="CENTER" focusTraversable="true" layoutX="10.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" styleClass="report-card" GridPane.rowIndex="1">
                <children>
                   <Label text="ASIAKASRAPORTTI">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                   <Label text="- Asiakkaat" />
                   <Label text="- Varaushistoria" />
                </children>
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="DEFAULT" />
                </cursor>
             </VBox>
-            <VBox fx:id="mokkiRapCard" alignment="CENTER" focusTraversable="true" layoutX="10.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" style="-fx-background-color: #B0B0B0;; -fx-border-radius: 6;; -fx-background-radius: 6;;" GridPane.columnIndex="1">
+            <VBox fx:id="mokkiRapCard" alignment="CENTER" focusTraversable="true" layoutX="10.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" styleClass="report-card" GridPane.columnIndex="1">
                <children>
                   <Label text="MÖKKIRAPORTTI">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                   <Label text="- Mökkien käyttöaste" />
                   <Label text="- Tulot mökeittäin" />
                </children>
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="DEFAULT" />
                </cursor>
             </VBox>
-            <VBox fx:id="laskuRapCard" alignment="CENTER" focusTraversable="true" layoutX="230.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" style="-fx-background-color: #B0B0B0;; -fx-border-radius: 6;; -fx-background-radius: 6;;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <VBox fx:id="laskuRapCard" alignment="CENTER" focusTraversable="true" layoutX="230.0" layoutY="10.0" prefHeight="160.0" prefWidth="200.0" spacing="8.0" styleClass="report-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Label text="LASKURAPORTTI">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
                   <Label text="- Laskut" />
                   <Label text="- Maksutilanne" />
                </children>
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="DEFAULT" />
                </cursor>
             </VBox>
          </children>
