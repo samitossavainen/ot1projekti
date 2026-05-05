@@ -40,6 +40,7 @@
                 <HBox spacing="10.0">
                     <children>
                         <TextField fx:id="searchField" promptText="Hae asiakkaita..." HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" text="Hae" />
                     </children>
                 </HBox>
 
@@ -105,6 +106,17 @@
                     <TextArea fx:id="addressArea" minHeight="45.0" prefHeight="45.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>
