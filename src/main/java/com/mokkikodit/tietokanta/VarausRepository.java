@@ -9,11 +9,11 @@ import java.util.List;
 public class VarausRepository {
 
     // =========================
-    // GET ALL
+    // READ ALL
     // =========================
     public List<Varaus> haeKaikki() {
-        List<Varaus> lista = new ArrayList<>();
 
+        List<Varaus> lista = new ArrayList<>();
         String sql = "SELECT * FROM reservation";
 
         try (Connection yhteys = Tietokanta.getYhteys();
@@ -21,7 +21,9 @@ public class VarausRepository {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+
                 Varaus v = new Varaus();
+
                 v.setId(rs.getInt("id"));
                 v.setAsiakasId(rs.getInt("customer_id"));
                 v.setMokkiId(rs.getInt("mokki_id"));
@@ -43,13 +45,16 @@ public class VarausRepository {
     }
 
     // =========================
-    // INSERT
+    // INSERT (AUTO ID)
     // =========================
     public void tallenna(Varaus v) {
-        String sql = "INSERT INTO reservation(customer_id, mokki_id, start_date, end_date) VALUES (?, ?, ?, ?)";
+
+        String sql =
+                "INSERT INTO reservation(customer_id, mokki_id, start_date, end_date) " +
+                        "VALUES (?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
-             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+             PreparedStatement ps = yhteys.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, v.getAsiakasId());
             ps.setInt(2, v.getMokkiId());
@@ -57,6 +62,12 @@ public class VarausRepository {
             ps.setDate(4, Date.valueOf(v.getLoppuPvm()));
 
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    v.setId(rs.getInt(1));
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,7 +78,10 @@ public class VarausRepository {
     // UPDATE
     // =========================
     public void paivita(Varaus v) {
-        String sql = "UPDATE reservation SET customer_id = ?, mokki_id = ?, start_date = ?, end_date = ? WHERE id = ?";
+
+        String sql =
+                "UPDATE reservation SET customer_id = ?, mokki_id = ?, start_date = ?, end_date = ? " +
+                        "WHERE id = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -89,6 +103,7 @@ public class VarausRepository {
     // DELETE
     // =========================
     public void poista(int id) {
+
         String sql = "DELETE FROM reservation WHERE id = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();

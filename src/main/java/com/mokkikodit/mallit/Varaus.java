@@ -6,7 +6,7 @@ public class Varaus {
 
     private int id;
 
-    // ✔ match DB structure (reservation table uses IDs)
+    // match DB structure (reservation table uses IDs)
     private int asiakasId;
     private int mokkiId;
 
@@ -15,7 +15,7 @@ public class Varaus {
 
     private String tila;
 
-    // ✔ empty constructor (required for repository)
+    // empty constructor
     public Varaus() {
     }
 

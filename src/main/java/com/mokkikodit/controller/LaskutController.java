@@ -143,7 +143,7 @@ public class LaskutController {
 
     private void setEditMode(boolean editable) {
 
-        // 🔥 show/hide fields
+        // show/hide fields
         setFieldsVisible(editable);
 
         // lock/unlock interaction

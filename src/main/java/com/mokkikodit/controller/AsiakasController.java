@@ -48,10 +48,10 @@ public class AsiakasController {
         setFieldsVisible(false);
         setEditMode(false);
 
-        // ✅ LOAD DATA FROM DB
+        // LOAD DATA FROM DB
         refreshTable();
 
-        // ✅ HANDLE SELECTION
+        // HANDLE SELECTION
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
@@ -115,7 +115,7 @@ public class AsiakasController {
         selected.setNimi(nimiField.getText());
         selected.setPuhelin(phoneField.getText());
 
-        // ⚠️ NOTE: Repo has no UPDATE yet → you'd need to implement it
+
         // repo.paivita(selected);
 
         refreshTable();
@@ -150,7 +150,6 @@ public class AsiakasController {
 
         if (confirmed) {
 
-            // ⚠️ Repo missing delete → you should add:
             // repo.poista(selected.getId());
 
             tableAsiakkaat.getItems().remove(selected);
@@ -227,7 +226,7 @@ public class AsiakasController {
 
             stage.showAndWait();
 
-            refreshTable(); // ✅ reload after closing
+            refreshTable(); // reload after closing
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,6 @@ public class Maksu {
     private int laskuId;
     private double summa;
 
-    // ✔ empty constructor (required for repositories)
     public Maksu() {
     }
 

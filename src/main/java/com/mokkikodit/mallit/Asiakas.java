@@ -7,11 +7,11 @@ public class Asiakas {
     private String email;
     private String puhelin;
 
-    // ✔️ Empty constructor (REQUIRED for repository usage)
+    // Empty constructor (REQUIRED for repository usage)
     public Asiakas() {
     }
 
-    // ✔️ Full constructor
+    // Full constructor
     public Asiakas(int id, String nimi, String email, String puhelin) {
         this.id = id;
         this.nimi = nimi;
