@@ -119,7 +119,7 @@
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button mnemonicParsing="false" onAction="#cancelReservation" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Peru varaus" />
+                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelReservation" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Peru varaus" />
                 </children>
             </HBox>
             <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (alkupvm-loppupvm) · (hinta)" />
@@ -154,16 +154,6 @@
                     <Label text="Luontipäivä:" GridPane.rowIndex="3" />
                     <Label fx:id="luontiLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
             </GridPane>
             <Label text="ASIAKKAAN TIEDOT" textFill="#574520">
@@ -180,15 +170,6 @@
                     <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label fx:id="phoneLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
             </GridPane>
         </VBox>

@@ -9,42 +9,33 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import com.mokkikodit.util.DialogUtil;
+import com.mokkikodit.DAO.AsiakasRepository;
+import com.mokkikodit.mallit.Asiakas;
 
 public class AsiakasController {
 
-    @FXML
-    private TableView<?> tableAsiakkaat;
+    @FXML private TableView<Asiakas> tableAsiakkaat;
 
-    @FXML
-    private TextField nimiField;
+    @FXML private TextField nimiField;
+    @FXML private Label emailLabel;
+    @FXML private TextField phoneField;
+    @FXML private TextArea addressArea;
 
-    @FXML
-    private Label emailLabel;
+    @FXML private Button editButton;
+    @FXML private Button saveButton;
+    @FXML private Button deleteButton;
 
-    @FXML
-    private TextField phoneField;
-
-    @FXML
-    private TextArea addressArea;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button saveButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Label statusLabel;
+    @FXML private Label statusLabel;
 
     private boolean editMode = false;
 
-    // -------------------------
+    private final AsiakasRepository repo = new AsiakasRepository();
+
+    // =========================
     // INIT
-    // -------------------------
+    // =========================
     @FXML
     public void initialize() {
 
@@ -54,35 +45,48 @@ public class AsiakasController {
         editMode = false;
         editButton.setText("Muokkaa");
 
-        // 🔥 Hide customer detail fields initially
         setFieldsVisible(false);
-
         setEditMode(false);
 
+        // ✅ LOAD DATA FROM DB
+        refreshTable();
+
+        // ✅ HANDLE SELECTION
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
+
+                    if (newSelection != null) {
+                        populateFields(newSelection);
+                    }
+
                     if (editMode && newSelection == null) {
                         cancelEdit();
                     }
                 });
     }
 
-    // -------------------------
-    // TOGGLE EDIT
-    // -------------------------
+    private void refreshTable() {
+        tableAsiakkaat.getItems().setAll(repo.haeKaikki());
+    }
+
+    private void populateFields(Asiakas a) {
+        nimiField.setText(a.getNimi());
+        emailLabel.setText(a.getEmail());
+        phoneField.setText(a.getPuhelin() != null ? a.getPuhelin() : "");
+    }
+
+    // =========================
+    // EDIT MODE
+    // =========================
     @FXML
     private void toggleEdit() {
-        if (!editMode) {
-            enterEditMode();
-        } else {
-            cancelEdit();
-        }
+        if (!editMode) enterEditMode();
+        else cancelEdit();
     }
 
     private void enterEditMode() {
         editMode = true;
-
         setEditMode(true);
 
         editButton.setText("Peru muokkaus");
@@ -91,21 +95,32 @@ public class AsiakasController {
 
     private void cancelEdit() {
         editMode = false;
-
         setEditMode(false);
 
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
     }
 
-    // -------------------------
+    // =========================
     // SAVE
-    // -------------------------
+    // =========================
     @FXML
     private void saveChanges() {
 
-        editMode = false;
+        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
 
+        if (selected == null) return;
+
+        // Update object
+        selected.setNimi(nimiField.getText());
+        selected.setPuhelin(phoneField.getText());
+
+        // ⚠️ NOTE: Repo has no UPDATE yet → you'd need to implement it
+        // repo.paivita(selected);
+
+        refreshTable();
+
+        editMode = false;
         setEditMode(false);
 
         editButton.setText("Muokkaa");
@@ -115,11 +130,40 @@ public class AsiakasController {
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
     }
 
-    // -------------------------
-    // FIELD VISIBILITY CONTROL
-    // -------------------------
-    private void setFieldsVisible(boolean visible) {
+    // =========================
+    // DELETE
+    // =========================
+    @FXML
+    private void deleteCustomer() {
 
+        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
+
+        boolean confirmed = DialogUtil.confirm(
+                stage,
+                "Vahvista poisto",
+                "Haluatko varmasti poistaa asiakkaan?",
+                "Asiakkaan " + selected.getEmail() + " tiedot poistetaan."
+        );
+
+        if (confirmed) {
+
+            // ⚠️ Repo missing delete → you should add:
+            // repo.poista(selected.getId());
+
+            tableAsiakkaat.getItems().remove(selected);
+
+            showSavedStatus("Asiakas poistettu");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+        }
+    }
+
+    // =========================
+    // UI HELPERS
+    // =========================
+    private void setFieldsVisible(boolean visible) {
         nimiField.setVisible(visible);
         phoneField.setVisible(visible);
         addressArea.setVisible(visible);
@@ -127,19 +171,12 @@ public class AsiakasController {
         nimiField.setManaged(visible);
         phoneField.setManaged(visible);
         addressArea.setManaged(visible);
-
-        // Email is ALWAYS visible (do nothing as requested)
     }
 
-    // -------------------------
-    // EDIT MODE SETTINGS
-    // -------------------------
     private void setEditMode(boolean editable) {
 
-        // 🔥 show / hide fields
         setFieldsVisible(editable);
 
-        // Editable fields behavior
         nimiField.setMouseTransparent(!editable);
         phoneField.setMouseTransparent(!editable);
         addressArea.setMouseTransparent(!editable);
@@ -148,22 +185,30 @@ public class AsiakasController {
         phoneField.setFocusTraversable(editable);
         addressArea.setFocusTraversable(editable);
 
-        // Email is always read-only
         emailLabel.setMouseTransparent(true);
-        emailLabel.setFocusTraversable(false);
 
-        // Save button
         saveButton.setVisible(editable);
         saveButton.setManaged(editable);
-        saveButton.setStyle("-fx-base: #6B8E3A; -fx-text-fill: white;");
     }
 
-    // -------------------------
-    // NEW CUSTOMER
-    // -------------------------
+    private void showSavedStatus(String text) {
+        statusLabel.setText(text);
+        statusLabel.setVisible(true);
+        statusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            statusLabel.setVisible(false);
+            statusLabel.setManaged(false);
+        });
+        pause.play();
+    }
+
+    // =========================
+    // NEW CUSTOMER WINDOW
+    // =========================
     @FXML
     private void openNewCustomerWindow() {
-
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_asiakas.fxml")
@@ -182,45 +227,10 @@ public class AsiakasController {
 
             stage.showAndWait();
 
+            refreshTable(); // ✅ reload after closing
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    // -------------------------
-    // DELETE CUSTOMER
-    // -------------------------
-    @FXML
-    private void deleteCustomer() {
-
-        Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
-
-        boolean confirmed = DialogUtil.confirm(
-                stage,
-                "Vahvista poisto",
-                "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakkaan " + emailLabel.getText() + " tiedot poistetaan."
-        );
-
-        if (confirmed) {
-            showSavedStatus("Asiakas poistettu");
-            statusLabel.setStyle("-fx-text-fill: #B04A30;");
-        }
-    }
-
-    // -------------------------
-    // STATUS MESSAGE
-    // -------------------------
-    private void showSavedStatus(String text) {
-        statusLabel.setText(text);
-        statusLabel.setVisible(true);
-        statusLabel.setManaged(true);
-
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished(e -> {
-            statusLabel.setVisible(false);
-            statusLabel.setManaged(false);
-        });
-        pause.play();
     }
 }

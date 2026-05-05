@@ -75,7 +75,7 @@
                         <Insets />
                     </VBox.margin>
                 </HBox>
-                <Button mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Lisää uusi mökki">
+                <Button mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi mökki">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
@@ -113,17 +113,17 @@
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
-                    <Label fx:id="tilaLabel" text="(tähän varauksen tila)" textFill="#574520">
+                    <Label fx:id="tilaLabel" text="(tähän mökin tila)" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
+                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö) · (tila)" />
+            <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö)" />
             <Separator prefWidth="200.0" />
             <HBox>
                 <children>
@@ -150,7 +150,7 @@
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
-                    <TextArea fx:id="addressArea" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <TextArea fx:id="addressArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <TextField fx:id="cabinField" prefWidth="200.0" GridPane.columnIndex="1" />
                     <TextField fx:id="capacityField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <TextField fx:id="roomsField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -161,22 +161,8 @@
                     <Label text="Tila:" GridPane.rowIndex="6" />
                     <TextField fx:id="pricePerNightField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                     <Label text="Lisätiedot:" GridPane.rowIndex="7" />
-                    <TextArea fx:id="lisatiedotArea" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                    <TextArea fx:id="lisatiedotArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
 
             </GridPane>
         </VBox>

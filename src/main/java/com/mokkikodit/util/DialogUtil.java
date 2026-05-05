@@ -7,6 +7,25 @@ import javafx.stage.Stage;
 
 public class DialogUtil {
 
+    // ✔ INFO DIALOG
+    public static void showInfo(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Info");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+    // ✔ ERROR DIALOG
+    public static void showError(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Virhe");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+    // ✔ CONFIRM DIALOG (your original code, cleaned slightly)
     public static boolean confirm(Stage owner, String title, String header, String content) {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -27,5 +46,4 @@ public class DialogUtil {
                 .filter(response -> response == yes)
                 .isPresent();
     }
-
 }

@@ -9,135 +9,34 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
+
 import com.mokkikodit.util.DialogUtil;
+import com.mokkikodit.logiikka.VarausService;
+import com.mokkikodit.mallit.Varaus;
 
 public class VarausController {
 
-    @FXML
-    private TableView<?> tableVaraukset;
+    @FXML private TableView<Varaus> tableVaraukset; // ✅ FIXED TYPE
 
-    @FXML
-    private Label varausIdLabel;
+    @FXML private Label varausIdLabel;
+    @FXML private Label asiakasLabel;
+    @FXML private DatePicker alkuDatePicker;
+    @FXML private DatePicker loppuDatePicker;
+    @FXML private ComboBox<String> tilaComboBox;
 
-    @FXML
-    private Label asiakasLabel;
+    @FXML private Button editButton;
+    @FXML private Button saveButton;
+    @FXML private Label statusLabel;
+    @FXML private Button cancelButton;
 
-    @FXML
-    private DatePicker alkuDatePicker;
-
-    @FXML
-    private DatePicker loppuDatePicker;
-
-    @FXML
-    private ComboBox tilaComboBox;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button saveButton;
-
-    @FXML
-    private Label statusLabel;
-
-    @FXML
-    private Button cancelButton;
-
-    // -------------------------
-    // EDIT MODE
-    // -------------------------
     private boolean editMode = false;
 
-    // -------------------------
-    // TOGGLE EDIT
-    // -------------------------
-    @FXML
-    private void toggleEdit() {
-        if (!editMode) {
-            enterEditMode();
-        } else {
-            cancelEdit();
-        }
-    }
+    // ✅ Proper service (not local variable)
+    private final VarausService service = new VarausService();
 
-    private void enterEditMode() {
-        editMode = true;
-
-        setEditMode(true);
-
-        editButton.setText("Peru muokkaus");
-        editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
-    }
-
-    private void cancelEdit() {
-        editMode = false;
-
-        setEditMode(false);
-
-        editButton.setText("Muokkaa");
-        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
-    }
-
-    // -------------------------
-    // SAVE
-    // -------------------------
-    @FXML
-    private void saveChanges() {
-
-        editMode = false;
-
-        setEditMode(false);
-
-        editButton.setText("Muokkaa");
-        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
-
-        showSavedStatus("Tallennettu");
-        statusLabel.setStyle("-fx-text-fill: #1e7f43;");
-    }
-
-    // -------------------------
-    // FIELD VISIBILITY CONTROL
-    // -------------------------
-    private void setFieldsVisible(boolean visible) {
-
-        // Varauksen tiedot (EXCLUDING LuontiPäivä as requested)
-        alkuDatePicker.setVisible(visible);
-        loppuDatePicker.setVisible(visible);
-        tilaComboBox.setVisible(visible);
-
-        alkuDatePicker.setManaged(visible);
-        loppuDatePicker.setManaged(visible);
-        tilaComboBox.setManaged(visible);
-    }
-
-    // -------------------------
-    // EDIT MODE SETTINGS
-    // -------------------------
-    private void setEditMode(boolean editable) {
-
-        // 🔥 Show / hide fields
-        setFieldsVisible(editable);
-
-        // DatePickers
-        alkuDatePicker.setMouseTransparent(!editable);
-        loppuDatePicker.setMouseTransparent(!editable);
-
-        alkuDatePicker.setFocusTraversable(editable);
-        loppuDatePicker.setFocusTraversable(editable);
-
-        // ComboBox
-        tilaComboBox.setMouseTransparent(!editable);
-        tilaComboBox.setFocusTraversable(editable);
-
-        // Save button
-        saveButton.setVisible(editable);
-        saveButton.setManaged(editable);
-        saveButton.setStyle("-fx-base: #6B8E3A; -fx-text-fill: white;");
-    }
-
-    // -------------------------
+    // =========================
     // INITIALIZE
-    // -------------------------
+    // =========================
     @FXML
     public void initialize() {
 
@@ -147,14 +46,21 @@ public class VarausController {
         editMode = false;
         editButton.setText("Muokkaa");
 
-        // 🔥 Hide reservation detail fields initially
         setFieldsVisible(false);
-
         setEditMode(false);
 
+        // ✅ LOAD DATA
+        refreshTable();
+
+        // ✅ SELECTION → UI
         tableVaraukset.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
+
+                    if (newSelection != null) {
+                        populateFields(newSelection);
+                    }
+
                     if (editMode && newSelection == null) {
                         cancelEdit();
                     }
@@ -170,12 +76,126 @@ public class VarausController {
         });
     }
 
-    // -------------------------
-    // NEW RESERVATION
-    // -------------------------
+    // =========================
+    // DATA
+    // =========================
+    private void refreshTable() {
+        tableVaraukset.getItems().setAll(service.getAllVaraukset());
+    }
+
+    private void populateFields(Varaus v) {
+        varausIdLabel.setText(String.valueOf(v.getId()));
+        asiakasLabel.setText(String.valueOf(v.getAsiakasId()));
+        alkuDatePicker.setValue(v.getAlkuPvm());
+        loppuDatePicker.setValue(v.getLoppuPvm());
+        tilaComboBox.setValue(v.getTila());
+    }
+
+    // =========================
+    // EDIT MODE
+    // =========================
+    @FXML
+    private void toggleEdit() {
+        if (!editMode) enterEditMode();
+        else cancelEdit();
+    }
+
+    private void enterEditMode() {
+        editMode = true;
+        setEditMode(true);
+
+        editButton.setText("Peru muokkaus");
+        editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
+    }
+
+    private void cancelEdit() {
+        editMode = false;
+        setEditMode(false);
+
+        editButton.setText("Muokkaa");
+        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+    }
+
+    // =========================
+    // SAVE (WITH OVERLAP CHECK)
+    // =========================
+    @FXML
+    private void saveChanges() {
+
+        Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        selected.setAlkuPvm(alkuDatePicker.getValue());
+        selected.setLoppuPvm(loppuDatePicker.getValue());
+        selected.setTila(tilaComboBox.getValue());
+
+        try {
+            service.updateVaraus(selected); // ✅ overlap validation here
+        } catch (IllegalArgumentException e) {
+            DialogUtil.showError(e.getMessage());
+            return;
+        }
+
+        refreshTable();
+
+        editMode = false;
+        setEditMode(false);
+
+        editButton.setText("Muokkaa");
+        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+
+        showSavedStatus("Tallennettu");
+        statusLabel.setStyle("-fx-text-fill: #1e7f43;");
+    }
+
+    // =========================
+    // UI HELPERS
+    // =========================
+    private void setFieldsVisible(boolean visible) {
+        alkuDatePicker.setVisible(visible);
+        loppuDatePicker.setVisible(visible);
+        tilaComboBox.setVisible(visible);
+
+        alkuDatePicker.setManaged(visible);
+        loppuDatePicker.setManaged(visible);
+        tilaComboBox.setManaged(visible);
+    }
+
+    private void setEditMode(boolean editable) {
+
+        setFieldsVisible(editable);
+
+        alkuDatePicker.setMouseTransparent(!editable);
+        loppuDatePicker.setMouseTransparent(!editable);
+
+        alkuDatePicker.setFocusTraversable(editable);
+        loppuDatePicker.setFocusTraversable(editable);
+
+        tilaComboBox.setMouseTransparent(!editable);
+        tilaComboBox.setFocusTraversable(editable);
+
+        saveButton.setVisible(editable);
+        saveButton.setManaged(editable);
+    }
+
+    private void showSavedStatus(String text) {
+        statusLabel.setText(text);
+        statusLabel.setVisible(true);
+        statusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            statusLabel.setVisible(false);
+            statusLabel.setManaged(false);
+        });
+        pause.play();
+    }
+
+    // =========================
+    // NEW RESERVATION WINDOW
+    // =========================
     @FXML
     private void openNewReservationWindow() {
-
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_varaus.fxml")
@@ -194,16 +214,21 @@ public class VarausController {
 
             stage.showAndWait();
 
+            refreshTable(); // ✅ reload after closing
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // -------------------------
-    // CANCEL RESERVATION
-    // -------------------------
+    // =========================
+    // CANCEL RESERVATION (UI ONLY)
+    // =========================
     @FXML
     private void cancelReservation() {
+
+        Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
 
         Stage stage = (Stage) tableVaraukset.getScene().getWindow();
 
@@ -211,28 +236,15 @@ public class VarausController {
                 stage,
                 "Vahvista peruutus",
                 "Haluatko varmasti perua varauksen?",
-                "Varaus #" + varausIdLabel.getText() + " perutaan."
+                "Varaus #" + selected.getId() + " perutaan."
         );
 
         if (confirmed) {
+            service.deleteVaraus(selected.getId()); // ✅ real delete
+            refreshTable();
+
             showSavedStatus("Varaus peruttu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         }
-    }
-
-    // -------------------------
-    // STATUS MESSAGE
-    // -------------------------
-    private void showSavedStatus(String text) {
-        statusLabel.setText(text);
-        statusLabel.setVisible(true);
-        statusLabel.setManaged(true);
-
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished(e -> {
-            statusLabel.setVisible(false);
-            statusLabel.setManaged(false);
-        });
-        pause.play();
     }
 }
