@@ -120,7 +120,7 @@
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
+                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
                 </children>
             </HBox>
             <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö)" />
@@ -163,6 +163,20 @@
                     <Label text="Lisätiedot:" GridPane.rowIndex="7" />
                     <TextArea fx:id="lisatiedotArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>
