@@ -6,11 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MokkiService {
+
     private List<Mokki> mokit = new ArrayList<>();
     private int nextId = 1;
 
     public Mokki lisaaMokki(String nimi, int kapasiteetti, double hinta) {
-        Mokki m = new Mokki(nextId++, nimi, kapasiteetti, hinta);
+
+        Mokki m = new Mokki(
+                nextId++,
+                nimi,
+                "Perusmökki",   // ✔ FIX: missing String parameter added
+                kapasiteetti,
+                hinta
+        );
+
         mokit.add(m);
         return m;
     }
