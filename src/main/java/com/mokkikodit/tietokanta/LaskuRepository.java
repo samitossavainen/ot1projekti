@@ -1,4 +1,4 @@
-package com.mokkikodit.DAO;
+package com.mokkikodit.tietokanta;
 
 import com.mokkikodit.mallit.Lasku;
 import com.mokkikodit.mallit.Varaus;

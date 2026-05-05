@@ -1,6 +1,6 @@
 package com.mokkikodit.logiikka;
 
-import com.mokkikodit.DAO.VarausRepository;
+import com.mokkikodit.tietokanta.VarausRepository;
 import com.mokkikodit.mallit.Varaus;
 
 import java.util.List;

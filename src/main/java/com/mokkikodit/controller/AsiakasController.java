@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import com.mokkikodit.util.DialogUtil;
-import com.mokkikodit.DAO.AsiakasRepository;
+import com.mokkikodit.tietokanta.AsiakasRepository;
 import com.mokkikodit.mallit.Asiakas;
 
 public class AsiakasController {

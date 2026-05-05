@@ -1,4 +1,4 @@
-package com.mokkikodit.DAO;
+package com.mokkikodit.tietokanta;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
