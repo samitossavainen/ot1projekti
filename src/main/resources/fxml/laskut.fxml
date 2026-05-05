@@ -95,59 +95,59 @@
             </HBox>
             <Label fx:id="summaryLabel" text="(Varaus # -) · (summa) · (Eräpäivä)" />
             <Separator prefWidth="200.0" />
-              <Label text="LASKUN TIEDOT" textFill="#574520">
-                  <font>
-                      <Font name="System Bold" size="14.0" />
-                  </font>
-              </Label>
-         <GridPane hgap="10.0" vgap="8.0">
+            <Label text="LASKUN TIEDOT" textFill="#574520">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <GridPane hgap="10.0" vgap="8.0">
 
-            <children>
-               <Label text="Varaus:" />
-               <Label text="Asiakas:" GridPane.rowIndex="1" />
-               <Label text="Luotu:" GridPane.rowIndex="2" />
-               <Label text="Eräpäivä:" GridPane.rowIndex="3" />
-               <Label text="Summa:" GridPane.rowIndex="5" />
-               <Label fx:id="summaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-               <Label fx:id="varausIdLabel" text="-" GridPane.columnIndex="1" />
-               <Label fx:id="asiakasLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               <Label fx:id="laskuLuotuLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-               <Label GridPane.columnIndex="1" GridPane.rowIndex="4" />
-               <Label fx:id="eraLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            </children>
+                <children>
+                    <Label text="Varaus:" />
+                    <Label text="Asiakas:" GridPane.rowIndex="1" />
+                    <Label text="Luotu:" GridPane.rowIndex="2" />
+                    <Label text="Eräpäivä:" GridPane.rowIndex="3" />
+                    <Label text="Summa:" GridPane.rowIndex="5" />
+                    <Label fx:id="summaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label fx:id="varausIdLabel" text="-" GridPane.columnIndex="1" />
+                    <Label fx:id="asiakasLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="laskuLuotuLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="eraLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                </children>
 
-         </GridPane>
-         <Separator prefWidth="200.0" />
-         <HBox>
-            <children>
-               <Label text="MAKSUTIEDOT" textFill="#574520">
-                  <font>
-                     <Font name="System Bold" size="14.0" />
-                  </font>
-               </Label>
-               <Region />
-               <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
-            </children>
-         </HBox>
-         <GridPane hgap="10.0" vgap="8.0">
+            </GridPane>
+            <Separator prefWidth="200.0" />
+            <HBox>
+                <children>
+                    <Label text="MAKSUTIEDOT" textFill="#574520">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <Region />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                </children>
+            </HBox>
+            <GridPane hgap="10.0" vgap="8.0">
 
-            <children>
+                <children>
                     <Label text="Tila:" />
                     <ComboBox fx:id="tilaComboBox" prefWidth="200.0" GridPane.columnIndex="1">
                         <GridPane.margin>
                             <Insets />
                         </GridPane.margin></ComboBox>
-               <Label text="Maksupäivä:" GridPane.rowIndex="1" />
-               <Label text="Maksettu summa:" GridPane.rowIndex="2" />
-               <Label fx:id="maksupaivaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               <Label fx:id="maksettuSummaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-               <Button fx:id="saveButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                  <GridPane.margin>
-                     <Insets top="14.0" />
-                  </GridPane.margin></Button>
-            </children>
+                    <Label text="Maksupäivä:" GridPane.rowIndex="1" />
+                    <Label text="Maksettu summa:" GridPane.rowIndex="2" />
+                    <Label fx:id="maksupaivaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="maksettuSummaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Button fx:id="saveButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                        <GridPane.margin>
+                            <Insets top="14.0" />
+                        </GridPane.margin></Button>
+                </children>
 
-         </GridPane>
+            </GridPane>
         </VBox>
 
     </children>

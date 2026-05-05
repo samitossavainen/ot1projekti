@@ -46,7 +46,7 @@
                 <Label text="Hinta per yö:" GridPane.rowIndex="6" />
                 <Label text="Lisätiedot:" GridPane.rowIndex="7" />
                 <TextArea maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
             </children>
 
         </GridPane>

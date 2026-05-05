@@ -5,35 +5,77 @@ import java.time.LocalDate;
 public class Varaus {
 
     private int id;
-    private Asiakas asiakas;
-    private Mokki mokki;
 
-    private LocalDate alku;
-    private LocalDate loppu;
+    // ✔ match DB structure (reservation table uses IDs)
+    private int asiakasId;
+    private int mokkiId;
+
+    private LocalDate alkuPvm;
+    private LocalDate loppuPvm;
+
     private String tila;
 
-    public Varaus(int id, Asiakas asiakas, Mokki mokki,
-                  LocalDate alku, LocalDate loppu, String tila) {
+    // ✔ empty constructor (required for repository)
+    public Varaus() {
+    }
+
+    public Varaus(int id, int asiakasId, int mokkiId,
+                  LocalDate alkuPvm, LocalDate loppuPvm, String tila) {
         this.id = id;
-        this.asiakas = asiakas;
-        this.mokki = mokki;
-        this.alku = alku;
-        this.loppu = loppu;
+        this.asiakasId = asiakasId;
+        this.mokkiId = mokkiId;
+        this.alkuPvm = alkuPvm;
+        this.loppuPvm = loppuPvm;
         this.tila = tila;
     }
 
-    public int getId() { return id; }
+    // ---------- GETTERS ----------
+    public int getId() {
+        return id;
+    }
 
-    public Asiakas getAsiakas() { return asiakas; }
+    public int getAsiakasId() {
+        return asiakasId;
+    }
 
-    public Mokki getMokki() { return mokki; }
+    public int getMokkiId() {
+        return mokkiId;
+    }
 
-    public LocalDate getAlku() { return alku; }
-    public void setAlku(LocalDate alku) { this.alku = alku; }
+    public LocalDate getAlkuPvm() {
+        return alkuPvm;
+    }
 
-    public LocalDate getLoppu() { return loppu; }
-    public void setLoppu(LocalDate loppu) { this.loppu = loppu; }
+    public LocalDate getLoppuPvm() {
+        return loppuPvm;
+    }
 
-    public String getTila() { return tila; }
-    public void setTila(String tila) { this.tila = tila; }
+    public String getTila() {
+        return tila;
+    }
+
+    // ---------- SETTERS ----------
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAsiakasId(int asiakasId) {
+        this.asiakasId = asiakasId;
+    }
+
+    public void setMokkiId(int mokkiId) {
+        this.mokkiId = mokkiId;
+    }
+
+    public void setAlkuPvm(LocalDate alkuPvm) {
+        this.alkuPvm = alkuPvm;
+    }
+
+    public void setLoppuPvm(LocalDate loppuPvm) {
+        this.loppuPvm = loppuPvm;
+    }
+
+    public void setTila(String tila) {
+        this.tila = tila;
+    }
 }

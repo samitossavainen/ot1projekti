@@ -1,7 +1,8 @@
 package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.VarausService;
-import com.mokkikodit.mallit.*;
+import com.mokkikodit.mallit.Varaus;
+import com.mokkikodit.util.DialogUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -9,7 +10,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.Random;
+import java.time.LocalDate;
 
 public class UusiVarausController {
 
@@ -18,50 +19,60 @@ public class UusiVarausController {
     @FXML private DatePicker alkuDatePicker;
     @FXML private DatePicker loppuDatePicker;
 
-    private VarausService varausService;
+    private VarausService varausService = new VarausService();
 
-    public void setVarausService(VarausService service) {
-        this.varausService = service;
-    }
-
-    // 🔥 BUTTON: "Vahvista"
     @FXML
     private void vahvista(ActionEvent event) {
-        saveVaraus();
-        close(event);
+
+        try {
+            validateInputs();
+
+            Varaus v = new Varaus(
+                    0, // DB handles ID
+                    Integer.parseInt(asiakasField.getText()),
+                    Integer.parseInt(mokkiField.getText()),
+                    alkuDatePicker.getValue(),
+                    loppuDatePicker.getValue(),
+                    "VARATTU"
+            );
+
+            varausService.addVaraus(v);
+
+            DialogUtil.showInfo("Varaus luotu onnistuneesti!");
+            close(event);
+
+        } catch (IllegalArgumentException e) {
+            DialogUtil.showError(e.getMessage());
+        } catch (Exception e) {
+            DialogUtil.showError("Virhe varauksen luonnissa.");
+            e.printStackTrace();
+        }
     }
 
-    private void saveVaraus() {
+    private void validateInputs() {
 
-        if (varausService == null) {
-            throw new IllegalStateException("VarausService not set!");
+        if (asiakasField.getText().isEmpty() ||
+                mokkiField.getText().isEmpty()) {
+            throw new IllegalArgumentException("Täytä kaikki kentät.");
         }
 
-        Varaus v = new Varaus(
-                new Random().nextInt(10000),
-                new Asiakas(
-                        new Random().nextInt(10000),
-                        asiakasField.getText(),
-                        "demo@mail.com",
-                        "000"
-                ),
-                new Mokki(
-                        new Random().nextInt(10000),
-                        mokkiField.getText(),
-                        4,
-                        100.0
-                ),
-                alkuDatePicker.getValue(),
-                loppuDatePicker.getValue(),
-                "VARATTU"
-        );
+        try {
+            Integer.parseInt(asiakasField.getText());
+            Integer.parseInt(mokkiField.getText());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Asiakas- ja mökki-ID pitää olla numero.");
+        }
 
-        varausService.addVaraus(v);
-    }
+        LocalDate alku = alkuDatePicker.getValue();
+        LocalDate loppu = loppuDatePicker.getValue();
 
-    @FXML
-    private void cancel(ActionEvent event) {
-        close(event);
+        if (alku == null || loppu == null) {
+            throw new IllegalArgumentException("Valitse päivämäärät.");
+        }
+
+        if (!loppu.isAfter(alku)) {
+            throw new IllegalArgumentException("Loppupäivän tulee olla alkupäivän jälkeen.");
+        }
     }
 
     private void close(ActionEvent event) {
