@@ -33,9 +33,6 @@ public class AsiakasController {
 
     private final AsiakasRepository repo = new AsiakasRepository();
 
-    // =========================
-    // INIT
-    // =========================
     @FXML
     public void initialize() {
 
@@ -48,10 +45,8 @@ public class AsiakasController {
         setFieldsVisible(false);
         setEditMode(false);
 
-        // LOAD DATA FROM DB
         refreshTable();
 
-        // HANDLE SELECTION
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
@@ -66,8 +61,9 @@ public class AsiakasController {
                 });
     }
 
+    // FIXED: findAll() instead of haeKaikki()
     private void refreshTable() {
-        tableAsiakkaat.getItems().setAll(repo.haeKaikki());
+        tableAsiakkaat.getItems().setAll(repo.findAll());
     }
 
     private void populateFields(Asiakas a) {
@@ -76,9 +72,6 @@ public class AsiakasController {
         phoneField.setText(a.getPuhelin() != null ? a.getPuhelin() : "");
     }
 
-    // =========================
-    // EDIT MODE
-    // =========================
     @FXML
     private void toggleEdit() {
         if (!editMode) enterEditMode();
@@ -101,22 +94,16 @@ public class AsiakasController {
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
     }
 
-    // =========================
-    // SAVE
-    // =========================
     @FXML
     private void saveChanges() {
 
         Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
-
         if (selected == null) return;
 
-        // Update object
         selected.setNimi(nimiField.getText());
         selected.setPuhelin(phoneField.getText());
 
-
-        // repo.paivita(selected);
+        // repo.update(selected); // enable when implemented
 
         refreshTable();
 
@@ -130,9 +117,6 @@ public class AsiakasController {
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
     }
 
-    // =========================
-    // DELETE
-    // =========================
     @FXML
     private void deleteCustomer() {
 
@@ -145,12 +129,12 @@ public class AsiakasController {
                 stage,
                 "Vahvista poisto",
                 "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakkaan " + selected.getEmail() + " tiedot poistetaan."
+                "Asiakas " + selected.getEmail() + " poistetaan."
         );
 
         if (confirmed) {
 
-            // repo.poista(selected.getId());
+            // repo.delete(selected.getId()); // enable when implemented
 
             tableAsiakkaat.getItems().remove(selected);
 
@@ -159,10 +143,8 @@ public class AsiakasController {
         }
     }
 
-    // =========================
-    // UI HELPERS
-    // =========================
     private void setFieldsVisible(boolean visible) {
+
         nimiField.setVisible(visible);
         phoneField.setVisible(visible);
         addressArea.setVisible(visible);
@@ -203,9 +185,6 @@ public class AsiakasController {
         pause.play();
     }
 
-    // =========================
-    // NEW CUSTOMER WINDOW
-    // =========================
     @FXML
     private void openNewCustomerWindow() {
         try {
@@ -226,7 +205,7 @@ public class AsiakasController {
 
             stage.showAndWait();
 
-            refreshTable(); // reload after closing
+            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();

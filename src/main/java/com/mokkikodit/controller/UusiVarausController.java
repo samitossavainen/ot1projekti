@@ -66,8 +66,8 @@ public class UusiVarausController {
             throw new IllegalStateException("VarausService ei ole asetettu!");
         }
 
-        if (asiakasField.getText().isBlank() ||
-                mokkiField.getText().isBlank()) {
+        if (asiakasField.getText().trim().isEmpty() ||
+                mokkiField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("Täytä kaikki kentät.");
         }
 
