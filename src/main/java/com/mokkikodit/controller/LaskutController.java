@@ -67,7 +67,7 @@ public class LaskutController {
         editMode = false;
         editButton.setText("Muokkaa");
 
-        // 🔥 IMPORTANT: hide fields initially
+        // IMPORTANT: hide fields initially
         setFieldsVisible(false);
 
         setEditMode(false);

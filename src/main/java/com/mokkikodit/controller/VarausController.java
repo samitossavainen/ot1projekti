@@ -31,7 +31,7 @@ public class VarausController {
 
     private boolean editMode = false;
 
-    // ✅ injected service (NOT new)
+    // injected service (NOT new)
     private VarausService service;
 
     public void setVarausService(VarausService service) {

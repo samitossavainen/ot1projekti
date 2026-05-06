@@ -19,7 +19,7 @@ public class LaskuRepository {
 
             while (rs.next()) {
 
-                // ✔ create minimal Varaus object (only id for now)
+                // create minimal Varaus object (only id for now)
                 Varaus v = new Varaus();
                 v.setId(rs.getInt("reservation_id"));
 

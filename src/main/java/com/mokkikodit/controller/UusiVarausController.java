@@ -19,7 +19,7 @@ public class UusiVarausController {
     @FXML private DatePicker alkuDatePicker;
     @FXML private DatePicker loppuDatePicker;
 
-    // ✅ Injected instead of new
+    // Injected instead of new
     private VarausService varausService;
 
     public void setVarausService(VarausService varausService) {

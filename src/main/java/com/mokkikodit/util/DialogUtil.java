@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 public class DialogUtil {
 
-    // ✔ INFO DIALOG
+    // INFO DIALOG
     public static void showInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Info");
@@ -16,7 +16,7 @@ public class DialogUtil {
         alert.showAndWait();
     }
 
-    // ✔ ERROR DIALOG
+    // ERROR DIALOG
     public static void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Virhe");
@@ -25,7 +25,7 @@ public class DialogUtil {
         alert.showAndWait();
     }
 
-    // ✔ CONFIRM DIALOG (your original code, cleaned slightly)
+    // CONFIRM DIALOG
     public static boolean confirm(Stage owner, String title, String header, String content) {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
