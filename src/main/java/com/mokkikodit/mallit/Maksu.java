@@ -1,43 +1,63 @@
 package com.mokkikodit.mallit;
 
+import java.time.LocalDateTime;
+
 public class Maksu {
 
-    private int id;
+    private int maksuId;
     private int laskuId;
-    private double summa;
+    private double maksettuSumma;
+    private LocalDateTime maksuPaiva;
 
     public Maksu() {
     }
 
-    public Maksu(int id, int laskuId, double summa) {
-        this.id = id;
+    // Constructor without date (DB sets it automatically)
+    public Maksu(int maksuId, int laskuId, double maksettuSumma) {
+        this.maksuId = maksuId;
         this.laskuId = laskuId;
-        this.summa = summa;
+        this.maksettuSumma = maksettuSumma;
+    }
+
+    // Full constructor
+    public Maksu(int maksuId, int laskuId, double maksettuSumma, LocalDateTime maksuPaiva) {
+        this.maksuId = maksuId;
+        this.laskuId = laskuId;
+        this.maksettuSumma = maksettuSumma;
+        this.maksuPaiva = maksuPaiva;
     }
 
     // ---------- GETTERS ----------
-    public int getId() {
-        return id;
+    public int getMaksuId() {
+        return maksuId;
     }
 
     public int getLaskuId() {
         return laskuId;
     }
 
-    public double getSumma() {
-        return summa;
+    public double getMaksettuSumma() {
+        return maksettuSumma;
+    }
+
+    public LocalDateTime getMaksuPaiva() {
+        return maksuPaiva;
     }
 
     // ---------- SETTERS ----------
-    public void setId(int id) {
-        this.id = id;
+    public void setMaksuId(int maksuId) {
+        this.maksuId = maksuId;
     }
 
     public void setLaskuId(int laskuId) {
         this.laskuId = laskuId;
     }
 
-    public void setSumma(double summa) {
-        this.summa = summa;
+    public void setMaksettuSumma(double maksettuSumma) {
+        this.maksettuSumma = maksettuSumma;
+    }
+
+    public void setMaksuPaiva(LocalDateTime maksuPaiva) {
+        this.maksuPaiva = maksuPaiva;
     }
 }
