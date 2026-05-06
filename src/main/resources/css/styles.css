@@ -19,3 +19,36 @@
     -fx-background-color: #AEBF88;
     -fx-text-fill: #2f2a1f;
 }
+/* Raporttikortti */
+.report-card {
+    -fx-background-color: #D8E4BC;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-text-fill: #574520;
+    -fx-padding: 12;
+}
+
+/* Hover-tila */
+.report-card:hover {
+    -fx-background-color: #AEBF88;
+    -fx-text-fill: #2f2a1f;
+    -fx-cursor: hand;
+}
+
+/* Painettu */
+.report-card:pressed {
+    -fx-background-color: #9DAE7A;
+    -fx-translate-y: 1;
+}
+
+/* Aktiivinen raportti */
+.report-card-active {
+    -fx-background-color: #AEBF88;
+    -fx-text-fill: #2f2a1f;
+}
+
+/* Raporttikortin tekstit */
+.report-card Label {
+    -fx-text-fill: #574520;
+}
