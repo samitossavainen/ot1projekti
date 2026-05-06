@@ -65,7 +65,7 @@
                 <TableColumn text="Alku" />
                 <TableColumn text="Loppu" />
                 <TableColumn prefWidth="52.0" text="Yöt" />
-                <TableColumn text="Varaustila" />
+            <TableColumn text="Varaustila" />
             </columns>
         </TableView>
 
@@ -91,20 +91,20 @@
                     <Label fx:id="confirmedLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label fx:id="cancelledLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <Label fx:id="firstBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <Label text="Viimeisin varaus:" GridPane.rowIndex="4" />
-                    <Label fx:id="latestBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <Label text="Viimeisin varaus:" GridPane.rowIndex="4" />
+               <Label fx:id="latestBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>

@@ -95,7 +95,7 @@
                     <Label text="-" GridPane.columnIndex="1" />
                     <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
 
             </GridPane>

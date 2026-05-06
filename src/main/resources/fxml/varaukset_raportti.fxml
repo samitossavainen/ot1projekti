@@ -23,7 +23,7 @@
     </padding>
 
     <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="&lt;- Palaa takaisin" />
+      <Button mnemonicParsing="false" onAction="#goBack" text="&lt;- Palaa takaisin" />
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <children>
                 <Label text="VARAUSRAPORTTI" textFill="#574520">
@@ -53,28 +53,28 @@
                 </HBox>
             </children>
         </VBox>
-        <HBox alignment="CENTER_LEFT" spacing="26.0">
-            <children>
-                <VBox>
-                    <children>
+      <HBox alignment="CENTER_LEFT" spacing="26.0">
+         <children>
+            <VBox>
+               <children>
                         <Label text="Tila:" />
                         <ComboBox prefWidth="150.0" />
-                    </children>
-                </VBox>
-                <VBox>
-                    <children>
-                        <Label text="Mökki:" />
-                        <ComboBox prefWidth="150.0" />
-                    </children>
-                </VBox>
-                <VBox>
-                    <children>
-                        <Label text="Asiakas:" />
-                        <ComboBox prefWidth="150.0" />
-                    </children>
-                </VBox>
-            </children>
-        </HBox>
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <Label text="Mökki:" />
+                  <ComboBox prefWidth="150.0" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <Label text="Asiakas:" />
+                  <ComboBox prefWidth="150.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
 
         <!-- TABLE -->
         <TableView fx:id="tableRaportti" VBox.vgrow="ALWAYS">
@@ -108,21 +108,21 @@
                     <Label text="Varattuja:" GridPane.rowIndex="1" />
                     <Label text="Peruttuja:" GridPane.rowIndex="2" />
                     <Label text="Kokonaissumma:" GridPane.rowIndex="3" />
-                    <Label text="-" GridPane.columnIndex="1" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label text="-" GridPane.columnIndex="1" />
+               <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                </rowConstraints>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>

@@ -71,8 +71,8 @@
                 <TableColumn text="Varaus ID" />
                 <TableColumn text="Laskupvm" />
                 <TableColumn text="Eräpäivä" />
-                <TableColumn text="Summa" />
-                <TableColumn text="Tila" />
+            <TableColumn text="Summa" />
+            <TableColumn text="Tila" />
             </columns>
         </TableView>
 
@@ -98,20 +98,20 @@
                     <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <Label text="Avoin summa yhteensä:" GridPane.rowIndex="4" />
-                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <Label text="Avoin summa yhteensä:" GridPane.rowIndex="4" />
+               <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 </children>
-                <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                </rowConstraints>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
 
             </GridPane>
         </VBox>
