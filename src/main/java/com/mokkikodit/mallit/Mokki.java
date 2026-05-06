@@ -8,7 +8,6 @@ public class Mokki {
     private int henkiloMaara;
     private double hinta;
 
-    // ✔ REQUIRED for repository usage
     public Mokki() {
     }
 

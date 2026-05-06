@@ -16,7 +16,7 @@ import com.mokkikodit.mallit.Varaus;
 
 public class VarausController {
 
-    @FXML private TableView<Varaus> tableVaraukset; // ✅ FIXED TYPE
+    @FXML private TableView<Varaus> tableVaraukset;
 
     @FXML private Label varausIdLabel;
     @FXML private Label asiakasLabel;
@@ -31,8 +31,12 @@ public class VarausController {
 
     private boolean editMode = false;
 
-    // ✅ Proper service (not local variable)
-    private final VarausService service = new VarausService();
+    // injected service (NOT new)
+    private VarausService service;
+
+    public void setVarausService(VarausService service) {
+        this.service = service;
+    }
 
     // =========================
     // INITIALIZE
@@ -49,10 +53,6 @@ public class VarausController {
         setFieldsVisible(false);
         setEditMode(false);
 
-        // ✅ LOAD DATA
-        refreshTable();
-
-        // ✅ SELECTION → UI
         tableVaraukset.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
@@ -66,7 +66,6 @@ public class VarausController {
                     }
                 });
 
-        // Prevent opening DatePickers in view mode
         alkuDatePicker.setOnShowing(e -> {
             if (!editMode) alkuDatePicker.hide();
         });
@@ -117,20 +116,25 @@ public class VarausController {
     }
 
     // =========================
-    // SAVE (WITH OVERLAP CHECK)
+    // SAVE (FIXED)
     // =========================
     @FXML
     private void saveChanges() {
 
         Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (selected == null || service == null) return;
+
+        if (alkuDatePicker.getValue() == null || loppuDatePicker.getValue() == null) {
+            DialogUtil.showError("Valitse päivämäärät.");
+            return;
+        }
 
         selected.setAlkuPvm(alkuDatePicker.getValue());
         selected.setLoppuPvm(loppuDatePicker.getValue());
         selected.setTila(tilaComboBox.getValue());
 
         try {
-            service.updateVaraus(selected); // ✅ overlap validation here
+            service.updateVaraus(selected);
         } catch (IllegalArgumentException e) {
             DialogUtil.showError(e.getMessage());
             return;
@@ -152,6 +156,7 @@ public class VarausController {
     // UI HELPERS
     // =========================
     private void setFieldsVisible(boolean visible) {
+
         alkuDatePicker.setVisible(visible);
         loppuDatePicker.setVisible(visible);
         tilaComboBox.setVisible(visible);
@@ -167,9 +172,6 @@ public class VarausController {
 
         alkuDatePicker.setMouseTransparent(!editable);
         loppuDatePicker.setMouseTransparent(!editable);
-
-        alkuDatePicker.setFocusTraversable(editable);
-        loppuDatePicker.setFocusTraversable(editable);
 
         tilaComboBox.setMouseTransparent(!editable);
         tilaComboBox.setFocusTraversable(editable);
@@ -192,7 +194,7 @@ public class VarausController {
     }
 
     // =========================
-    // NEW RESERVATION WINDOW
+    // NEW RESERVATION WINDOW (FIXED INJECTION)
     // =========================
     @FXML
     private void openNewReservationWindow() {
@@ -200,7 +202,11 @@ public class VarausController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_varaus.fxml")
             );
+
             Parent root = loader.load();
+
+            UusiVarausController controller = loader.getController();
+            controller.setVarausService(service);
 
             Stage stage = new Stage();
             stage.setTitle("Uusi varaus");
@@ -214,7 +220,7 @@ public class VarausController {
 
             stage.showAndWait();
 
-            refreshTable(); // ✅ reload after closing
+            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,13 +228,13 @@ public class VarausController {
     }
 
     // =========================
-    // CANCEL RESERVATION (UI ONLY)
+    // CANCEL RESERVATION
     // =========================
     @FXML
     private void cancelReservation() {
 
         Varaus selected = tableVaraukset.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (selected == null || service == null) return;
 
         Stage stage = (Stage) tableVaraukset.getScene().getWindow();
 
@@ -240,7 +246,7 @@ public class VarausController {
         );
 
         if (confirmed) {
-            service.deleteVaraus(selected.getId()); // ✅ real delete
+            service.deleteVaraus(selected.getId());
             refreshTable();
 
             showSavedStatus("Varaus peruttu");

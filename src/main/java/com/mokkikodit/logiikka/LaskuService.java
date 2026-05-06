@@ -23,7 +23,7 @@ public class LaskuService {
                 varaus.getLoppuPvm()
         );
 
-        // ⚠️ You no longer have Mokki object in Varaus → use ID or fetch later
+        // You no longer have Mokki object in Varaus → use ID or fetch later
         double mockHintaPerYo = 100.0; // temporary fallback (important fix point)
 
         double summa = paivat * mockHintaPerYo;
