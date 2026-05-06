@@ -67,7 +67,7 @@ public class MokkiController {
         editMode = false;
         editButton.setText("Muokkaa");
 
-        // 🔥 IMPORTANT: hide fields initially
+        // IMPORTANT: hide fields initially
         setFieldsVisible(false);
 
         setEditMode(false);
@@ -158,7 +158,7 @@ public class MokkiController {
 
     private void setEditMode(boolean editable) {
 
-        // 🔥 show/hide fields
+        // show/hide fields
         setFieldsVisible(editable);
 
         // lock/unlock interaction

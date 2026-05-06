@@ -19,8 +19,16 @@ public class UusiVarausController {
     @FXML private DatePicker alkuDatePicker;
     @FXML private DatePicker loppuDatePicker;
 
-    private VarausService varausService = new VarausService();
+    // Injected instead of new
+    private VarausService varausService;
 
+    public void setVarausService(VarausService varausService) {
+        this.varausService = varausService;
+    }
+
+    // =========================
+    // CONFIRM
+    // =========================
     @FXML
     private void vahvista(ActionEvent event) {
 
@@ -28,9 +36,9 @@ public class UusiVarausController {
             validateInputs();
 
             Varaus v = new Varaus(
-                    0, // DB handles ID
-                    Integer.parseInt(asiakasField.getText()),
-                    Integer.parseInt(mokkiField.getText()),
+                    0,
+                    Integer.parseInt(asiakasField.getText().trim()),
+                    Integer.parseInt(mokkiField.getText().trim()),
                     alkuDatePicker.getValue(),
                     loppuDatePicker.getValue(),
                     "VARATTU"
@@ -49,16 +57,24 @@ public class UusiVarausController {
         }
     }
 
+    // =========================
+    // VALIDATION
+    // =========================
     private void validateInputs() {
 
-        if (asiakasField.getText().isEmpty() ||
-                mokkiField.getText().isEmpty()) {
+        if (varausService == null) {
+            throw new IllegalStateException("VarausService ei ole asetettu!");
+        }
+
+        if (asiakasField.getText().trim().isEmpty() ||
+                mokkiField.getText().trim().isEmpty()) {
             throw new IllegalArgumentException("Täytä kaikki kentät.");
         }
 
+        // numeric check
         try {
-            Integer.parseInt(asiakasField.getText());
-            Integer.parseInt(mokkiField.getText());
+            Integer.parseInt(asiakasField.getText().trim());
+            Integer.parseInt(mokkiField.getText().trim());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Asiakas- ja mökki-ID pitää olla numero.");
         }
@@ -75,6 +91,9 @@ public class UusiVarausController {
         }
     }
 
+    // =========================
+    // CLOSE WINDOW
+    // =========================
     private void close(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource())
                 .getScene()

@@ -17,8 +17,11 @@ public class MainController {
     @FXML private Button btnLaskut;
     @FXML private Button btnRaportit;
 
+    private static MainController instance;
+
     @FXML
     public void initialize() {
+        instance = this;
         showVaraukset();
     }
 
@@ -47,7 +50,7 @@ public class MainController {
     }
 
     @FXML
-    private void showRaportit() {
+    void showRaportit() {
         loadView("/fxml/raportit.fxml");
         setActive(btnRaportit);
     }
@@ -71,4 +74,13 @@ public class MainController {
 
         activeButton.getStyleClass().add("nav-button-active");
     }
+    public static MainController getInstance() {
+        return instance;
+    }
+
+    public void showCustomView(String fxmlPath) {
+        loadView(fxmlPath);
+        setActive(btnRaportit); // pysyy Raportit-tilassa
+    }
+
 }

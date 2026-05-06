@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.LaskutRaporttiController">
+
+    <!-- PADDING -->
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="&lt;- Palaa takaisin" />
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <children>
+                <Label text="LASKURAPORTTI" textFill="#574520">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+        <VBox prefWidth="100.0" spacing="10.0">
+            <children>
+
+                <!-- PÄIVÄMÄÄRÄT -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <DatePicker promptText="Alku" />
+                        <Label text="-" HBox.hgrow="ALWAYS">
+                            <padding>
+                                <Insets top="5.0" />
+                            </padding>
+                        </Label>
+                        <DatePicker promptText="Loppu" />
+                        <Label text="Maksutila:">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Label>
+                        <ComboBox prefWidth="150.0" />
+                        <Label text="Asiakas:" />
+                        <ComboBox prefWidth="150.0" />
+                    </children>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+
+        <!-- TABLE -->
+        <TableView fx:id="tableRaportti" VBox.vgrow="ALWAYS">
+
+            <columns>
+                <TableColumn text="Lasku ID" />
+                <TableColumn text="Asiakas" />
+                <TableColumn text="Varaus ID" />
+                <TableColumn text="Laskupvm" />
+                <TableColumn text="Eräpäivä" />
+            <TableColumn text="Summa" />
+            <TableColumn text="Tila" />
+            </columns>
+        </TableView>
+
+        <!-- DETAIL -->
+        <VBox spacing="10.0">
+            <HBox spacing="10.0">
+                <children>
+                    <Label text="YHTEENVETO" textFill="#574520">
+                        <font>
+                            <Font name="System Bold" size="20.0" />
+                        </font></Label>
+                </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <GridPane hgap="10.0" vgap="8.0">
+
+                <children>
+                    <Label text="Laskuja yhteensä:" />
+                    <Label text="Maksettuja:" GridPane.rowIndex="1" />
+                    <Label text="Avoimia:" GridPane.rowIndex="2" />
+                    <Label text="Myöhässä olevia:" GridPane.rowIndex="3" />
+                    <Label text="Label" GridPane.columnIndex="1" />
+                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label text="Avoin summa yhteensä:" GridPane.rowIndex="4" />
+               <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                </children>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" />
+            </rowConstraints>
+
+            </GridPane>
+        </VBox>
+
+    </children>
+</VBox>

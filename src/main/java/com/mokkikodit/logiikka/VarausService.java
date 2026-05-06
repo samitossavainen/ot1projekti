@@ -1,7 +1,7 @@
 package com.mokkikodit.logiikka;
 
-import com.mokkikodit.DAO.VarausRepository;
 import com.mokkikodit.mallit.Varaus;
+import com.mokkikodit.tietokanta.VarausRepository;
 
 import java.util.List;
 
@@ -9,25 +9,39 @@ public class VarausService {
 
     private final VarausRepository repo = new VarausRepository();
 
+    // =========================
+    // READ
+    // =========================
     public List<Varaus> getAllVaraukset() {
         return repo.haeKaikki();
     }
 
-    public void addVaraus(Varaus uusi) {
-        validate(uusi);
-        repo.tallenna(uusi);
+    // =========================
+    // CREATE
+    // =========================
+    public void addVaraus(Varaus v) {
+        validate(v);
+        repo.tallenna(v);
     }
 
-    public void updateVaraus(Varaus updated) {
-        validate(updated);
-        repo.paivita(updated);
+    // =========================
+    // UPDATE
+    // =========================
+    public void updateVaraus(Varaus v) {
+        validate(v);
+        repo.paivita(v);
     }
 
+    // =========================
+    // DELETE
+    // =========================
     public void deleteVaraus(int id) {
         repo.poista(id);
     }
 
-    // basic validation (safe for DB version)
+    // =========================
+    // VALIDATION (single source of truth)
+    // =========================
     private void validate(Varaus v) {
 
         if (v.getAlkuPvm() == null || v.getLoppuPvm() == null) {
@@ -35,7 +49,7 @@ public class VarausService {
         }
 
         if (!v.getLoppuPvm().isAfter(v.getAlkuPvm())) {
-            throw new IllegalArgumentException("Loppupäivän pitää olla jälkeen alkupäivän");
+            throw new IllegalArgumentException("Loppupäivän pitää olla alkupäivän jälkeen");
         }
     }
 }
