@@ -3,23 +3,25 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Asiakas;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class AsiakasRepository implements CrudRepository<Asiakas, Integer> {
+public class AsiakasRepository {
 
-    @Override
-    public List<Asiakas> findAll() {
-
+    public List<Asiakas> haeKaikki() {
         List<Asiakas> lista = new ArrayList<>();
+
         String sql = "SELECT * FROM asiakas";
 
-        try (Connection c = Tietokanta.getYhteys();
-             Statement st = c.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (Connection yhteys = Tietokanta.getYhteys();
+             Statement stmt = yhteys.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                lista.add(map(rs));
+                Asiakas a = new Asiakas();
+                a.setId(rs.getInt("id"));
+                a.setNimi(rs.getString("name"));
+                a.setEmail(rs.getString("email")); // ✔ FIXED
+                lista.add(a);
             }
 
         } catch (SQLException e) {
@@ -29,20 +31,36 @@ public class AsiakasRepository implements CrudRepository<Asiakas, Integer> {
         return lista;
     }
 
-    @Override
-    public Asiakas findById(Integer id) {
+    public void tallenna(Asiakas a) {
+        String sql = "INSERT INTO asiakas(sapo, puhelinnumero, nimi, osoite) VALUES (?, ?)";
 
-        String sql = "SELECT * FROM asiakas WHERE id=?";
+        try (Connection yhteys = Tietokanta.getYhteys();
+             PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-        try (Connection c = Tietokanta.getYhteys();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, a.getNimi());
+            ps.setString(2, a.getEmail()); // ✔ FIXED
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Asiakas haeIdlla(int id) {
+        String sql = "SELECT * FROM asiakas WHERE sapo = ?";
+
+        try (Connection yhteys = Tietokanta.getYhteys();
+             PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
             ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return map(rs);
-                }
+            if (rs.next()) {
+                Asiakas a = new Asiakas();
+                a.setId(rs.getInt("id"));
+                a.setNimi(rs.getString("name"));
+                a.setEmail(rs.getString("email")); // ✔ FIXED
+                return a;
             }
 
         } catch (SQLException e) {
@@ -50,77 +68,5 @@ public class AsiakasRepository implements CrudRepository<Asiakas, Integer> {
         }
 
         return null;
-    }
-
-    @Override
-    public void save(Asiakas a) {
-
-        String sql =
-                "INSERT INTO asiakas(name, email, puhelinnumero) " +
-                        "VALUES (?, ?, ?)";
-
-        try (Connection c = Tietokanta.getYhteys();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setString(1, a.getNimi());
-            ps.setString(2, a.getEmail());
-            ps.setString(3, a.getPuhelin());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void update(Asiakas a) {
-
-        String sql =
-                "UPDATE asiakas " +
-                        "SET name=?, email=?, puhelinnumero=? " +
-                        "WHERE id=?";
-
-        try (Connection c = Tietokanta.getYhteys();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setString(1, a.getNimi());
-            ps.setString(2, a.getEmail());
-            ps.setString(3, a.getPuhelin());
-            ps.setInt(4, a.getId());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void delete(Integer id) {
-
-        String sql = "DELETE FROM asiakas WHERE id=?";
-
-        try (Connection c = Tietokanta.getYhteys();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Asiakas map(ResultSet rs) throws SQLException {
-
-        Asiakas a = new Asiakas();
-
-        a.setId(rs.getInt("id"));
-        a.setNimi(rs.getString("name"));
-        a.setEmail(rs.getString("email"));
-        a.setPuhelin(rs.getString("puhelinnumero"));
-
-        return a;
     }
 }

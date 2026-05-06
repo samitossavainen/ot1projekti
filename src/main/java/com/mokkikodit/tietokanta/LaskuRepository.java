@@ -11,7 +11,7 @@ public class LaskuRepository {
     public List<Lasku> haeKaikki() {
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM invoices";
+        String sql = "SELECT * FROM laskut";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              Statement stmt = yhteys.createStatement();
@@ -19,7 +19,7 @@ public class LaskuRepository {
 
             while (rs.next()) {
 
-                // create minimal Varaus object (only id for now)
+                // ✔ create minimal Varaus object (only id for now)
                 Varaus v = new Varaus();
                 v.setId(rs.getInt("reservation_id"));
 
