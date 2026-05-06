@@ -14,7 +14,7 @@ public class VarausRepository {
     public List<Varaus> haeKaikki() {
         List<Varaus> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT * FROM varaus";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              Statement stmt = yhteys.createStatement();
@@ -46,7 +46,7 @@ public class VarausRepository {
     // INSERT
     // =========================
     public void tallenna(Varaus v) {
-        String sql = "INSERT INTO reservation(customer_id, mokki_id, start_date, end_date) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO varaus(sapo, alkamispvm, loppumispvm, mokki_ID, kokonaissumma) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -67,7 +67,7 @@ public class VarausRepository {
     // UPDATE
     // =========================
     public void paivita(Varaus v) {
-        String sql = "UPDATE reservation SET customer_id = ?, mokki_id = ?, start_date = ?, end_date = ? WHERE id = ?";
+        String sql = "UPDATE varaus SET sapo = ?, mokki_ID = ?, alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -89,7 +89,7 @@ public class VarausRepository {
     // DELETE
     // =========================
     public void poista(int id) {
-        String sql = "DELETE FROM reservation WHERE id = ?";
+        String sql = "DELETE FROM varaus WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {

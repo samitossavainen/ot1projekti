@@ -10,7 +10,7 @@ public class AsiakasRepository {
     public List<Asiakas> haeKaikki() {
         List<Asiakas> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM customer";
+        String sql = "SELECT * FROM asiakas";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              Statement stmt = yhteys.createStatement();
@@ -32,7 +32,7 @@ public class AsiakasRepository {
     }
 
     public void tallenna(Asiakas a) {
-        String sql = "INSERT INTO customer(name, email) VALUES (?, ?)";
+        String sql = "INSERT INTO asiakas(sapo, puhelinnumero, nimi, osoite) VALUES (?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -47,7 +47,7 @@ public class AsiakasRepository {
     }
 
     public Asiakas haeIdlla(int id) {
-        String sql = "SELECT * FROM customer WHERE id = ?";
+        String sql = "SELECT * FROM asiakas WHERE sapo = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {

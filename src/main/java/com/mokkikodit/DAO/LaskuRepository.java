@@ -11,7 +11,7 @@ public class LaskuRepository {
     public List<Lasku> haeKaikki() {
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM invoices";
+        String sql = "SELECT * FROM laskut";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              Statement stmt = yhteys.createStatement();
