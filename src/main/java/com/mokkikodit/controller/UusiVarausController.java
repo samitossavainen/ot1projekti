@@ -22,6 +22,11 @@ public class UusiVarausController {
     // Injected instead of new
     private VarausService varausService;
 
+    @FXML
+    private void cancel(ActionEvent event) {
+        close(event);
+    }
+
     public void setVarausService(VarausService varausService) {
         this.varausService = varausService;
     }
