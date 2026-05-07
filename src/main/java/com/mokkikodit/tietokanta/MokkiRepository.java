@@ -64,9 +64,9 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setString(1, m.getNimi());
-            ps.setString(2, m.getSijainti());
-            ps.setInt(3, m.getHenkiloMaara());
-            ps.setDouble(4, m.getHinta());
+            ps.setString(2, m.getOsoite());
+            ps.setInt(3, m.getKapasiteetti());
+            ps.setDouble(4, m.getHintaPerYo());
 
             ps.executeUpdate();
 
@@ -86,10 +86,10 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
              PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setString(1, m.getNimi());
-            ps.setString(2, m.getSijainti());
-            ps.setInt(3, m.getHenkiloMaara());
-            ps.setDouble(4, m.getHinta());
-            ps.setInt(5, m.getId());
+            ps.setString(2, m.getOsoite());
+            ps.setInt(3, m.getKapasiteetti());
+            ps.setDouble(4, m.getHintaPerYo());
+            ps.setInt(5, m.getMokkiId());
 
             ps.executeUpdate();
 
@@ -118,11 +118,15 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
 
         Mokki m = new Mokki();
 
-        m.setId(rs.getInt("mokki_ID"));
+        m.setMokkiId(rs.getInt("mokki_ID"));
         m.setNimi(rs.getString("nimi"));
-        m.setSijainti(rs.getString("osoite"));
-        m.setHenkiloMaara(rs.getInt("kapasiteetti"));
-        m.setHinta(rs.getDouble("hinta"));
+        m.setOsoite(rs.getString("osoite"));
+        m.setKapasiteetti(rs.getInt("kapasiteetti"));
+        m.setHintaPerYo(rs.getDouble("hinta"));
+        m.setTila(rs.getInt("hinta"));
+        m.setLisatiedot(rs.getString("lisatiedot"));
+        m.setVessat(rs.getInt("vessat"));
+        m.setHuoneet(rs.getInt("huoneet"));
 
         return m;
     }
