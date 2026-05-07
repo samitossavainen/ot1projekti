@@ -23,7 +23,7 @@
     </padding>
 
     <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="&lt;- Palaa takaisin" />
+        <Button mnemonicParsing="false"  onAction="#goBack" text="&lt;- Palaa takaisin" style="-fx-base: #8A8A8A; -fx-text-fill: white;"/>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <children>
                 <Label text="MÖKKIRAPORTTI" textFill="#574520">

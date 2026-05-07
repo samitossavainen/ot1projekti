@@ -1,41 +1,70 @@
 package com.mokkikodit.mallit;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Varaus {
 
-    private int id;
+    private int varausId;
 
-    // match DB structure (reservation table uses IDs)
-    private int asiakasId;
+    // DB column: sapo (email)
+    private String asiakasEmail;
+
+    // DB column: mokki_ID
     private int mokkiId;
 
+    // DB columns: alkamispvm, loppumispvm (stored as TEXT)
     private LocalDate alkuPvm;
     private LocalDate loppuPvm;
 
+    // DB column: varauksen_tila
     private String tila;
 
-    // empty constructor
+    // DB column: luontipvm (TEXT datetime)
+    private LocalDateTime luontiPvm;
+
+    // DB column: kokonaissumma
+    private double kokonaissumma;
+
+    // ---------- CONSTRUCTORS ----------
+
     public Varaus() {
     }
 
-    public Varaus(int id, int asiakasId, int mokkiId,
-                  LocalDate alkuPvm, LocalDate loppuPvm, String tila) {
-        this.id = id;
-        this.asiakasId = asiakasId;
+    // constructor for INSERT (no auto fields)
+    public Varaus(String asiakasEmail, int mokkiId,
+                  LocalDate alkuPvm, LocalDate loppuPvm,
+                  String tila, double kokonaissumma) {
+        this.asiakasEmail = asiakasEmail;
+        this.mokkiId = mokkiId;
+        this.alkuPvm = alkuPvm;
+        this.loppuPvm = loppuPvm;
+        this.kokonaissumma = kokonaissumma;
+    }
+
+    // full constructor (SELECT)
+    public Varaus(int varausId, String asiakasEmail, int mokkiId,
+                  LocalDate alkuPvm, LocalDate loppuPvm,
+                  String tila, LocalDateTime luontiPvm,
+                  double kokonaissumma) {
+        this.varausId = varausId;
+        this.asiakasEmail = asiakasEmail;
         this.mokkiId = mokkiId;
         this.alkuPvm = alkuPvm;
         this.loppuPvm = loppuPvm;
         this.tila = tila;
+        this.luontiPvm = luontiPvm;
+        this.kokonaissumma = kokonaissumma;
     }
 
     // ---------- GETTERS ----------
-    public int getId() {
-        return id;
+
+    public int getVarausId() {
+        return varausId;
     }
 
-    public int getAsiakasId() {
-        return asiakasId;
+    public String getAsiakasEmail() {
+        return asiakasEmail;
     }
 
     public int getMokkiId() {
@@ -54,13 +83,22 @@ public class Varaus {
         return tila;
     }
 
-    // ---------- SETTERS ----------
-    public void setId(int id) {
-        this.id = id;
+    public LocalDateTime getLuontiPvm() {
+        return luontiPvm;
     }
 
-    public void setAsiakasId(int asiakasId) {
-        this.asiakasId = asiakasId;
+    public double getKokonaissumma() {
+        return kokonaissumma;
+    }
+
+    // ---------- SETTERS ----------
+
+    public void setVarausId(int varausId) {
+        this.varausId = varausId;
+    }
+
+    public void setAsiakasEmail(String asiakasEmail) {
+        this.asiakasEmail = asiakasEmail;
     }
 
     public void setMokkiId(int mokkiId) {
@@ -78,4 +116,10 @@ public class Varaus {
     public void setTila(String tila) {
         this.tila = tila;
     }
+
+    public void setKokonaissumma(double kokonaissumma) {
+        this.kokonaissumma = kokonaissumma;
+    }
+
+    // no setter for luontiPvm (DB handles it)
 }
