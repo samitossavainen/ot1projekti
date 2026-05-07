@@ -1,14 +1,36 @@
 package com.mokkikodit.logiikka;
 
-import com.mokkikodit.tietokanta.MaksuRepository;
 import com.mokkikodit.mallit.Maksu;
+import com.mokkikodit.tietokanta.MaksuRepository;
 
 public class MaksuService {
 
-    private final MaksuRepository repo = new MaksuRepository();
+    private final MaksuRepository repo;
 
-    // matches controller call
+    public MaksuService(MaksuRepository repo) {
+        this.repo = repo;
+    }
+
+    /**
+     * Saves payment to database.
+     * DB handles:
+     * - maksu_ID (auto)
+     * - maksupäivä (auto timestamp)
+     */
     public void tallenna(Maksu m) {
+
+        if (m == null) {
+            throw new IllegalArgumentException("Maksu ei voi olla null.");
+        }
+
+        if (m.getLaskuId() <= 0) {
+            throw new IllegalArgumentException("Lasku_ID puuttuu tai on virheellinen.");
+        }
+
+        if (m.getMaksettuSumma() < 0) {
+            throw new IllegalArgumentException("Maksettu summa ei voi olla negatiivinen.");
+        }
+
         repo.tallenna(m);
     }
 }
