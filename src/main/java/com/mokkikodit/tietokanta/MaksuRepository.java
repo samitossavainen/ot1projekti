@@ -13,7 +13,7 @@ public class MaksuRepository {
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
             ps.setInt(1, m.getLaskuId());
-            ps.setDouble(2, m.getSumma());
+            ps.setDouble(2, m.getMaksettuSumma());
 
             ps.executeUpdate();
 
