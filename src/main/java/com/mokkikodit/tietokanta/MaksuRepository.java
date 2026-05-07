@@ -7,7 +7,7 @@ import java.sql.*;
 public class MaksuRepository {
 
     public void tallenna(Maksu m) {
-        String sql = "INSERT INTO payments(invoice_id, amount) VALUES (?, ?)";
+        String sql = "INSERT INTO maksut(lasku_ID, maksettu_summa) VALUES (?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {

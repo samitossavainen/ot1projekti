@@ -198,15 +198,12 @@ public class VarausController {
     // =========================
     @FXML
     private void openNewReservationWindow() {
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_varaus.fxml")
             );
-
             Parent root = loader.load();
-
-            UusiVarausController controller = loader.getController();
-            controller.setVarausService(service);
 
             Stage stage = new Stage();
             stage.setTitle("Uusi varaus");
@@ -217,10 +214,7 @@ public class VarausController {
 
             stage.sizeToScene();
             stage.setResizable(false);
-
             stage.showAndWait();
-
-            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();

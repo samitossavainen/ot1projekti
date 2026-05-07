@@ -14,13 +14,17 @@ public class LaskuRepository {
 
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM lasku";
+        String sql = "SELECT * FROM laskut";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              Statement stmt = yhteys.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+
+                // ✔ create minimal Varaus object (only id for now)
+                Varaus v = new Varaus();
+                v.setId(rs.getInt("reservation_id"));
 
                 Lasku l = new Lasku(
                         rs.getInt("lasku_ID"),
