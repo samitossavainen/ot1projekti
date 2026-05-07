@@ -2,6 +2,8 @@ package com.mokkikodit.mallit;
 
 public class Asiakas {
 
+    private int id; // ✅ FIXED: missing primary key
+
     private String sapo;
     private String nimi;
     private String puhelinnumero;
@@ -21,6 +23,16 @@ public class Asiakas {
         this.osoite = osoite;
     }
 
+    // ---------- ID ----------
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // ---------- GETTERS ----------
     public String getSapo() {
         return sapo;
     }
@@ -37,6 +49,7 @@ public class Asiakas {
         return osoite;
     }
 
+    // ---------- SETTERS ----------
     public void setSapo(String sapo) {
         this.sapo = sapo;
     }
@@ -53,6 +66,7 @@ public class Asiakas {
         this.osoite = osoite;
     }
 
+    // ---------- VALIDATION ----------
     public boolean hasValidSapo() {
         return sapo != null
                 && !sapo.trim().isEmpty()
