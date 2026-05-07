@@ -18,9 +18,10 @@ public class AsiakasRepository {
 
             while (rs.next()) {
                 Asiakas a = new Asiakas();
-                a.setId(rs.getInt("id"));
                 a.setNimi(rs.getString("name"));
-                a.setEmail(rs.getString("email")); // ✔ FIXED
+                a.setSapo(rs.getString("email")); // ✔ FIXED
+                a.setPuhelinnumero(rs.getString("puhelinnumero"));
+                a.setOsoite(rs.getString("osoite"));
                 lista.add(a);
             }
 
@@ -37,8 +38,10 @@ public class AsiakasRepository {
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setString(1, a.getNimi());
-            ps.setString(2, a.getEmail()); // ✔ FIXED
+            ps.setString(3, a.getNimi());
+            ps.setString(1, a.getSapo()); // ✔ FIXED
+            ps.setString(2, a.getPuhelinnumero());
+            ps.setString(4, a.getOsoite());
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -57,9 +60,10 @@ public class AsiakasRepository {
 
             if (rs.next()) {
                 Asiakas a = new Asiakas();
-                a.setId(rs.getInt("id"));
                 a.setNimi(rs.getString("name"));
-                a.setEmail(rs.getString("email")); // ✔ FIXED
+                a.setSapo(rs.getString("email")); // ✔ FIXED
+                a.setPuhelinnumero(rs.getString("puhelinnumero"));
+                a.setOsoite(rs.getString("osoite"));
                 return a;
             }
 
