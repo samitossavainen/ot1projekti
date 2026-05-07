@@ -57,8 +57,8 @@ public class MokkiRepository {
     public void save(Mokki m) {
 
         String sql =
-                "INSERT INTO mokki(nimi, osoite, kapasiteetti, hinta) " +
-                        "VALUES (?, ?, ?, ?)";
+                "INSERT INTO mokki(nimi, osoite, kapasiteetti, hinta, lisatiedot, vessat, huoneet) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection c = Tietokanta.getYhteys();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -66,7 +66,10 @@ public class MokkiRepository {
             ps.setString(1, m.getNimi());
             ps.setString(2, m.getOsoite());
             ps.setInt(3, m.getKapasiteetti());
-            ps.setDouble(4, m.getHintaPerYo());
+            ps.setDouble(4, m.getHinta());
+            ps.setString(5,m.getLisatiedot());
+            ps.setInt(6, m.getVessat());
+            ps.setInt(7, m.getHuoneet());
 
             ps.executeUpdate();
 
@@ -79,7 +82,7 @@ public class MokkiRepository {
     public void update(Mokki m) {
 
         String sql =
-                "UPDATE mokki SET nimi=?, osoite=?, kapasiteetti=?, hinta=? " +
+                "UPDATE mokki SET nimi=?, osoite=?, kapasiteetti=?, hinta=?, tila=? " +
                         "WHERE mokki_ID=?";
 
         try (Connection c = Tietokanta.getYhteys();
@@ -88,8 +91,9 @@ public class MokkiRepository {
             ps.setString(1, m.getNimi());
             ps.setString(2, m.getOsoite());
             ps.setInt(3, m.getKapasiteetti());
-            ps.setDouble(4, m.getHintaPerYo());
-            ps.setInt(5, m.getMokkiId());
+            ps.setDouble(4, m.getHinta());
+            ps.setInt(5, m.getTila());
+            ps.setInt(6, m.getMokkiId());
 
             ps.executeUpdate();
 
@@ -122,7 +126,7 @@ public class MokkiRepository {
         m.setNimi(rs.getString("nimi"));
         m.setOsoite(rs.getString("osoite"));
         m.setKapasiteetti(rs.getInt("kapasiteetti"));
-        m.setHintaPerYo(rs.getDouble("hinta"));
+        m.setHinta(rs.getDouble("hinta"));
         m.setTila(rs.getInt("tila"));
         m.setLisatiedot(rs.getString("lisatiedot"));
         m.setVessat(rs.getInt("vessat"));

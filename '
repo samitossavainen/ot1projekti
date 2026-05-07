@@ -1,0 +1,22 @@
+Merge branch 'Roopen_haara' of github.com:samitossavainen/ot1projekti into Roopen_haara
+
+# Conflicts:
+#	src/main/java/com/mokkikodit/tietokanta/VarausRepository.java
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please run
+#	git update-ref -d MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch Roopen_haara
+# Your branch and 'origin/Roopen_haara' have diverged,
+# and have 20 and 1 different commits each, respectively.
+#
+# All conflicts fixed but you are still merging:
+qaqaqaqaqaqafuck you:D
+.
+#
