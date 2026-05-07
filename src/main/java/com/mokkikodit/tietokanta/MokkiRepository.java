@@ -6,9 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MokkiRepository implements CrudRepository<Mokki, Integer> {
+public class MokkiRepository {
 
-    @Override
+
     public List<Mokki> findAll() {
 
         List<Mokki> lista = new ArrayList<>();
@@ -30,7 +30,7 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
         return lista;
     }
 
-    @Override
+
     public Mokki findById(Integer id) {
 
         String sql = "SELECT * FROM mokki WHERE mokki_ID=?";
@@ -53,7 +53,7 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
         return null;
     }
 
-    @Override
+
     public void save(Mokki m) {
 
         String sql =
@@ -75,7 +75,7 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
         }
     }
 
-    @Override
+
     public void update(Mokki m) {
 
         String sql =
@@ -98,7 +98,7 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
         }
     }
 
-    @Override
+
     public void delete(Integer id) {
 
         String sql = "DELETE FROM mokki WHERE mokki_ID=?";
