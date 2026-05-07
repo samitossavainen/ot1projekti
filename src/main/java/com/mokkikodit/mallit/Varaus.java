@@ -121,5 +121,8 @@ public class Varaus {
         this.kokonaissumma = kokonaissumma;
     }
 
+    public void setLuontiPvm(LocalDate localDate) {
+    }
+
     // no setter for luontiPvm (DB handles it)
 }
