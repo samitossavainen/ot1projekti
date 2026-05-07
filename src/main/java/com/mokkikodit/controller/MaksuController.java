@@ -6,7 +6,11 @@ import com.mokkikodit.util.DialogUtil;
 
 public class MaksuController {
 
-    private final MaksuService service = new MaksuService();
+    private final MaksuService service;
+
+    public MaksuController(MaksuService service) {
+        this.service = service;
+    }
 
     public void maksa(Maksu m) {
         try {

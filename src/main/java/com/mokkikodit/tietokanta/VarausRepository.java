@@ -22,6 +22,7 @@ public class VarausRepository {
 
             while (rs.next()) {
                 Varaus v = new Varaus();
+
                 v.setVarausId(rs.getInt("varaus_ID"));
                 v.setAsiakasEmail(rs.getString("sapo"));
                 v.setMokkiId(rs.getInt("mokki_ID"));
@@ -30,17 +31,17 @@ public class VarausRepository {
 
                 Date alku = rs.getDate("alkamispvm");
                 Date loppu = rs.getDate("loppumispvm");
-                Date luonti = rs.getDate("luontipvm");
+                Timestamp luonti = rs.getTimestamp("luontipvm");
 
                 if (alku != null) v.setAlkuPvm(alku.toLocalDate());
                 if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
-                if (luonti != null) v.setLuontiPvm(luonti.toLocalDate());
+                if (luonti != null) v.setLuontiPvm(luonti.toLocalDateTime());
 
                 lista.add(v);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Varauksien haku epäonnistui", e);
         }
 
         return lista;
@@ -50,21 +51,24 @@ public class VarausRepository {
     // INSERT
     // =========================
     public void tallenna(Varaus v) {
-        String sql = "INSERT INTO varaus(sapo, alkamispvm, loppumispvm, mokki_ID, kokonaissumma) VALUES (?, ?, ?, ?, ?)";
+
+        String sql =
+                "INSERT INTO varaus (sapo, alkamispvm, loppumispvm, mokki_ID, kokonaissumma) " +
+                        "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
             ps.setString(1, v.getAsiakasEmail());
-            ps.setInt(4, v.getMokkiId());
             ps.setDate(2, Date.valueOf(v.getAlkuPvm()));
             ps.setDate(3, Date.valueOf(v.getLoppuPvm()));
+            ps.setInt(4, v.getMokkiId());
             ps.setDouble(5, v.getKokonaissumma());
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Varauksen tallennus epäonnistui", e);
         }
     }
 
@@ -72,7 +76,10 @@ public class VarausRepository {
     // UPDATE
     // =========================
     public void paivita(Varaus v) {
-        String sql = "UPDATE varaus SET sapo = ?, mokki_ID = ?, varauksen_tila = ?, alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
+
+        String sql =
+                "UPDATE varaus SET sapo = ?, mokki_ID = ?, varauksen_tila = ?, " +
+                        "alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -87,7 +94,7 @@ public class VarausRepository {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Varauksen päivitys epäonnistui", e);
         }
     }
 
@@ -95,6 +102,7 @@ public class VarausRepository {
     // DELETE
     // =========================
     public void poista(int id) {
+
         String sql = "DELETE FROM varaus WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
@@ -104,7 +112,7 @@ public class VarausRepository {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Varauksen poisto epäonnistui", e);
         }
     }
 }
