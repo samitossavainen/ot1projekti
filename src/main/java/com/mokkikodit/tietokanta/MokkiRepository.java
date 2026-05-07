@@ -123,7 +123,7 @@ public class MokkiRepository implements CrudRepository<Mokki, Integer> {
         m.setOsoite(rs.getString("osoite"));
         m.setKapasiteetti(rs.getInt("kapasiteetti"));
         m.setHintaPerYo(rs.getDouble("hinta"));
-        m.setTila(rs.getInt("hinta"));
+        m.setTila(rs.getInt("tila"));
         m.setLisatiedot(rs.getString("lisatiedot"));
         m.setVessat(rs.getInt("vessat"));
         m.setHuoneet(rs.getInt("huoneet"));
