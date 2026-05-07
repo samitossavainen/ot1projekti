@@ -6,3 +6,4 @@
 target/
 # tämä jättää kääntäjän tuottamat binääritiedostot pois versionhallinnasta
 *.class
+.DS_Store

@@ -2,59 +2,71 @@ package com.mokkikodit.logiikka;
 
 import com.mokkikodit.mallit.Lasku;
 import com.mokkikodit.mallit.Varaus;
+import com.mokkikodit.tietokanta.LaskuRepository;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LaskuService {
 
-    private final List<Lasku> laskut = new ArrayList<>();
-    private int nextId = 1;
+    private final LaskuRepository repository;
 
-    public List<Lasku> getAllLaskut() {
-        return new ArrayList<>(laskut);
+    public LaskuService(LaskuRepository repository) {
+        this.repository = repository;
     }
 
-    public Lasku createLasku(Varaus varaus) {
+    /**
+     * Creates invoice from reservation and saves to DB.
+     */
+    public Lasku createLasku(Varaus varaus,
+                             double hintaPerYo) {
 
         long paivat = ChronoUnit.DAYS.between(
                 varaus.getAlkuPvm(),
                 varaus.getLoppuPvm()
         );
 
-        // You no longer have Mokki object in Varaus → use ID or fetch later
-        double mockHintaPerYo = 100.0; // temporary fallback (important fix point)
+        double summa = paivat * hintaPerYo;
 
-        double summa = paivat * mockHintaPerYo;
+        Lasku lasku = new Lasku(
+                varaus.getVarausId(),
+                varaus.getLoppuPvm().plusDays(7), // example due date
+                summa
+        );
 
-        Lasku lasku = new Lasku(nextId++, varaus, summa);
-        laskut.add(lasku);
+        repository.save(lasku);
 
         return lasku;
     }
 
-    public void updateLasku(Lasku updated) {
-        for (int i = 0; i < laskut.size(); i++) {
-            if (laskut.get(i).getId() == updated.getId()) {
-                laskut.set(i, updated);
-                return;
-            }
-        }
-        throw new IllegalArgumentException("Laskua ei löytynyt ID:llä " + updated.getId());
+    /**
+     * Returns all invoices from database.
+     */
+    public List<Lasku> getAllLaskut() {
+        return repository.findAll();
     }
 
+    /**
+     * Marks invoice as paid (DB update).
+     */
     public void markAsPaid(int laskuId) {
-        for (Lasku l : laskut) {
-            if (l.getId() == laskuId) {
-                l.setMaksettu(true);
-                return;
-            }
+        Lasku lasku = repository.findById(laskuId);
+
+        if (lasku == null) {
+            throw new IllegalArgumentException(
+                    "Laskua ei löytynyt ID:llä " + laskuId
+            );
         }
-        throw new IllegalArgumentException("Laskua ei löytynyt ID:llä " + laskuId);
+
+        lasku.merkitseMaksetuksi();
+
+        repository.update(lasku);
     }
 
+    /**
+     * Deletes invoice from database.
+     */
     public void deleteLasku(int id) {
-        laskut.removeIf(l -> l.getId() == id);
+        repository.delete(id);
     }
 }

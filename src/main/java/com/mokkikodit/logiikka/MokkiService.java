@@ -1,37 +1,95 @@
 package com.mokkikodit.logiikka;
 
 import com.mokkikodit.mallit.Mokki;
+import com.mokkikodit.tietokanta.MokkiRepository;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MokkiService {
 
-    private List<Mokki> mokit = new ArrayList<>();
-    private int nextId = 1;
+    private final MokkiRepository repository;
 
-    public Mokki lisaaMokki(String nimi, int kapasiteetti, double hinta) {
+    public MokkiService(MokkiRepository repository) {
+        this.repository = repository;
+    }
 
-        Mokki m = new Mokki(
-                nextId++,
+    /**
+     * Adds a new cottage to the database.
+     */
+    public void lisaaMokki(String nimi,
+                           String osoite,
+                           int kapasiteetti,
+                           double hinta,
+                           String lisatiedot,
+                           int vessat,
+                           int huoneet)
+            throws SQLException {
+
+        if (hinta < 0) {
+            throw new IllegalArgumentException(
+                    "Hinta ei voi olla negatiivinen."
+            );
+        }
+
+        Mokki mokki = new Mokki(
                 nimi,
-                "Perusmökki",   // ✔ FIX: missing String parameter added
+                osoite,
                 kapasiteetti,
-                hinta
+                hinta,
+                lisatiedot,
+                vessat,
+                huoneet
         );
 
-        mokit.add(m);
-        return m;
+        repository.save(mokki);
     }
 
+    /**
+     * Returns all cottages.
+     */
     public List<Mokki> haeKaikki() {
-        return mokit;
+
+        return repository.findAll();
     }
 
-    public Mokki haeIdlla(int id) {
-        return mokit.stream()
-                .filter(m -> m.getId() == id)
-                .findFirst()
-                .orElse(null);
+    /**
+     * Finds cottage by ID.
+     */
+    public Mokki haeIdlla(int mokkiId) {
+
+        return repository.findById(mokkiId);
+    }
+
+    /**
+     * Soft delete:
+     * tila = 0
+     */
+    public void deaktivoiMokki(int mokkiId) {
+
+        Mokki mokki = repository.findById(mokkiId);
+
+        if (mokki != null) {
+
+            mokki.setTila(0);
+
+            repository.update(mokki);
+        }
+    }
+
+    /**
+     * Reactivates cottage.
+     * tila = 1
+     */
+    public void aktivoiMokki(int mokkiId) {
+
+        Mokki mokki = repository.findById(mokkiId);
+
+        if (mokki != null) {
+
+            mokki.setTila(1);
+
+            repository.update(mokki);
+        }
     }
 }
