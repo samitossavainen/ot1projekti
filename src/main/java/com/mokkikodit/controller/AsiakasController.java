@@ -68,8 +68,8 @@ public class AsiakasController {
 
     private void populateFields(Asiakas a) {
         nimiField.setText(a.getNimi());
-        emailLabel.setText(a.getEmail());
-        phoneField.setText(a.getPuhelin() != null ? a.getPuhelin() : "");
+        emailLabel.setText(a.getSapo());
+        phoneField.setText(a.getPuhelinnumero() != null ? a.getPuhelinnumero() : "");
     }
 
     @FXML
@@ -101,7 +101,7 @@ public class AsiakasController {
         if (selected == null) return;
 
         selected.setNimi(nimiField.getText());
-        selected.setPuhelin(phoneField.getText());
+        selected.setPuhelinnumero(phoneField.getText());
 
         // repo.update(selected); // enable when implemented
 
@@ -129,7 +129,7 @@ public class AsiakasController {
                 stage,
                 "Vahvista poisto",
                 "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakas " + selected.getEmail() + " poistetaan."
+                "Asiakas " + selected.getSapo() + " poistetaan."
         );
 
         if (confirmed) {
