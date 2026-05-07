@@ -2,54 +2,72 @@ package com.mokkikodit.mallit;
 
 public class Asiakas {
 
-    private int id;
+    private String sapo;
     private String nimi;
-    private String email;
-    private String puhelin;
+    private String puhelinnumero;
+    private String osoite;
 
-    // Empty constructor (REQUIRED for repository usage)
     public Asiakas() {
     }
 
-    // Full constructor
-    public Asiakas(int id, String nimi, String email, String puhelin) {
-        this.id = id;
+    public Asiakas(String sapo,
+                   String nimi,
+                   String puhelinnumero,
+                   String osoite) {
+
+        this.sapo = sapo;
         this.nimi = nimi;
-        this.email = email;
-        this.puhelin = puhelin;
+        this.puhelinnumero = puhelinnumero;
+        this.osoite = osoite;
     }
 
-    // ---------- GETTERS ----------
-    public int getId() {
-        return id;
+    public String getSapo() {
+        return sapo;
     }
 
     public String getNimi() {
         return nimi;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPuhelinnumero() {
+        return puhelinnumero;
     }
 
-    public String getPuhelin() {
-        return puhelin;
+    public String getOsoite() {
+        return osoite;
     }
 
-    // ---------- SETTERS ----------
-    public void setId(int id) {
-        this.id = id;
+    public void setSapo(String sapo) {
+        this.sapo = sapo;
     }
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPuhelinnumero(String puhelinnumero) {
+        this.puhelinnumero = puhelinnumero;
     }
 
-    public void setPuhelin(String puhelin) {
-        this.puhelin = puhelin;
+    public void setOsoite(String osoite) {
+        this.osoite = osoite;
+    }
+
+    public boolean hasValidSapo() {
+        return sapo != null
+                && !sapo.trim().isEmpty()
+                && sapo.contains("@");
+    }
+
+    public boolean isValid() {
+        return nimi != null && !nimi.trim().isEmpty()
+                && sapo != null && !sapo.trim().isEmpty()
+                && puhelinnumero != null && !puhelinnumero.trim().isEmpty()
+                && osoite != null && !osoite.trim().isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return nimi + " (" + sapo + ")";
     }
 }
