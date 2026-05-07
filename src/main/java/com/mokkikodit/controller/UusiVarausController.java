@@ -19,35 +19,30 @@ public class UusiVarausController {
     @FXML private DatePicker alkuDatePicker;
     @FXML private DatePicker loppuDatePicker;
 
-    // Injected instead of new
     private VarausService varausService;
+
+    public void setVarausService(VarausService varausService) {
+        this.varausService = varausService;
+    }
 
     @FXML
     private void cancel(ActionEvent event) {
         close(event);
     }
 
-    public void setVarausService(VarausService varausService) {
-        this.varausService = varausService;
-    }
-
-    // =========================
-    // CONFIRM
-    // =========================
     @FXML
     private void vahvista(ActionEvent event) {
 
         try {
             validateInputs();
 
-            Varaus v = new Varaus(
-                    0,
-                    Integer.parseInt(asiakasField.getText().trim()),
-                    Integer.parseInt(mokkiField.getText().trim()),
-                    alkuDatePicker.getValue(),
-                    loppuDatePicker.getValue(),
-                    "VARATTU"
-            );
+            Varaus v = new Varaus();
+            v.setAsiakasEmail(asiakasField.getText().trim()); // FIX: String, not int
+            v.setMokkiId(Integer.parseInt(mokkiField.getText().trim()));
+            v.setAlkuPvm(alkuDatePicker.getValue());
+            v.setLoppuPvm(loppuDatePicker.getValue());
+            v.setTila("VARATTU");
+            v.setKokonaissumma(0.0);
 
             varausService.addVaraus(v);
 
@@ -62,9 +57,6 @@ public class UusiVarausController {
         }
     }
 
-    // =========================
-    // VALIDATION
-    // =========================
     private void validateInputs() {
 
         if (varausService == null) {
@@ -76,12 +68,10 @@ public class UusiVarausController {
             throw new IllegalArgumentException("Täytä kaikki kentät.");
         }
 
-        // numeric check
         try {
-            Integer.parseInt(asiakasField.getText().trim());
             Integer.parseInt(mokkiField.getText().trim());
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Asiakas- ja mökki-ID pitää olla numero.");
+            throw new IllegalArgumentException("Mökki-ID pitää olla numero.");
         }
 
         LocalDate alku = alkuDatePicker.getValue();
@@ -96,9 +86,6 @@ public class UusiVarausController {
         }
     }
 
-    // =========================
-    // CLOSE WINDOW
-    // =========================
     private void close(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource())
                 .getScene()

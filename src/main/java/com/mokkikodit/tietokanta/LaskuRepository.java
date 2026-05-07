@@ -1,6 +1,7 @@
 package com.mokkikodit.tietokanta;
 
 import com.mokkikodit.mallit.Lasku;
+import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -22,9 +23,9 @@ public class LaskuRepository {
 
             while (rs.next()) {
 
-                // ✔ create minimal Varaus object (only id for now)
+                // ✔ FIX: correct method name
                 Varaus v = new Varaus();
-                v.setId(rs.getInt("reservation_id"));
+                v.setVarausId(rs.getInt("reservation_id"));
 
                 Lasku l = new Lasku(
                         rs.getInt("lasku_ID"),
@@ -81,9 +82,7 @@ public class LaskuRepository {
     public void save(Lasku l) {
 
         String sql =
-                "INSERT INTO lasku " +
-                        "(tila, erapaiva, summa, varaus_ID) " +
-                        "VALUES (?, ?, ?, ?)";
+                "INSERT INTO lasku (tila, erapaiva, summa, varaus_ID) VALUES (?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -103,12 +102,7 @@ public class LaskuRepository {
     public void update(Lasku l) {
 
         String sql =
-                "UPDATE lasku SET " +
-                        "tila = ?, " +
-                        "erapaiva = ?, " +
-                        "summa = ?, " +
-                        "varaus_ID = ? " +
-                        "WHERE lasku_ID = ?";
+                "UPDATE lasku SET tila = ?, erapaiva = ?, summa = ?, varaus_ID = ? WHERE lasku_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
