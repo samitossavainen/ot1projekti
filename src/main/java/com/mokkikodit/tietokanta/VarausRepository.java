@@ -22,15 +22,19 @@ public class VarausRepository {
 
             while (rs.next()) {
                 Varaus v = new Varaus();
-                v.setId(rs.getInt("id"));
-                v.setAsiakasId(rs.getInt("customer_id"));
-                v.setMokkiId(rs.getInt("mokki_id"));
+                v.setVarausId(rs.getInt("varaus_ID"));
+                v.setAsiakasEmail(rs.getString("sapo"));
+                v.setMokkiId(rs.getInt("mokki_ID"));
+                v.setTila(rs.getString("varauksen_tila"));
+                v.setKokonaissumma(rs.getDouble("kokonaissumma"));
 
-                Date alku = rs.getDate("start_date");
-                Date loppu = rs.getDate("end_date");
+                Date alku = rs.getDate("alkamispvm");
+                Date loppu = rs.getDate("loppumispvm");
+                Date luonti = rs.getDate("luontipvm");
 
                 if (alku != null) v.setAlkuPvm(alku.toLocalDate());
                 if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
+                if (luonti != null) v.setLuontiPvm(luonti.toLocalDate());
 
                 lista.add(v);
             }
@@ -51,10 +55,11 @@ public class VarausRepository {
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setInt(1, v.getAsiakasId());
-            ps.setInt(2, v.getMokkiId());
-            ps.setDate(3, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(4, Date.valueOf(v.getLoppuPvm()));
+            ps.setString(1, v.getAsiakasEmail());
+            ps.setInt(4, v.getMokkiId());
+            ps.setDate(2, Date.valueOf(v.getAlkuPvm()));
+            ps.setDate(3, Date.valueOf(v.getLoppuPvm()));
+            ps.setDouble(5, v.getKokonaissumma());
 
             ps.executeUpdate();
 
@@ -67,16 +72,17 @@ public class VarausRepository {
     // UPDATE
     // =========================
     public void paivita(Varaus v) {
-        String sql = "UPDATE varaus SET sapo = ?, mokki_ID = ?, alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
+        String sql = "UPDATE varaus SET sapo = ?, mokki_ID = ?, varauksen_tila = ?, alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setInt(1, v.getAsiakasId());
+            ps.setString(1, v.getAsiakasEmail());
             ps.setInt(2, v.getMokkiId());
-            ps.setDate(3, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(4, Date.valueOf(v.getLoppuPvm()));
-            ps.setInt(5, v.getId());
+            ps.setString(3, v.getTila());
+            ps.setDate(4, Date.valueOf(v.getAlkuPvm()));
+            ps.setDate(5, Date.valueOf(v.getLoppuPvm()));
+            ps.setInt(6, v.getVarausId());
 
             ps.executeUpdate();
 
