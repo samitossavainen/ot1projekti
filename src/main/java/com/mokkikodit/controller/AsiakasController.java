@@ -187,6 +187,7 @@ public class AsiakasController {
 
     @FXML
     private void openNewCustomerWindow() {
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_asiakas.fxml")
@@ -202,10 +203,7 @@ public class AsiakasController {
 
             stage.sizeToScene();
             stage.setResizable(false);
-
             stage.showAndWait();
-
-            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();

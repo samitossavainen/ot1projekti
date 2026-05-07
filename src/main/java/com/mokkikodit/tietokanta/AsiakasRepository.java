@@ -7,7 +7,7 @@ import java.util.*;
 
 public class AsiakasRepository {
 
-    public List<Asiakas> haeKaikki() {
+    public List<Asiakas> findAll() {
         List<Asiakas> lista = new ArrayList<>();
 
         String sql = "SELECT * FROM asiakas";
