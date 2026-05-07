@@ -83,8 +83,8 @@ public class VarausController {
     }
 
     private void populateFields(Varaus v) {
-        varausIdLabel.setText(String.valueOf(v.getId()));
-        asiakasLabel.setText(String.valueOf(v.getAsiakasId()));
+        varausIdLabel.setText(String.valueOf(v.getVarausId()));
+        asiakasLabel.setText(String.valueOf(v.getAsiakasEmail()));
         alkuDatePicker.setValue(v.getAlkuPvm());
         loppuDatePicker.setValue(v.getLoppuPvm());
         tilaComboBox.setValue(v.getTila());
@@ -236,11 +236,11 @@ public class VarausController {
                 stage,
                 "Vahvista peruutus",
                 "Haluatko varmasti perua varauksen?",
-                "Varaus #" + selected.getId() + " perutaan."
+                "Varaus #" + selected.getVarausId() + " perutaan."
         );
 
         if (confirmed) {
-            service.deleteVaraus(selected.getId());
+            service.deleteVaraus(selected.getVarausId());
             refreshTable();
 
             showSavedStatus("Varaus peruttu");
