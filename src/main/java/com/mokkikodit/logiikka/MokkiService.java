@@ -31,18 +31,6 @@ public class MokkiService {
                     "Hinta ei voi olla negatiivinen."
             );
         }
-
-        Mokki mokki = new Mokki(
-                nimi,
-                osoite,
-                kapasiteetti,
-                hinta,
-                lisatiedot,
-                vessat,
-                huoneet
-        );
-
-        repository.save(mokki);
     }
 
     /**
