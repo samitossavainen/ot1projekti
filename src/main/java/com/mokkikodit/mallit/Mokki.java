@@ -21,30 +21,7 @@ public class Mokki {
     public Mokki() {
     }
 
-    /**
-     * Constructor for INSERT operations.
-     * ID is generated automatically by SQLite.
-     */
-    public Mokki(String nimi,
-                 String osoite,
-                 int kapasiteetti,
-                 double hinta,
-                 String lisatiedot,
-                 int vessat,
-                 int huoneet) {
 
-        this.nimi = nimi;
-        this.osoite = osoite;
-        this.kapasiteetti = kapasiteetti;
-        this.hinta = hinta;
-        this.lisatiedot = lisatiedot;
-        this.vessat = vessat;
-        this.huoneet = huoneet;
-    }
-
-    /**
-     * Constructor for SELECT/database loading.
-     */
     public Mokki(int mokkiId,
                  int tila,
                  String nimi,

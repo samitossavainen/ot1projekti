@@ -1,5 +1,8 @@
 package com.mokkikodit.controller;
 
+import com.mokkikodit.logiikka.MokkiService;
+import com.mokkikodit.mallit.Asiakas;
+import com.mokkikodit.mallit.Mokki;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,53 +16,85 @@ import com.mokkikodit.util.DialogUtil;
 
 public class MokkiController {
 
-    @FXML
-    private TableView<?> tableCabins;
+    @FXML private TableView<?> tableCabins;
 
-    @FXML
-    private TextField cabinField;
+    @FXML private TextField cabinField;
+    @FXML private TextField capacityField;
+    @FXML private TextField roomsField;
+    @FXML private TextField vessatField;
+    @FXML private TextField pricePerNightField;
+    @FXML private ComboBox<?> tilaComboBox;
+    @FXML private TextArea addressArea;
+    @FXML private TextArea lisatiedotArea;
 
-    @FXML
-    private TextField capacityField;
+    @FXML private Button editButton;
 
-    @FXML
-    private TextField roomsField;
+    @FXML private Button saveButton;
 
-    @FXML
-    private TextField vessatField;
+    @FXML private Button deleteButton;
 
-    @FXML
-    private TextField pricePerNightField;
+    @FXML private TableColumn<Asiakas, String> cabinCol;
+    @FXML private TableColumn<Asiakas, String> nameCol;
+    @FXML private TableColumn<Asiakas, String> addressCol;
+    @FXML private TableColumn<Asiakas, String> capasityCol;
+    @FXML private TableColumn<Asiakas, String> priceCol;
+    @FXML private TableColumn<Asiakas, String> roomsCol;
+    @FXML private TableColumn<Asiakas, String> bathroomsCol;
+    @FXML private TableColumn<Asiakas, String> statusCol;
 
-    @FXML
-    private ComboBox<?> tilaComboBox;
-
-    @FXML
-    private TextArea addressArea;
-
-    @FXML
-    private TextArea lisatiedotArea;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button saveButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Label statusLabel;
+    @FXML private Label statusLabel;
 
     private boolean editMode = false;
 
-    // -------------------------
-    // INIT
-    // -------------------------
+    private MokkiService service;
+
+    public void setMokkiService(MokkiService service){
+        this.service = service;
+        refreshTable();
+    }
 
     @FXML
     public void initialize() {
+
+        cabinCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getNimi()
+                ));
+
+        nameCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getSapo()
+                ));
+
+        addressCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getPuhelinnumero()
+                ));
+
+        capasityCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
+
+        priceCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
+
+        roomsCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
+
+        bathroomsCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
+
+        statusCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
@@ -69,7 +104,6 @@ public class MokkiController {
 
         // IMPORTANT: hide fields initially
         setFieldsVisible(false);
-
         setEditMode(false);
 
         tableCabins.getSelectionModel()
@@ -79,6 +113,24 @@ public class MokkiController {
                         cancelEdit();
                     }
                 });
+    }
+
+    private void refreshTable() {
+        System.out.println("refreshTable() ALKAA");
+
+        if (service == null) {
+            System.out.println("SERVICE ON NULL");
+            return;
+        }
+
+        java.util.List<Mokki> list = service.haeKaikki();
+
+        System.out.println("haeKaikki() palasi, lista = " + list);
+        System.out.println("listan koko = " + list.size());
+
+        tableCabins.getItems().setAll(); //setAll(list) oli vituillaan,joten nyt tyhjä, jotta sovellus käynnistyy. Pitää selvittää jatkossa
+
+        System.out.println("refreshTable() LOPPU");
     }
 
     // -------------------------
