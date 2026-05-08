@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import com.mokkikodit.util.DialogUtil;
-import com.mokkikodit.tietokanta.AsiakasRepository;
 import com.mokkikodit.mallit.Asiakas;
 
 public class AsiakasController {
@@ -23,6 +22,11 @@ public class AsiakasController {
     @FXML private Label emailLabel;
     @FXML private TextField phoneField;
     @FXML private TextArea addressArea;
+    @FXML private Label summaryLabel;
+
+    @FXML private Label nimiLabel;
+    @FXML private Label phoneLabel;
+    @FXML private Label addressLabel;
 
     @FXML private Button editButton;
     @FXML private Button saveButton;
@@ -112,11 +116,23 @@ public class AsiakasController {
         System.out.println("refreshTable() LOPPU");
     }
 
-
     private void populateFields(Asiakas a) {
-        nimiField.setText(a.getNimi());
+
+        nimiLabel.setText(a.getNimi());
         emailLabel.setText(a.getSapo());
+        phoneLabel.setText(a.getPuhelinnumero() != null ? a.getPuhelinnumero() : "");
+        addressLabel.setText(a.getOsoite() != null ? a.getOsoite() : "");
+
+        nimiField.setText(a.getNimi());
         phoneField.setText(a.getPuhelinnumero() != null ? a.getPuhelinnumero() : "");
+        addressArea.setText(a.getOsoite());
+
+        summaryLabel.setText(
+                a.getNimi() + " · " +
+                        a.getSapo() + " · " +
+                        a.getPuhelinnumero()
+        );
+
     }
 
     @FXML
@@ -149,8 +165,9 @@ public class AsiakasController {
 
         selected.setNimi(nimiField.getText());
         selected.setPuhelinnumero(phoneField.getText());
+        selected.setOsoite(addressArea.getText());
 
-        // service.paivita(a); // enable when implemented
+        service.paivita(selected);
 
         refreshTable();
 
@@ -203,17 +220,25 @@ public class AsiakasController {
 
     private void setEditMode(boolean editable) {
 
-        setFieldsVisible(editable);
+        // LABELIT (lukutila)
+        nimiLabel.setVisible(!editable);
+        nimiLabel.setManaged(!editable);
 
-        nimiField.setMouseTransparent(!editable);
-        phoneField.setMouseTransparent(!editable);
-        addressArea.setMouseTransparent(!editable);
+        phoneLabel.setVisible(!editable);
+        phoneLabel.setManaged(!editable);
 
-        nimiField.setFocusTraversable(editable);
-        phoneField.setFocusTraversable(editable);
-        addressArea.setFocusTraversable(editable);
+        addressLabel.setVisible(!editable);
+        addressLabel.setManaged(!editable);
 
-        emailLabel.setMouseTransparent(true);
+        // KENTÄT (muokkaus)
+        nimiField.setVisible(editable);
+        nimiField.setManaged(editable);
+
+        phoneField.setVisible(editable);
+        phoneField.setManaged(editable);
+
+        addressArea.setVisible(editable);
+        addressArea.setManaged(editable);
 
         saveButton.setVisible(editable);
         saveButton.setManaged(editable);
