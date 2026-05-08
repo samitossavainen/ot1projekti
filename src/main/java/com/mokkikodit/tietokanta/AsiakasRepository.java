@@ -21,7 +21,6 @@ public class AsiakasRepository {
             while (rs.next()) {
 
                 Asiakas a = new Asiakas();
-                a.setId(rs.getInt("id"));
                 a.setNimi(rs.getString("nimi"));
                 a.setSapo(rs.getString("sapo"));
                 a.setPuhelinnumero(rs.getString("puhelinnumero"));
@@ -50,7 +49,6 @@ public class AsiakasRepository {
 
                 if (rs.next()) {
                     Asiakas a = new Asiakas();
-                    a.setId(rs.getInt("id"));
                     a.setNimi(rs.getString("nimi"));
                     a.setSapo(rs.getString("sapo"));
                     a.setPuhelinnumero(rs.getString("puhelinnumero"));

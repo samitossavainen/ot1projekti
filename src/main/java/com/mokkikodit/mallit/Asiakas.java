@@ -2,7 +2,7 @@ package com.mokkikodit.mallit;
 
 public class Asiakas {
 
-    private int id; // ✅ FIXED: missing primary key
+    private int id;
 
     private String sapo;
     private String nimi;
