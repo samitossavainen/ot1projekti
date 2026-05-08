@@ -23,15 +23,6 @@ public class Asiakas {
         this.osoite = osoite;
     }
 
-    // ---------- ID ----------
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     // ---------- GETTERS ----------
     public String getSapo() {
         return sapo;

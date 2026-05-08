@@ -25,7 +25,7 @@ public class LaskuRepository {
 
                 // ✔ FIX: correct method name
                 Varaus v = new Varaus();
-                v.setVarausId(rs.getInt("reservation_id"));
+                v.setVarausId(rs.getInt("varaus_ID"));
 
                 Lasku l = new Lasku(
                         rs.getInt("lasku_ID"),
@@ -33,7 +33,7 @@ public class LaskuRepository {
                         null,
                         rs.getString("tila"),
                         rs.getTimestamp("aikaleima").toLocalDateTime(),
-                        rs.getDate("erapaiva").toLocalDate(),
+                        rs.getDate("eräpäivä").toLocalDate(),
                         rs.getDouble("summa")
                 );
 
@@ -66,7 +66,7 @@ public class LaskuRepository {
                             null,
                             rs.getString("tila"),
                             rs.getTimestamp("aikaleima").toLocalDateTime(),
-                            rs.getDate("erapaiva").toLocalDate(),
+                            rs.getDate("eräpäivä").toLocalDate(),
                             rs.getDouble("summa")
                     );
                 }
