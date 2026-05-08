@@ -56,10 +56,10 @@
         <TableView fx:id="tableAsiakkaat" VBox.vgrow="ALWAYS">
 
             <columns>
-                <TableColumn text="Nimi" />
-                <TableColumn text="Sähköposti" />
-                <TableColumn text="Puhelin" />
-                <TableColumn text="Osoite" />
+                <TableColumn fx:id="nimiCol" text="Nimi" />
+                <TableColumn fx:id="emailCol" text="Sähköposti" />
+                <TableColumn fx:id="phoneCol" text="Puhelin" />
+                <TableColumn fx:id="addressCol" text="Osoite" />
             </columns>
         </TableView>
 

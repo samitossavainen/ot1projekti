@@ -2,7 +2,7 @@ package com.mokkikodit.mallit;
 
 public class Asiakas {
 
-    private int id; // ✅ FIXED: missing primary key
+    private int id;
 
     private String sapo;
     private String nimi;
@@ -21,15 +21,6 @@ public class Asiakas {
         this.nimi = nimi;
         this.puhelinnumero = puhelinnumero;
         this.osoite = osoite;
-    }
-
-    // ---------- ID ----------
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     // ---------- GETTERS ----------

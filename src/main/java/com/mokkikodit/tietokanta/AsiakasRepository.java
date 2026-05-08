@@ -21,7 +21,6 @@ public class AsiakasRepository {
             while (rs.next()) {
 
                 Asiakas a = new Asiakas();
-                a.setId(rs.getInt("id"));
                 a.setNimi(rs.getString("nimi"));
                 a.setSapo(rs.getString("sapo"));
                 a.setPuhelinnumero(rs.getString("puhelinnumero"));
@@ -50,7 +49,6 @@ public class AsiakasRepository {
 
                 if (rs.next()) {
                     Asiakas a = new Asiakas();
-                    a.setId(rs.getInt("id"));
                     a.setNimi(rs.getString("nimi"));
                     a.setSapo(rs.getString("sapo"));
                     a.setPuhelinnumero(rs.getString("puhelinnumero"));
@@ -87,7 +85,7 @@ public class AsiakasRepository {
 
     public void update(Asiakas a) {
 
-        String sql = "UPDATE asiakas SET sapo=?, puhelinnumero=?, nimi=?, osoite=? WHERE id=?";
+        String sql = "UPDATE asiakas SET sapo=?, puhelinnumero=?, nimi=?, osoite=? WHERE sapo=?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -96,7 +94,7 @@ public class AsiakasRepository {
             ps.setString(2, a.getPuhelinnumero());
             ps.setString(3, a.getNimi());
             ps.setString(4, a.getOsoite());
-            ps.setInt(5, a.getId());
+            ps.setString(5, a.getSapo());
 
             ps.executeUpdate();
 

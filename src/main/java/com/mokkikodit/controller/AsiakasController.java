@@ -1,5 +1,6 @@
 package com.mokkikodit.controller;
 
+import com.mokkikodit.logiikka.AsiakasService;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,14 +28,45 @@ public class AsiakasController {
     @FXML private Button saveButton;
     @FXML private Button deleteButton;
 
+    @FXML private TableColumn<Asiakas, String> nimiCol;
+    @FXML private TableColumn<Asiakas, String> emailCol;
+    @FXML private TableColumn<Asiakas, String> phoneCol;
+    @FXML private TableColumn<Asiakas, String> addressCol;
+
     @FXML private Label statusLabel;
 
     private boolean editMode = false;
 
-    private final AsiakasRepository repo = new AsiakasRepository();
+    private AsiakasService service;
+
+    public void setAsiakasService(AsiakasService service) {
+        this.service = service;
+        refreshTable();
+    }
 
     @FXML
     public void initialize() {
+
+
+        nimiCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getNimi()
+                ));
+
+        emailCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getSapo()
+                ));
+
+        phoneCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getPuhelinnumero()
+                ));
+
+        addressCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getOsoite()
+                ));
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
@@ -44,8 +76,6 @@ public class AsiakasController {
 
         setFieldsVisible(false);
         setEditMode(false);
-
-        refreshTable();
 
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
@@ -59,12 +89,29 @@ public class AsiakasController {
                         cancelEdit();
                     }
                 });
+
+        System.out.println("Sarakkeita: " + tableAsiakkaat.getColumns().size());
+
     }
 
-    // FIXED: findAll() instead of haeKaikki()
     private void refreshTable() {
-        tableAsiakkaat.getItems().setAll(repo.findAll());
+        System.out.println("refreshTable() ALKAA");
+
+        if (service == null) {
+            System.out.println("SERVICE ON NULL");
+            return;
+        }
+
+        java.util.List<Asiakas> list = service.haeKaikki();
+
+        System.out.println("haeKaikki() palasi, lista = " + list);
+        System.out.println("listan koko = " + list.size());
+
+        tableAsiakkaat.getItems().setAll(list);
+
+        System.out.println("refreshTable() LOPPU");
     }
+
 
     private void populateFields(Asiakas a) {
         nimiField.setText(a.getNimi());
@@ -103,7 +150,7 @@ public class AsiakasController {
         selected.setNimi(nimiField.getText());
         selected.setPuhelinnumero(phoneField.getText());
 
-        // repo.update(selected); // enable when implemented
+        // service.paivita(a); // enable when implemented
 
         refreshTable();
 
@@ -134,7 +181,7 @@ public class AsiakasController {
 
         if (confirmed) {
 
-            // repo.delete(selected.getId()); // enable when implemented
+            // service.poista(selected); // enable when implemented
 
             tableAsiakkaat.getItems().remove(selected);
 
