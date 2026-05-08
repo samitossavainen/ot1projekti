@@ -1,5 +1,7 @@
 package com.mokkikodit.controller;
 
+import com.mokkikodit.logiikka.AsiakasService;
+import com.mokkikodit.tietokanta.AsiakasRepository;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,13 +59,26 @@ public class MainController {
 
     private void loadView(String fxmlPath) {
         try {
-            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent view = loader.load();
+
+            Object controller = loader.getController();
+
+            if (controller instanceof AsiakasController) {
+                ((AsiakasController) controller).setAsiakasService(
+                        new AsiakasService(new AsiakasRepository())
+                );
+            }
+
             contentArea.getChildren().setAll(view);
+
         } catch (IOException e) {
             e.printStackTrace();
             contentArea.getChildren().clear();
         }
     }
+
     private void setActive(Button activeButton) {
 
         btnVaraukset.getStyleClass().remove("nav-button-active");
