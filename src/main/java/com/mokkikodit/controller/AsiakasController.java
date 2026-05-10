@@ -2,6 +2,8 @@ package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import com.mokkikodit.util.DialogUtil;
 import com.mokkikodit.mallit.Asiakas;
+import javafx.collections.transformation.FilteredList;
 
 public class AsiakasController {
 
@@ -22,6 +25,8 @@ public class AsiakasController {
     @FXML private TextField phoneField;
     @FXML private TextArea addressArea;
     @FXML private Label summaryLabel;
+    @FXML private Label addCustomerStatusLabel;
+    @FXML private TextField searchField;
 
     @FXML private Label nimiLabel;
     @FXML private Label phoneLabel;
@@ -44,6 +49,12 @@ public class AsiakasController {
 
     private Asiakas selectedAsiakas;
     private Asiakas muokattavaAsiakas;
+    private Asiakas viimeksiLisattyAsiakas;
+
+    private final ObservableList<Asiakas> asiakkaat =
+            FXCollections.observableArrayList();
+
+    private FilteredList<Asiakas> filteredAsiakkaat;
 
     public void setAsiakasService(AsiakasService service) {
         this.service = service;
@@ -99,14 +110,70 @@ public class AsiakasController {
             }
         });
 
+        filteredAsiakkaat = new FilteredList<>(asiakkaat, a -> true);
+        tableAsiakkaat.setItems(filteredAsiakkaat);
+
+        //Korostetaan juuri lisätyn asiakkaan rivi
+        tableAsiakkaat.setRowFactory(tv -> {
+            TableRow<Asiakas> row = new TableRow<>();
+
+            PauseTransition clear = new PauseTransition(Duration.seconds(2));
+
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                row.setStyle("");
+
+                if (newItem != null && newItem == viimeksiLisattyAsiakas) {
+                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
+
+                    clear.setOnFinished(e -> {
+                        row.setStyle("");
+                        if (viimeksiLisattyAsiakas == newItem) {
+                            viimeksiLisattyAsiakas = null;
+                        }
+                    });
+
+                    clear.playFromStart();
+                }
+            });
+
+            return row;
+        });
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+
+            String search = newValue == null
+                    ? ""
+                    : newValue.toLowerCase().trim();
+
+            filteredAsiakkaat.setPredicate(asiakas -> {
+
+                if (search.isEmpty()) {
+                    return true;
+                }
+
+                return (asiakas.getNimi() != null &&
+                        asiakas.getNimi().toLowerCase().contains(search))
+                        || (asiakas.getSapo() != null &&
+                        asiakas.getSapo().toLowerCase().contains(search))
+                        || (asiakas.getPuhelinnumero() != null &&
+                        asiakas.getPuhelinnumero().toLowerCase().contains(search))
+                        || (asiakas.getOsoite() != null &&
+                        asiakas.getOsoite().toLowerCase().contains(search));
+            });
+        });
+    }
+
+    @FXML
+    private void refreshView() {
+
+        if (editMode) return;
+
+        searchField.clear();
+        refreshTable();
     }
 
     private void refreshTable() {
-
         if (service == null) return;
-
-        java.util.List<Asiakas> list = service.haeKaikki();
-        tableAsiakkaat.getItems().setAll(list);
+        asiakkaat.setAll(service.haeKaikki());
     }
 
     private void populateFields(Asiakas a) {
@@ -157,6 +224,8 @@ public class AsiakasController {
 
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
+
+        searchField.setDisable(true);
     }
 
     private void cancelEdit() {
@@ -168,6 +237,9 @@ public class AsiakasController {
 
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+
+        searchField.setDisable(false);
+        searchField.clear();
     }
 
     @FXML
@@ -212,10 +284,11 @@ public class AsiakasController {
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
         populateFields(selectedAsiakas);
-        tableAsiakkaat.refresh();
-
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
+
+        searchField.setDisable(false);
+        searchField.clear();
     }
 
     @FXML
@@ -238,7 +311,7 @@ public class AsiakasController {
 
             // service.poista(selectedAsiakas);
 
-            tableAsiakkaat.getItems().remove(selectedAsiakas);
+            asiakkaat.remove(selectedAsiakas);
 
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
@@ -287,25 +360,52 @@ public class AsiakasController {
     @FXML
     private void openNewCustomerWindow() {
 
+        if (editMode) return;
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_asiakas.fxml")
             );
             Parent root = loader.load();
+            UusiAsiakasController dialogController = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Uusi asiakas");
-
             stage.initOwner(tableAsiakkaat.getScene().getWindow());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
-
             stage.sizeToScene();
             stage.setResizable(false);
+
             stage.showAndWait();
+
+            if (dialogController.isAsiakasLisatty()) {
+
+                refreshTable();
+
+                if (!asiakkaat.isEmpty()) {
+                    viimeksiLisattyAsiakas =
+                            asiakkaat.get(asiakkaat.size() - 1);
+                }
+                showAddCustomerStatus("Asiakas lisätty");
+                addCustomerStatusLabel.setStyle("-fx-text-fill: #1e7f43;");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    //Näytetään käyttäjälle että asiakas lisättiin onnistuneesti
+    private void showAddCustomerStatus(String text) {
+        addCustomerStatusLabel.setText(text);
+        addCustomerStatusLabel.setVisible(true);
+        addCustomerStatusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            addCustomerStatusLabel.setVisible(false);
+            addCustomerStatusLabel.setManaged(false);
+        });
+        pause.play();
     }
 }

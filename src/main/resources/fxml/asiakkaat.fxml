@@ -40,15 +40,22 @@
                 <HBox spacing="10.0">
                     <children>
                         <TextField fx:id="searchField" promptText="Hae asiakkaita..." HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" text="Hae" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshView" text="Päivitä" />
                     </children>
                 </HBox>
-
-                <Button fx:id="addCustomerButton" mnemonicParsing="false" onAction="#openNewCustomerWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi asiakas">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                      <Button fx:id="uusiAsiakasButton" mnemonicParsing="false" onAction="#openNewCustomerWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi asiakas">
+                          <font>
+                              <Font name="System Bold" size="14.0" />
+                          </font>
+                      </Button>
+                  <Label fx:id="addCustomerStatusLabel" managed="false" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+               </children>
+            </HBox>
             </children>
         </VBox>
 
