@@ -77,7 +77,10 @@
                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCustomer" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista asiakas" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän asiakkaan nimi) · (sähköposti) · (puh numero)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
             <HBox>
                 <children>
@@ -99,15 +102,15 @@
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
-                    <Label fx:id="nimiLabel" text="-" GridPane.columnIndex="1" />
+                    <Label fx:id="nimiLabel" GridPane.columnIndex="1" />
                     <TextField fx:id="nimiField" managed="false" prefWidth="200.0" visible="false" GridPane.columnIndex="1" />
                     <Label text="Puhelin:" GridPane.rowIndex="3" />
                     <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-                    <Label fx:id="phoneLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="phoneLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <Label fx:id="addressLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="addressLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     <TextArea fx:id="addressArea" minHeight="45.0" prefHeight="45.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                    <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="emailLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />

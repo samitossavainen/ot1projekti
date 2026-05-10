@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import com.mokkikodit.util.DialogUtil;
 import com.mokkikodit.mallit.Asiakas;
 
@@ -43,6 +42,9 @@ public class AsiakasController {
 
     private AsiakasService service;
 
+    private Asiakas selectedAsiakas;
+    private Asiakas muokattavaAsiakas;
+
     public void setAsiakasService(AsiakasService service) {
         this.service = service;
         refreshTable();
@@ -74,46 +76,37 @@ public class AsiakasController {
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
-
-        editMode = false;
         editButton.setText("Muokkaa");
 
-        setFieldsVisible(false);
         setEditMode(false);
+
+        tableAsiakkaat.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
 
+                    selectedAsiakas = newSelection;
+
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
-
-                    if (editMode && newSelection == null) {
-                        cancelEdit();
-                    }
                 });
 
-        System.out.println("Sarakkeita: " + tableAsiakkaat.getColumns().size());
+        tableAsiakkaat.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
+            if (editMode) {
+                event.consume();
+            }
+        });
 
     }
 
     private void refreshTable() {
-        System.out.println("refreshTable() ALKAA");
 
-        if (service == null) {
-            System.out.println("SERVICE ON NULL");
-            return;
-        }
+        if (service == null) return;
 
         java.util.List<Asiakas> list = service.haeKaikki();
-
-        System.out.println("haeKaikki() palasi, lista = " + list);
-        System.out.println("listan koko = " + list.size());
-
         tableAsiakkaat.getItems().setAll(list);
-
-        System.out.println("refreshTable() LOPPU");
     }
 
     private void populateFields(Asiakas a) {
@@ -137,12 +130,29 @@ public class AsiakasController {
 
     @FXML
     private void toggleEdit() {
+
+        if (selectedAsiakas == null) return;
+
+
         if (!editMode) enterEditMode();
         else cancelEdit();
     }
 
     private void enterEditMode() {
         editMode = true;
+
+        // Luodaan muokattava kopio asiakkaasta
+        muokattavaAsiakas = new Asiakas();
+        muokattavaAsiakas.setNimi(selectedAsiakas.getNimi());
+        muokattavaAsiakas.setPuhelinnumero(selectedAsiakas.getPuhelinnumero());
+        muokattavaAsiakas.setOsoite(selectedAsiakas.getOsoite());
+        muokattavaAsiakas.setSapo(selectedAsiakas.getSapo());
+
+        // Näytetään kopion tiedot kentissä
+        nimiField.setText(muokattavaAsiakas.getNimi());
+        phoneField.setText(muokattavaAsiakas.getPuhelinnumero());
+        addressArea.setText(muokattavaAsiakas.getOsoite());
+
         setEditMode(true);
 
         editButton.setText("Peru muokkaus");
@@ -151,6 +161,9 @@ public class AsiakasController {
 
     private void cancelEdit() {
         editMode = false;
+        muokattavaAsiakas = null;
+
+        populateFields(selectedAsiakas);
         setEditMode(false);
 
         editButton.setText("Muokkaa");
@@ -160,22 +173,46 @@ public class AsiakasController {
     @FXML
     private void saveChanges() {
 
-        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (muokattavaAsiakas == null) return;
 
-        selected.setNimi(nimiField.getText());
-        selected.setPuhelinnumero(phoneField.getText());
-        selected.setOsoite(addressArea.getText());
+        // Päivitetään kopio asiakas oliosta
+        muokattavaAsiakas.setNimi(nimiField.getText());
+        muokattavaAsiakas.setPuhelinnumero(phoneField.getText());
+        muokattavaAsiakas.setOsoite(addressArea.getText());
 
-        service.paivita(selected);
+        try {
+            service.paivita(muokattavaAsiakas);
+        } catch (IllegalArgumentException e) {
 
-        refreshTable();
+            statusLabel.setText("Täytä puuttuvat tiedot");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+            statusLabel.setVisible(true);
+            statusLabel.setManaged(true);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(ev -> {
+                statusLabel.setVisible(false);
+                statusLabel.setManaged(false);
+            });
+            pause.play();
+
+            return;
+        }
+
+        selectedAsiakas.setNimi(muokattavaAsiakas.getNimi());
+        selectedAsiakas.setPuhelinnumero(muokattavaAsiakas.getPuhelinnumero());
+        selectedAsiakas.setOsoite(muokattavaAsiakas.getOsoite());
+
+        muokattavaAsiakas = null;
 
         editMode = false;
         setEditMode(false);
 
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+
+        populateFields(selectedAsiakas);
+        tableAsiakkaat.refresh();
 
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
@@ -184,8 +221,9 @@ public class AsiakasController {
     @FXML
     private void deleteCustomer() {
 
-        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (editMode) return;
+
+        if (selectedAsiakas == null) return;
 
         Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
 
@@ -193,29 +231,18 @@ public class AsiakasController {
                 stage,
                 "Vahvista poisto",
                 "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakas " + selected.getSapo() + " poistetaan."
+                "Asiakas \"" + selectedAsiakas.getNimi() + "\" (" + selectedAsiakas.getSapo() + ") poistetaan."
         );
 
         if (confirmed) {
 
-            // service.poista(selected); // enable when implemented
+            // service.poista(selectedAsiakas);
 
-            tableAsiakkaat.getItems().remove(selected);
+            tableAsiakkaat.getItems().remove(selectedAsiakas);
 
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         }
-    }
-
-    private void setFieldsVisible(boolean visible) {
-
-        nimiField.setVisible(visible);
-        phoneField.setVisible(visible);
-        addressArea.setVisible(visible);
-
-        nimiField.setManaged(visible);
-        phoneField.setManaged(visible);
-        addressArea.setManaged(visible);
     }
 
     private void setEditMode(boolean editable) {
