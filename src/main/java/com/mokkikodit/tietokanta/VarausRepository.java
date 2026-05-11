@@ -3,6 +3,7 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
