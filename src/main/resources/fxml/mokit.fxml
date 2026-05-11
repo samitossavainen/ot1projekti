@@ -83,13 +83,14 @@
         <TableView fx:id="tableCabins" VBox.vgrow="ALWAYS">
 
             <columns>
-                <TableColumn text="Mökin ID" />
-                <TableColumn text="Nimi" />
-                <TableColumn text="Kapasiteetti" />
-                <TableColumn text="Huoneet" />
-                <TableColumn text="Vessat" />
-                <TableColumn text="Hinta / Yö" />
-                <TableColumn text="Tila" />
+                <TableColumn fx:id="cabinCol" text="Mökin ID" />
+                <TableColumn fx:id="nameCol" text="Nimi" />
+                <TableColumn fx:id="addressCol" text="Osoite" />
+                <TableColumn fx:id="capasityCol" text="Kapasiteetti" />
+                <TableColumn fx:id="roomsCol" text="Huoneet" />
+                <TableColumn fx:id="bathroomsCol" text="Vessat" />
+                <TableColumn fx:id="priceCol" text="Hinta / Yö" />
+                <TableColumn fx:id="statusCol" text="Tila" />
             </columns>
         </TableView>
 
