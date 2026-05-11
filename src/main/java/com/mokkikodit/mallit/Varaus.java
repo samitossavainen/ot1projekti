@@ -10,11 +10,11 @@ public class Varaus {
     private String asiakasEmail;
     private int mokkiId;
 
-    private Date alkuPvm;
-    private Date loppuPvm;
+    private LocalDate alkuPvm;
+    private LocalDate loppuPvm;
 
     private String tila;
-    private Date luontiPvm;
+    private LocalDate luontiPvm;
 
     private double kokonaissumma;
 
@@ -26,10 +26,10 @@ public class Varaus {
     public Varaus(int varausId,
                   String asiakasEmail,
                   int mokkiId,
-                  Date alkuPvm,
-                  Date loppuPvm,
+                  LocalDate alkuPvm,
+                  LocalDate loppuPvm,
                   String tila,
-                  Date luontiPvm,
+                  LocalDate luontiPvm,
                   double kokonaissumma) {
 
         this.varausId = varausId;
@@ -55,11 +55,11 @@ public class Varaus {
         return mokkiId;
     }
 
-    public Date getAlkuPvm() {
+    public LocalDate getAlkuPvm() {
         return alkuPvm;
     }
 
-    public Date getLoppuPvm() {
+    public LocalDate getLoppuPvm() {
         return loppuPvm;
     }
 
@@ -67,7 +67,7 @@ public class Varaus {
         return tila;
     }
 
-    public Date getLuontiPvm() {
+    public LocalDate getLuontiPvm() {
         return luontiPvm;
     }
 
@@ -88,11 +88,11 @@ public class Varaus {
         this.mokkiId = mokkiId;
     }
 
-    public void setAlkuPvm(Date alkuPvm) {
+    public void setAlkuPvm(LocalDate alkuPvm) {
         this.alkuPvm = alkuPvm;
     }
 
-    public void setLoppuPvm(Date loppuPvm) {
+    public void setLoppuPvm(LocalDate loppuPvm) {
         this.loppuPvm = loppuPvm;
     }
 
@@ -105,7 +105,7 @@ public class Varaus {
     }
 
     // DB handles this, but setter kept for mapping flexibility
-    public void setLuontiPvm(Date luontiPvm) {
+    public void setLuontiPvm(LocalDate luontiPvm) {
         this.luontiPvm = luontiPvm;
     }
 }

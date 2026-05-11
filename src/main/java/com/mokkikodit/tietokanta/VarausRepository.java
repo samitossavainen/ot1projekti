@@ -3,6 +3,7 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class VarausRepository {
 
                 if (alku != null) v.setAlkuPvm(alku.toLocalDate());
                 if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
-                if (luonti != null) v.setLuontiPvm(luonti.toLocalDateTime());
+                if (luonti != null) v.setLuontiPvm(luonti);
 
                 lista.add(v);
             }
