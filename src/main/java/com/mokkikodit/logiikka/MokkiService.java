@@ -51,6 +51,11 @@ public class MokkiService {
         return repository.findAll();
     }
 
+    public void lisaa(Mokki m){
+        validate(m);
+        repository.save(m);
+    }
+
     public void paivita(Mokki m) {
         validate(m);
         repository.update(m);
