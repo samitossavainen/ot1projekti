@@ -29,6 +29,8 @@ public class MokkiController {
     @FXML private TextArea addressArea;
     @FXML private TextArea lisatiedotArea;
     @FXML private TextField searchField;
+    @FXML private DatePicker alkuDatePicker;
+    @FXML private DatePicker loppuDatePicker;
 
     @FXML private Label nimiLabel;
     @FXML private Label addressLabel;
