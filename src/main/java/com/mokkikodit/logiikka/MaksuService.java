@@ -1,7 +1,10 @@
 package com.mokkikodit.logiikka;
 
 import com.mokkikodit.mallit.Maksu;
+import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.tietokanta.MaksuRepository;
+
+import java.util.List;
 
 public class MaksuService {
 
@@ -11,6 +14,10 @@ public class MaksuService {
         this.repo = repo;
     }
 
+    public List<Maksu> haeKaikki() {
+
+        return repo.findAll();
+    }
     /**
      * Saves payment to database.
      * DB handles:
