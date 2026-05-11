@@ -73,7 +73,7 @@
                 </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                      <Button mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi mökki">
+                      <Button fx:id="uusiMokkiButton" mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi mökki">
                           <font>
                               <Font name="System Bold" size="14.0" />
                           </font>
@@ -111,7 +111,7 @@
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font></Label>
-                    <Label fx:id="cabinIdLabel" text="-" textFill="#574520">
+                    <Label fx:id="cabinIdLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
@@ -119,7 +119,7 @@
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
-                    <Label fx:id="tilaLabel" text="(tähän mökin tila)" textFill="#574520">
+                    <Label fx:id="tilaLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
@@ -129,7 +129,10 @@
                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
             <HBox>
                 <children>
@@ -139,7 +142,7 @@
                         </font>
                     </Label>
                     <Region />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" visible="false" />
                 </children>
             </HBox>
             <GridPane hgap="10.0" vgap="8.0">
@@ -174,7 +177,7 @@
                <Label fx:id="roomsLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                <Label fx:id="vessatLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                <Label fx:id="pricePerNightLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-               <Label fx:id="tilaOtsikossaLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               <Label GridPane.columnIndex="1" GridPane.rowIndex="6" />
                <Label fx:id="lisatiedotLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
             <columnConstraints>

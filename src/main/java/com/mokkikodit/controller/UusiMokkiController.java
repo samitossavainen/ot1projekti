@@ -21,18 +21,11 @@ public class UusiMokkiController {
     @FXML private TextField pricePerNightField;
     @FXML private TextArea addressArea;
     @FXML private TextArea lisatiedotArea;
-    @FXML private ComboBox<Integer> tilaComboBox;
 
     private final MokkiService service =
             new MokkiService(new MokkiRepository());
 
     private boolean mokkiLisatty = false;
-
-    @FXML
-    public void initialize() {
-        tilaComboBox.getItems().setAll(0, 1);
-        tilaComboBox.setValue(1); // oletuksena aktiivinen
-    }
 
     @FXML
     private void cancel(ActionEvent event) {
@@ -52,7 +45,6 @@ public class UusiMokkiController {
             m.setHinta(Double.parseDouble(pricePerNightField.getText()));
             m.setOsoite(addressArea.getText());
             m.setLisatiedot(lisatiedotArea.getText());
-            m.setTila(tilaComboBox.getValue());
 
             service.lisaa(m);
             mokkiLisatty = true;
