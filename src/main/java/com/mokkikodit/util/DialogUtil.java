@@ -5,31 +5,57 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Apuluokka uudelleenkäytettävien valintaikkunoiden näyttämiseen.
+ * Keskittää yleiset hälytystyypit, jotta vältetään koodin päällekkäisyydet
+ * sovelluksen eri osissa.
+ */
 public class DialogUtil {
 
-    // INFO DIALOG
+    /**
+     * Näyttää tietoruudun, jossa on viesti.
+     *
+     * @param msg käyttäjälle näytettävä tekstinä
+     */
     public static void showInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
         alert.setTitle("Info");
-        alert.setHeaderText(null);
+        alert.setHeaderText(null); // Tässä sovellustyylissä ei käytetä otsikkoa
         alert.setContentText(msg);
+
         alert.showAndWait();
     }
 
-    // ERROR DIALOG
+    /**
+     * Näyttää virheilmoituksen sisältävän valintaikkunan.
+     *
+     * @param msg näytettävä virheilmoitus
+     */
     public static void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+
         alert.setTitle("Virhe");
-        alert.setHeaderText(null);
+        alert.setHeaderText(null); // Pidetään käyttöliittymä yksinkertaisena: ei käytetä otsikkokenttää
         alert.setContentText(msg);
+
         alert.showAndWait();
     }
 
-    // CONFIRM DIALOG
+    /**
+     * Näyttää vahvistusikkunan, jossa on vaihtoehdot Kyllä/Ei.
+     *
+     * @param owner   pääikkuna (varmistaa, että modaalinen käyttäytyminen on sidottu pääkäyttöliittymään)
+     * @param title   valintaikkunan otsikko
+     * @param header  valinnainen otsikkoteksti, joka näkyy sisällön yläpuolella
+     * @param content käyttäjälle näytettävä pääviesti
+     * @return true, jos käyttäjä valitsee ”Kyllä”, muuten false
+     */
     public static boolean confirm(Stage owner, String title, String header, String content) {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
+        // Liitä valintaikkuna pääikkunaan ja estä vuorovaikutus muiden ikkunoiden kanssa
         alert.initOwner(owner);
         alert.initModality(Modality.WINDOW_MODAL);
 
@@ -40,8 +66,10 @@ public class DialogUtil {
         ButtonType yes = new ButtonType("Kyllä");
         ButtonType no = new ButtonType("Ei");
 
+        // Korvaa oletuspainikkeet sovelluskohtaisilla painikkeilla
         alert.getButtonTypes().setAll(no, yes);
 
+        // Palauta true vain, jos käyttäjä valitsee ”Kyllä”
         return alert.showAndWait()
                 .filter(response -> response == yes)
                 .isPresent();

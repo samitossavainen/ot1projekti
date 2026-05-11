@@ -11,4 +11,5 @@ module com.mokkikodit {
     exports com.mokkikodit.controller;
     exports com.mokkikodit.mallit;
     exports com.mokkikodit.logiikka;
+    exports com.mokkikodit.tietokanta;
 }
