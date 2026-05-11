@@ -38,7 +38,6 @@ public class MokkiController {
     @FXML private Label roomsLabel;
     @FXML private Label tilaLabel;
     @FXML private Label lisatiedotLabel;
-    @FXML private Label tilaOtsikkoLabel;
     @FXML private Label summaryLabel;
     @FXML private Label addCabinStatusLabel;
     @FXML private Label cabinIdLabel;
@@ -214,22 +213,29 @@ public class MokkiController {
 
         if (m == null) return;
 
-        // TextFieldit
-        nimiField.setText(String.valueOf(m.getNimi()));
+        // LABELIT (lukutila)
+        nimiLabel.setText(m.getNimi());
+        capacityLabel.setText(String.valueOf(m.getKapasiteetti()));
+        roomsLabel.setText(String.valueOf(m.getHuoneet()));
+        vessatLabel.setText(String.valueOf(m.getVessat()));
+        pricePerNightLabel.setText(m.getHinta() + " €/yö");
+        addressLabel.setText(m.getOsoite() != null ? m.getOsoite() : "");
+        lisatiedotLabel.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
+        tilaLabel.setText(m.getTila() == 1 ? "Käytössä" : "Poissa käytöstä");
+        cabinIdLabel.setText(String.valueOf(m.getMokkiId()));
+
+        // KENTÄT (muokkaus)
+        nimiField.setText(m.getNimi());
         capacityField.setText(String.valueOf(m.getKapasiteetti()));
         roomsField.setText(String.valueOf(m.getHuoneet()));
         vessatField.setText(String.valueOf(m.getVessat()));
         pricePerNightField.setText(String.valueOf(m.getHinta()));
-
-        // TextAreat
         addressArea.setText(m.getOsoite() != null ? m.getOsoite() : "");
         lisatiedotArea.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
-
-        // ComboBox (olettaen että tila on int tai enum)
         tilaComboBox.setValue(m.getTila());
 
-        // Yhteenveto- / statuslabel
-        statusLabel.setText(
+        // YHTEENVETO
+        summaryLabel.setText(
                 m.getNimi() + " · " +
                         m.getKapasiteetti() + " hlö · " +
                         m.getHinta() + " €/yö"
