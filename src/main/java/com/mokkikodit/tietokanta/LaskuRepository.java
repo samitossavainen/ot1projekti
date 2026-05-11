@@ -75,30 +75,32 @@ public class LaskuRepository {
         }
     }
 
-    public void update(Lasku l) {
+    public void update(Lasku m) {
 
         String sql =
-                "UPDATE laskut SET tila = ?, erapaiva = ?, summa = ?, varaus_ID = ? WHERE lasku_ID = ?";
+                "UPDATE laskut " +
+                        "SET tila=?, eräpäivä=?, summa=? " +
+                        "WHERE lasku_ID=?";
 
-        try (Connection yhteys = Tietokanta.getYhteys();
-             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+        try (Connection c = Tietokanta.getYhteys();
+             PreparedStatement ps = c.prepareStatement(sql)) {
 
-            ps.setString(1, l.getTila());
-            ps.setString(2, l.getErapaiva().toString());
-            ps.setDouble(3, l.getSumma());
-            ps.setInt(4, l.getVarausId());
-            ps.setInt(5, l.getLaskuId());
+            ps.setString(1, m.getTila());
+            ps.setString(2, m.getErapaiva().toString());
+            ps.setDouble(3, m.getSumma());
+            ps.setInt(4, m.getLaskuId());
+
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Laskun päivitys epäonnistui", e);
+            e.printStackTrace();
         }
     }
 
     public void delete(int id) {
 
-        String sql = "DELETE FROM lasku WHERE lasku_ID = ?";
+        String sql = "DELETE FROM laskut WHERE lasku_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
