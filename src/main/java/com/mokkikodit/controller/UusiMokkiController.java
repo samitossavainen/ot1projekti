@@ -1,11 +1,31 @@
 package com.mokkikodit.controller;
 
+import com.mokkikodit.logiikka.MokkiService;
+import com.mokkikodit.mallit.Mokki;
+import com.mokkikodit.tietokanta.MokkiRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class UusiMokkiController {
+
+    @FXML private TextField nimiField;
+    @FXML private TextField capacityField;
+    @FXML private TextField roomsField;
+    @FXML private TextField vessatField;
+    @FXML private TextField pricePerNightField;
+    @FXML private TextArea addressArea;
+    @FXML private TextArea lisatiedotArea;
+
+    private final MokkiService service =
+            new MokkiService(new MokkiRepository());
+
+    private boolean mokkiLisatty = false;
 
     @FXML
     private void cancel(ActionEvent event) {
@@ -14,12 +34,45 @@ public class UusiMokkiController {
 
     @FXML
     private void create(ActionEvent event) {
-        // Tässä EI vielä luoda varausta
-        close(event);
+
+        Mokki m = new Mokki();
+
+        try {
+            m.setNimi(nimiField.getText());
+            m.setKapasiteetti(Integer.parseInt(capacityField.getText()));
+            m.setHuoneet(Integer.parseInt(roomsField.getText()));
+            m.setVessat(Integer.parseInt(vessatField.getText()));
+            m.setHinta(Double.parseDouble(pricePerNightField.getText()));
+            m.setOsoite(addressArea.getText());
+            m.setLisatiedot(lisatiedotArea.getText());
+
+            service.lisaa(m);
+            mokkiLisatty = true;
+            close(event);
+
+        } catch (Exception e) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Virhe");
+            alert.setHeaderText("Mökkiä ei voitu lisätä");
+            alert.setContentText(
+                    e.getMessage() != null
+                            ? e.getMessage()
+                            : "Tarkista syöttämäsi arvot"
+            );
+            alert.showAndWait();
+        }
     }
 
     private void close(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Stage stage =
+                (Stage) ((Node) event.getSource())
+                        .getScene()
+                        .getWindow();
         stage.close();
+    }
+
+    public boolean isMokkiLisatty() {
+        return mokkiLisatty;
     }
 }

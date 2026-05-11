@@ -41,7 +41,7 @@
                 <!-- HAKU -->
                 <HBox spacing="10.0">
                     <children>
-                        <TextField promptText="Hae mökkejä..." HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchField" promptText="Hae mökkejä..." HBox.hgrow="ALWAYS" />
                         <Label text="Tila:">
                             <HBox.margin>
                                 <Insets />
@@ -71,11 +71,20 @@
                         <Insets />
                     </VBox.margin>
                 </HBox>
-                <Button mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi mökki">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                      <Button fx:id="uusiMokkiButton" mnemonicParsing="false" onAction="#openNewCabinWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi mökki">
+                          <font>
+                              <Font name="System Bold" size="14.0" />
+                          </font>
+                      </Button>
+                  <Label fx:id="addCabinStatusLabel">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
             </children>
         </VBox>
 
@@ -102,7 +111,7 @@
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font></Label>
-                    <Label fx:id="cabinIdLabel" text="-" textFill="#574520">
+                    <Label fx:id="cabinIdLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
@@ -110,7 +119,7 @@
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
-                    <Label fx:id="tilaLabel" text="(tähän mökin tila)" textFill="#574520">
+                    <Label fx:id="tilaLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
@@ -120,7 +129,10 @@
                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (henkilömäärä) · (hinta  €/ yö)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
             <HBox>
                 <children>
@@ -130,7 +142,7 @@
                         </font>
                     </Label>
                     <Region />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" visible="false" />
                 </children>
             </HBox>
             <GridPane hgap="10.0" vgap="8.0">
@@ -148,7 +160,7 @@
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
                     <TextArea fx:id="addressArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <TextField fx:id="cabinField" prefWidth="200.0" GridPane.columnIndex="1" />
+                    <TextField fx:id="nimiField" prefWidth="200.0" GridPane.columnIndex="1" />
                     <TextField fx:id="capacityField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <TextField fx:id="roomsField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     <TextField fx:id="vessatField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -159,6 +171,14 @@
                     <TextField fx:id="pricePerNightField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                     <Label text="Lisätiedot:" GridPane.rowIndex="7" />
                     <TextArea fx:id="lisatiedotArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+               <Label fx:id="nimiLabel" GridPane.columnIndex="1" />
+               <Label fx:id="addressLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <Label fx:id="capacityLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <Label fx:id="roomsLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label fx:id="vessatLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <Label fx:id="pricePerNightLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+               <Label GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               <Label fx:id="lisatiedotLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
