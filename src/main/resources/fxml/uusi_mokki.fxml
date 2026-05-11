@@ -63,7 +63,7 @@
         <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
             <children>
                 <Button mnemonicParsing="false" onAction="#cancel" text="Peruuta" />
-                <Button mnemonicParsing="false" style="-fx-base: #6B8E23; -fx-text-fill: white;" text="Vahvista" />
+                <Button mnemonicParsing="false" onAction="#create" style="-fx-base: #6B8E23; -fx-text-fill: white;" text="Vahvista" />
             </children>
         </HBox>
     </children>

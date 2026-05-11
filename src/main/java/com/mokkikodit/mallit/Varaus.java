@@ -10,11 +10,11 @@ public class Varaus {
     private String asiakasEmail;
     private int mokkiId;
 
-    private Date alkuPvm;
-    private Date loppuPvm;
+    private LocalDate alkuPvm;
+    private LocalDate loppuPvm;
 
     private String tila;
-    private Date luontiPvm;
+    private LocalDate luontiPvm;
 
     private double kokonaissumma;
 
