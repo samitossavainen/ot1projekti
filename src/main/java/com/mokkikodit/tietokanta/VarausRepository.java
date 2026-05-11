@@ -30,13 +30,23 @@ public class VarausRepository {
                 v.setTila(rs.getString("varauksen_tila"));
                 v.setKokonaissumma(rs.getDouble("kokonaissumma"));
 
-                Date alku = rs.getDate("alkamispvm");
-                Date loppu = rs.getDate("loppumispvm");
-                Timestamp luonti = rs.getTimestamp("luontipvm");
+                String alkuStr = rs.getString("alkamispvm");
+                String loppuStr = rs.getString("loppumispvm");
+                String luontiStr = rs.getString("luontipvm");
 
-                if (alku != null) v.setAlkuPvm(alku.toLocalDate());
-                if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
-                if (luonti != null) v.setLuontiPvm(luonti.toLocalDateTime());
+                if (alkuStr != null) {
+                    v.setAlkuPvm(LocalDate.parse(alkuStr));
+                }
+
+                if (loppuStr != null) {
+                    v.setLoppuPvm(LocalDate.parse(loppuStr));
+                }
+
+                if (luontiStr != null) {
+                    // jos tietokannan muoto on YYYY-MM-DD
+                    v.setLuontiPvm(LocalDate.parse(luontiStr).atStartOfDay());
+
+                }
 
                 lista.add(v);
             }
