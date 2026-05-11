@@ -200,7 +200,6 @@ public class AsiakasController {
 
         if (selectedAsiakas == null) return;
 
-
         if (!editMode) enterEditMode();
         else cancelEdit();
     }
@@ -221,7 +220,6 @@ public class AsiakasController {
         addressArea.setText(muokattavaAsiakas.getOsoite());
 
         setEditMode(true);
-
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
 
