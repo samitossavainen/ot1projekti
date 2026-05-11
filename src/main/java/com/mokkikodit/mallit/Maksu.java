@@ -1,26 +1,19 @@
 package com.mokkikodit.mallit;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Maksu {
 
     private int maksuId;
     private int laskuId;
     private double maksettuSumma;
-    private LocalDateTime maksuPaiva;
+    private Timestamp maksuPaiva;
 
     public Maksu() {
     }
 
-    // Constructor without date (DB sets it automatically)
-    public Maksu(int maksuId, int laskuId, double maksettuSumma) {
-        this.maksuId = maksuId;
-        this.laskuId = laskuId;
-        this.maksettuSumma = maksettuSumma;
-    }
-
     // Full constructor
-    public Maksu(int maksuId, int laskuId, double maksettuSumma, LocalDateTime maksuPaiva) {
+    public Maksu(int maksuId, int laskuId, double maksettuSumma, Timestamp maksuPaiva) {
         this.maksuId = maksuId;
         this.laskuId = laskuId;
         this.maksettuSumma = maksettuSumma;
@@ -40,7 +33,7 @@ public class Maksu {
         return maksettuSumma;
     }
 
-    public LocalDateTime getMaksuPaiva() {
+    public Timestamp getMaksuPaiva() {
         return maksuPaiva;
     }
 
@@ -57,7 +50,7 @@ public class Maksu {
         this.maksettuSumma = maksettuSumma;
     }
 
-    public void setMaksuPaiva(LocalDateTime maksuPaiva) {
+    public void setMaksuPaiva(Timestamp maksuPaiva) {
         this.maksuPaiva = maksuPaiva;
     }
 }
