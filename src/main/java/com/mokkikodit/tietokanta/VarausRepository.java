@@ -37,15 +37,15 @@ public class VarausRepository {
                 String luontiStr = rs.getString("luontipvm");
 
                 if (alkuStr != null) {
-                    v.setAlkuPvm(DateUtil.parseDate(alkuStr));
+                    v.setAlkuPvm(DateUtil.parseDate(rs.getString("alkamispvm")));
                 }
 
                 if (loppuStr != null) {
-                    v.setLoppuPvm(DateUtil.parseDate(loppuStr));
+                    v.setLoppuPvm(DateUtil.parseDate(rs.getString("loppumispvm")));
                 }
 
                 if (luontiStr != null) {
-                    v.setLuontiPvm(LocalDate.parse(rs.getString("luontipvm")).atStartOfDay());
+                    v.setLuontiPvm(DateUtil.parseDateTime(rs.getString("luontipvm")));
 
                 }
 

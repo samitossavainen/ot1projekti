@@ -119,7 +119,7 @@ public class LaskuRepository {
 
         l.setLaskuId(rs.getInt("lasku_ID"));
         l.setVarausId(rs.getInt("varaus_ID"));
-        l.setAikaleima(rs.getTimestamp("aikaleima"));
+        l.setAikaleima(DateUtil.parseDateTime(rs.getString("aikaleima")));
         l.setErapaiva(DateUtil.parseDate(rs.getString("eräpäivä")));
         l.setSumma(rs.getDouble("summa"));
         l.setTila(rs.getString("tila"));

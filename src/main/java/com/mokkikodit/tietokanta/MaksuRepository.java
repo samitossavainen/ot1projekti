@@ -1,11 +1,11 @@
 package com.mokkikodit.tietokanta;
 
 import com.mokkikodit.mallit.Maksu;
+import com.mokkikodit.util.DateUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MaksuRepository {
 
@@ -31,7 +31,8 @@ public class MaksuRepository {
     }
 
     public void tallenna(Maksu m) {
-        String sql = "INSERT INTO maksut(lasku_ID, maksettu_summa) VALUES (?, ?)";
+
+        String sql = "INSERT INTO maksut (lasku_ID, maksettu_summa) VALUES (?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -39,6 +40,7 @@ public class MaksuRepository {
             ps.setInt(1, m.getLaskuId());
             ps.setDouble(2, m.getMaksettuSumma());
 
+            // maksupäivä tulee tietokannan DEFAULTista (datetime('now','localtime'))
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -50,10 +52,18 @@ public class MaksuRepository {
 
         Maksu m = new Maksu();
 
-        m.setMaksuId(rs.getInt("Maksu_ID"));
-        m.setLaskuId(rs.getInt("Lasku_ID"));
-        m.setMaksuPaiva(rs.getTimestamp("Maksupäivä"));
-        m.setMaksettuSumma(rs.getDouble("Summa"));
+        m.setMaksuId(rs.getInt("maksu_ID"));
+        m.setLaskuId(rs.getInt("lasku_ID"));
+        m.setMaksettuSumma(rs.getDouble("maksettu_summa"));
+
+        // SQLite: "YYYY-MM-DD HH:MM:SS"
+        // Java: LocalDate → otetaan vain päivämäärä
+        String maksuPaivaStr = rs.getString("maksupäivä");
+        if (maksuPaivaStr != null) {
+            m.setMaksuPaiva(
+                    DateUtil.parseDate(maksuPaivaStr.substring(0, 10))
+            );
+        }
 
         return m;
     }
