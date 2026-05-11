@@ -309,7 +309,7 @@ public class AsiakasController {
 
         if (confirmed) {
 
-            // service.poista(selectedAsiakas);
+            service.poista(selectedAsiakas.getSapo());
 
             asiakkaat.remove(selectedAsiakas);
 

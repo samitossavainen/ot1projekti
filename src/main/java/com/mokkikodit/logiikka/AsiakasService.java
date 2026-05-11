@@ -32,12 +32,13 @@ public class AsiakasService {
     /**
      * Hakee yhden asiakkaan tunnuksen perusteella.
      *
-     * @param id asiakastunnus
+     * @param sapo asiakastunnus
      * @return Asiakas tai null, jos asiakasta ei löydy
      */
-    public Asiakas hae(int id) {
-        return repo.findById(id);
+    public Asiakas hae(String sapo) {
+        return repo.findBySapo(sapo);
     }
+
 
     /**
      * Lisää uuden asiakkaan tietojen tarkistuksen jälkeen.
@@ -58,9 +59,10 @@ public class AsiakasService {
     /**
      * Poistaa asiakkaan tunnuksen perusteella.
      */
-    public void poista(int id) {
-        repo.delete(id);
+    public void poista(String sapo) {
+        repo.delete(sapo);
     }
+
 
     // =====================================================
     // VALIDOINTI (liiketoimintasäännöt)
