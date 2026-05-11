@@ -72,8 +72,10 @@ public class VarausRepository {
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
             ps.setString(1, v.getAsiakasEmail());
-            ps.setDate(2, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(3, Date.valueOf(v.getLoppuPvm()));
+
+            ps.setString(2, v.getAlkuPvm().toString());
+            ps.setString(3, v.getLoppuPvm().toString());
+
             ps.setInt(4, v.getMokkiId());
             ps.setDouble(5, v.getKokonaissumma());
 
@@ -99,8 +101,10 @@ public class VarausRepository {
             ps.setString(1, v.getAsiakasEmail());
             ps.setInt(2, v.getMokkiId());
             ps.setString(3, v.getTila());
-            ps.setDate(4, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(5, Date.valueOf(v.getLoppuPvm()));
+
+            ps.setString(2, v.getAlkuPvm().toString());
+            ps.setString(3, v.getLoppuPvm().toString());
+
             ps.setInt(6, v.getVarausId());
 
             ps.executeUpdate();
