@@ -7,3 +7,7 @@ target/
 # tämä jättää kääntäjän tuottamat binääritiedostot pois versionhallinnasta
 *.class
 .DS_Store
+# tietokanta kehityksen aikana, ettei merge konflikteja tästä
+*.db
+*.sqlite
+*.sqlite3
