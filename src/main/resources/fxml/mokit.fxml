@@ -57,15 +57,14 @@
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker promptText="Alku" />
+                        <DatePicker fx:id="alkuDatePicker" promptText="Alku" />
                         <Label text="-" HBox.hgrow="ALWAYS" />
-                        <DatePicker promptText="Loppu" />
-                        <Button text="Reset">
+                        <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />
+                        <Button fx:id="refreshButton" text="Päivitä">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Button>
-                        <Button text="Hae" />
                     </children>
                     <VBox.margin>
                         <Insets />

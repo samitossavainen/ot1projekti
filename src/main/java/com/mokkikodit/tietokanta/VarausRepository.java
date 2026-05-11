@@ -36,7 +36,7 @@ public class VarausRepository {
 
                 if (alku != null) v.setAlkuPvm(alku.toLocalDate());
                 if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
-                if (luonti != null) v.setLuontiPvm(luonti);
+                if (luonti != null) v.setLuontiPvm(luonti.toLocalDateTime());
 
                 lista.add(v);
             }

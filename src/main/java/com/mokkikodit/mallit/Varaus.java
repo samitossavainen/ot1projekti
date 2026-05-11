@@ -14,7 +14,7 @@ public class Varaus {
     private LocalDate loppuPvm;
 
     private String tila;
-    private LocalDate luontiPvm;
+    private LocalDateTime luontiPvm;
 
     private double kokonaissumma;
 
@@ -29,7 +29,7 @@ public class Varaus {
                   LocalDate alkuPvm,
                   LocalDate loppuPvm,
                   String tila,
-                  LocalDate luontiPvm,
+                  LocalDateTime luontiPvm,
                   double kokonaissumma) {
 
         this.varausId = varausId;
@@ -67,7 +67,7 @@ public class Varaus {
         return tila;
     }
 
-    public LocalDate getLuontiPvm() {
+    public LocalDateTime getLuontiPvm() {
         return luontiPvm;
     }
 
@@ -105,7 +105,7 @@ public class Varaus {
     }
 
     // DB handles this, but setter kept for mapping flexibility
-    public void setLuontiPvm(LocalDate luontiPvm) {
+    public void setLuontiPvm(LocalDateTime luontiPvm) {
         this.luontiPvm = luontiPvm;
     }
 }
