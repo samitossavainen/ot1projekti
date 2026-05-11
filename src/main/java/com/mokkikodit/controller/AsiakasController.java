@@ -287,6 +287,8 @@ public class AsiakasController {
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
+        tableAsiakkaat.refresh();
+
         searchField.setDisable(false);
         searchField.clear();
     }
