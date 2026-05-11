@@ -25,7 +25,7 @@ public class MokkiController {
     @FXML private TextField roomsField;
     @FXML private TextField vessatField;
     @FXML private TextField pricePerNightField;
-    @FXML private ComboBox<Integer> tilaComboBox;
+    @FXML private ComboBox<String> statusFilterComboBox;
     @FXML private TextArea addressArea;
     @FXML private TextArea lisatiedotArea;
     @FXML private TextField searchField;
@@ -49,7 +49,7 @@ public class MokkiController {
     @FXML private TableColumn<Mokki, Integer> cabinCol;
     @FXML private TableColumn<Mokki, String> nameCol;
     @FXML private TableColumn<Mokki, String> addressCol;
-    @FXML private TableColumn<Mokki, Integer> capasityCol;
+    @FXML private TableColumn<Mokki, Integer> capacityCol;
     @FXML private TableColumn<Mokki, Double> priceCol;
     @FXML private TableColumn<Mokki, Integer> roomsCol;
     @FXML private TableColumn<Mokki, Integer> bathroomsCol;
@@ -93,7 +93,7 @@ public class MokkiController {
                         data.getValue().getOsoite()
                 ));
 
-        capasityCol.setCellValueFactory(data ->
+        capacityCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleIntegerProperty(
                         data.getValue().getKapasiteetti()
                 ).asObject());
@@ -135,6 +135,7 @@ public class MokkiController {
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
+                    updateCabinStatus();
                 });
 
         tableCabins.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
@@ -145,6 +146,14 @@ public class MokkiController {
 
         filteredMokit = new FilteredList<>(mokit, a -> true);
         tableCabins.setItems(filteredMokit);
+        statusFilterComboBox.setItems(
+                FXCollections.observableArrayList(
+                        "Kaikki",
+                        "Käytössä",
+                        "Poissa käytöstä"
+                )
+        );
+        statusFilterComboBox.setValue("Kaikki");
 
         //Korostetaan juuri lisätyn asiakkaan rivi
         tableCabins.setRowFactory(tv -> {
@@ -171,27 +180,13 @@ public class MokkiController {
 
             return row;
         });
+
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+            applyFilters();
+        });
 
-            String search = newValue == null
-                    ? ""
-                    : newValue.toLowerCase().trim();
-
-            filteredMokit.setPredicate(mokki -> {
-
-                if (search.isEmpty()) {
-                    return true;
-                }
-
-                return (mokki.getNimi() != null &&
-                        mokki.getNimi().toLowerCase().contains(search))
-                        || (mokki.getOsoite() != null &&
-                        mokki.getOsoite().toLowerCase().contains(search))
-                        || String.valueOf(mokki.getMokkiId()).contains(search)
-                        || String.valueOf(mokki.getKapasiteetti()).contains(search)
-                        || String.valueOf(mokki.getHuoneet()).contains(search)
-                        || String.valueOf(mokki.getVessat()).contains(search);
-            });
+        statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            applyFilters();
         });
     }
 
@@ -201,12 +196,47 @@ public class MokkiController {
         if (editMode) return;
 
         searchField.clear();
+        statusFilterComboBox.setValue("Kaikki");
         refreshTable();
+        applyFilters();
     }
 
     private void refreshTable() {
         if (service == null) return;
         mokit.setAll(service.haeKaikki());
+    }
+    private void applyFilters() {
+
+        String search = searchField.getText() == null
+                ? ""
+                : searchField.getText().toLowerCase().trim();
+
+        String tilaFilter = statusFilterComboBox.getValue();
+
+        filteredMokit.setPredicate(mokki -> {
+
+            boolean matchesSearch =
+                    search.isEmpty()
+                            || (mokki.getNimi() != null &&
+                            mokki.getNimi().toLowerCase().contains(search))
+                            || (mokki.getOsoite() != null &&
+                            mokki.getOsoite().toLowerCase().contains(search))
+                            || String.valueOf(mokki.getMokkiId()).contains(search)
+                            || String.valueOf(mokki.getKapasiteetti()).contains(search)
+                            || String.valueOf(mokki.getHuoneet()).contains(search)
+                            || String.valueOf(mokki.getVessat()).contains(search);
+
+            boolean matchesTila = true;
+
+            if ("Käytössä".equals(tilaFilter)) {
+                matchesTila = mokki.getTila() == 1;
+            }
+            else if ("Poissa käytöstä".equals(tilaFilter)) {
+                matchesTila = mokki.getTila() == 0;
+            }
+
+            return matchesSearch && matchesTila;
+        });
     }
 
     private void populateFields(Mokki m) {
@@ -232,7 +262,6 @@ public class MokkiController {
         pricePerNightField.setText(String.valueOf(m.getHinta()));
         addressArea.setText(m.getOsoite() != null ? m.getOsoite() : "");
         lisatiedotArea.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
-        tilaComboBox.setValue(m.getTila());
 
         // YHTEENVETO
         summaryLabel.setText(
@@ -276,7 +305,6 @@ public class MokkiController {
 
         addressArea.setText(muokattavaMokki.getOsoite());
         lisatiedotArea.setText(muokattavaMokki.getLisatiedot());
-        tilaComboBox.setValue(muokattavaMokki.getTila());
 
         setEditMode(true);
         editButton.setText("Peru muokkaus");
@@ -312,13 +340,12 @@ public class MokkiController {
         muokattavaMokki.setHinta(Double.parseDouble(pricePerNightField.getText()));
         muokattavaMokki.setOsoite(addressArea.getText());
         muokattavaMokki.setLisatiedot(lisatiedotArea.getText());
-        muokattavaMokki.setTila((Integer) tilaComboBox.getValue());
 
         try {
             service.paivita(muokattavaMokki);
         } catch (IllegalArgumentException e) {
 
-            statusLabel.setText("Täytä puuttuvat tiedot");
+            statusLabel.setText(e.getMessage());
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
             statusLabel.setVisible(true);
             statusLabel.setManaged(true);
@@ -333,15 +360,10 @@ public class MokkiController {
             return;
         }
 
-        // Päivitetään TableView:ssa oleva valittu mökki
-        selectedMokki.setNimi(muokattavaMokki.getNimi());
-        selectedMokki.setKapasiteetti(muokattavaMokki.getKapasiteetti());
-        selectedMokki.setHuoneet(muokattavaMokki.getHuoneet());
-        selectedMokki.setVessat(muokattavaMokki.getVessat());
-        selectedMokki.setHinta(muokattavaMokki.getHinta());
-        selectedMokki.setOsoite(muokattavaMokki.getOsoite());
-        selectedMokki.setLisatiedot(muokattavaMokki.getLisatiedot());
-        selectedMokki.setTila(muokattavaMokki.getTila());
+        // Haetaan päivitetyt tiedot tietokannasta
+        selectedMokki = service.haeIdlla(muokattavaMokki.getMokkiId());
+        populateFields(selectedMokki);
+        tableCabins.refresh();
 
         muokattavaMokki = null;
 
@@ -361,29 +383,61 @@ public class MokkiController {
         searchField.clear();
     }
     @FXML
-    private void deleteCabin() {
+    private void toggleCabinStatus() {
 
         if (editMode) return;
-
         if (selectedMokki == null) return;
 
         Stage stage = (Stage) tableCabins.getScene().getWindow();
 
-        boolean confirmed = DialogUtil.confirm(
-                stage,
-                "Vahvista poisto",
-                "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakas \"" + selectedMokki.getNimi() + "\" (" + selectedMokki.getMokkiId() + ") poistetaan."
-        );
+        if (selectedMokki.getTila() == 1) {
+            // MökkI on käytössä → poistetaan käytöstä
 
-        if (confirmed) {
+            boolean confirmed = DialogUtil.confirm(
+                    stage,
+                    "Vahvista",
+                    "Haluatko poistaa mökin käytöstä?",
+                    "Mökki \"" + selectedMokki.getNimi() +
+                            "\" (#" + selectedMokki.getMokkiId() + ") poistetaan käytöstä."
+            );
 
-            // service.poista(selectedMokki);
+            if (confirmed) {
 
-            mokit.remove(selectedMokki);
+                service.deaktivoiMokki(selectedMokki.getMokkiId());
 
-            showSavedStatus("Mökki poistettu");
-            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+                selectedMokki = service.haeIdlla(selectedMokki.getMokkiId());
+
+                populateFields(selectedMokki);
+                tableCabins.refresh();
+                updateCabinStatus();
+
+                showSavedStatus("Mökki poistettu käytöstä");
+                statusLabel.setStyle("-fx-text-fill: #B04A30;");
+            }
+
+        } else {
+            // MökkI ei ole käytössä → otetaan käyttöön
+            boolean confirmed = DialogUtil.confirm(
+                    stage,
+                    "Vahvista",
+                    "Haluatko ottaa mökin käyttöön?",
+                    "Mökki \"" + selectedMokki.getNimi() +
+                            "\" (#" + selectedMokki.getMokkiId() + ") otetaan käyttöön."
+            );
+
+            if (confirmed) {
+
+                service.aktivoiMokki(selectedMokki.getMokkiId());
+
+                selectedMokki = service.haeIdlla(selectedMokki.getMokkiId());
+
+                populateFields(selectedMokki);
+                tableCabins.refresh();
+                updateCabinStatus();
+
+                showSavedStatus("Mökki otettu käyttöön");
+                statusLabel.setStyle("-fx-text-fill: #1e7f43;");
+            }
         }
     }
 
@@ -436,11 +490,10 @@ public class MokkiController {
         lisatiedotArea.setVisible(editable);
         lisatiedotArea.setManaged(editable);
 
-        tilaComboBox.setVisible(editable);
-        tilaComboBox.setManaged(editable);
-
         saveButton.setVisible(editable);
         saveButton.setManaged(editable);
+
+        statusFilterComboBox.setDisable(editable);
     }
 
     private void showSavedStatus(String text) {
@@ -506,5 +559,25 @@ public class MokkiController {
             addCabinStatusLabel.setManaged(false);
         });
         pause.play();
+    }
+
+    private void updateCabinStatus() {
+
+        if (selectedMokki == null) {
+            deleteButton.setDisable(true);
+            return;
+        }
+
+        deleteButton.setDisable(false);
+
+        if (selectedMokki.getTila() == 0) {
+            // MökkI EI käytössä → Ota käyttöön
+            deleteButton.setText("Ota käyttöön");
+            deleteButton.setStyle("-fx-base: #4F8F8B; -fx-text-fill: white;");
+        } else {
+            // MökkI käytössä → Poista käytöstä
+            deleteButton.setText("Poista käytöstä");
+            deleteButton.setStyle("-fx-base: #B04A30; -fx-text-fill: white;");
+        }
     }
 }

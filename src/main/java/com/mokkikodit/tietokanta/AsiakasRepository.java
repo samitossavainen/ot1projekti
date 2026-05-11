@@ -103,18 +103,18 @@ public class AsiakasRepository {
         }
     }
 
-    public void delete(int id) {
+    public void deaktivoi(String sapo) {
 
-        String sql = "DELETE FROM asiakas WHERE id = ?";
+        String sql = "UPDATE asiakas SET tila = 0 WHERE sapo = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setString(1, sapo);
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Asiakkaan poisto epäonnistui", e);
+            throw new RuntimeException("Asiakkaan deaktivointi epäonnistui", e);
         }
     }
 }
