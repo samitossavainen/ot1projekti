@@ -4,6 +4,7 @@ import com.mokkikodit.mallit.Lasku;
 import com.mokkikodit.mallit.Varaus;
 import com.mokkikodit.tietokanta.LaskuRepository;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -22,15 +23,15 @@ public class LaskuService {
                              double hintaPerYo) {
 
         long paivat = ChronoUnit.DAYS.between(
-                varaus.getAlkuPvm(),
-                varaus.getLoppuPvm()
+                varaus.getAlkuPvm().toLocalDate(),
+                varaus.getLoppuPvm().toLocalDate()
         );
 
         double summa = paivat * hintaPerYo;
 
         Lasku lasku = new Lasku(
                 varaus.getVarausId(),
-                varaus.getLoppuPvm().plusDays(7), // example due date
+                LocalDate.now().plusDays(14), // example due date
                 summa
         );
 

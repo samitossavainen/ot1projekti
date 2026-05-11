@@ -1,6 +1,7 @@
 package com.mokkikodit.tietokanta;
 
 import com.mokkikodit.mallit.Lasku;
+import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
@@ -17,31 +18,16 @@ public class LaskuRepository {
 
         String sql = "SELECT * FROM laskut";
 
-        try (Connection yhteys = Tietokanta.getYhteys();
-             Statement stmt = yhteys.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection c = Tietokanta.getYhteys();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-
-                // ✔ FIX: correct method name
-                Varaus v = new Varaus();
-                v.setVarausId(rs.getInt("varaus_ID"));
-
-                Lasku l = new Lasku(
-                        rs.getInt("lasku_ID"),
-                        rs.getInt("varaus_ID"),
-                        null,
-                        rs.getString("tila"),
-                        rs.getTimestamp("aikaleima").toLocalDateTime(),
-                        rs.getDate("eräpäivä").toLocalDate(),
-                        rs.getDouble("summa")
-                );
-
-                lista.add(l);
+                lista.add(map(rs));
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Laskujen haku epäonnistui", e);
+            e.printStackTrace();
         }
 
         return lista;
@@ -65,8 +51,8 @@ public class LaskuRepository {
                             rs.getInt("varaus_ID"),
                             null,
                             rs.getString("tila"),
-                            rs.getTimestamp("aikaleima").toLocalDateTime(),
-                            rs.getDate("eräpäivä").toLocalDate(),
+                            rs.getTimestamp("aikaleima"),
+                            LocalDate.parse(rs.getString("eräpäivä")),
                             rs.getDouble("summa")
                     );
                 }
@@ -133,5 +119,19 @@ public class LaskuRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Laskun poisto epäonnistui", e);
         }
+    }
+
+    private Lasku map(ResultSet rs) throws SQLException {
+
+        Lasku l = new Lasku();
+
+        l.setLaskuId(rs.getInt("lasku_ID"));
+        l.setVarausId(rs.getInt("varaus_ID"));
+        l.setAikaleima(rs.getTimestamp("aikaleima"));
+        l.setErapaiva(LocalDate.parse(rs.getString("eräpäivä")));
+        l.setSumma(rs.getDouble("summa"));
+        l.setTila(rs.getString("tila"));
+
+        return l;
     }
 }

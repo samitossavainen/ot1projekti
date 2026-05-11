@@ -1,5 +1,6 @@
 package com.mokkikodit.mallit;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -9,11 +10,11 @@ public class Varaus {
     private String asiakasEmail;
     private int mokkiId;
 
-    private LocalDate alkuPvm;
-    private LocalDate loppuPvm;
+    private Date alkuPvm;
+    private Date loppuPvm;
 
     private String tila;
-    private LocalDateTime luontiPvm;
+    private Date luontiPvm;
 
     private double kokonaissumma;
 
@@ -25,10 +26,10 @@ public class Varaus {
     public Varaus(int varausId,
                   String asiakasEmail,
                   int mokkiId,
-                  LocalDate alkuPvm,
-                  LocalDate loppuPvm,
+                  Date alkuPvm,
+                  Date loppuPvm,
                   String tila,
-                  LocalDateTime luontiPvm,
+                  Date luontiPvm,
                   double kokonaissumma) {
 
         this.varausId = varausId;
@@ -54,11 +55,11 @@ public class Varaus {
         return mokkiId;
     }
 
-    public LocalDate getAlkuPvm() {
+    public Date getAlkuPvm() {
         return alkuPvm;
     }
 
-    public LocalDate getLoppuPvm() {
+    public Date getLoppuPvm() {
         return loppuPvm;
     }
 
@@ -66,7 +67,7 @@ public class Varaus {
         return tila;
     }
 
-    public LocalDateTime getLuontiPvm() {
+    public Date getLuontiPvm() {
         return luontiPvm;
     }
 
@@ -87,11 +88,11 @@ public class Varaus {
         this.mokkiId = mokkiId;
     }
 
-    public void setAlkuPvm(LocalDate alkuPvm) {
+    public void setAlkuPvm(Date alkuPvm) {
         this.alkuPvm = alkuPvm;
     }
 
-    public void setLoppuPvm(LocalDate loppuPvm) {
+    public void setLoppuPvm(Date loppuPvm) {
         this.loppuPvm = loppuPvm;
     }
 
@@ -104,7 +105,7 @@ public class Varaus {
     }
 
     // DB handles this, but setter kept for mapping flexibility
-    public void setLuontiPvm(LocalDateTime luontiPvm) {
+    public void setLuontiPvm(Date luontiPvm) {
         this.luontiPvm = luontiPvm;
     }
 }
