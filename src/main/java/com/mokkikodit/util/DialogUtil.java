@@ -40,7 +40,7 @@ public class DialogUtil {
         ButtonType yes = new ButtonType("Kyllä");
         ButtonType no = new ButtonType("Ei");
 
-        alert.getButtonTypes().setAll(yes, no);
+        alert.getButtonTypes().setAll(no, yes);
 
         return alert.showAndWait()
                 .filter(response -> response == yes)

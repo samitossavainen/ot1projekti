@@ -16,7 +16,7 @@ import com.mokkikodit.util.DialogUtil;
 
 public class MokkiController {
 
-    @FXML private TableView<?> tableCabins;
+    @FXML private TableView<Mokki> tableCabins;
 
     @FXML private TextField cabinField;
     @FXML private TextField capacityField;
@@ -33,14 +33,14 @@ public class MokkiController {
 
     @FXML private Button deleteButton;
 
-    @FXML private TableColumn<Asiakas, String> cabinCol;
-    @FXML private TableColumn<Asiakas, String> nameCol;
-    @FXML private TableColumn<Asiakas, String> addressCol;
-    @FXML private TableColumn<Asiakas, String> capasityCol;
-    @FXML private TableColumn<Asiakas, String> priceCol;
-    @FXML private TableColumn<Asiakas, String> roomsCol;
-    @FXML private TableColumn<Asiakas, String> bathroomsCol;
-    @FXML private TableColumn<Asiakas, String> statusCol;
+    @FXML private TableColumn<Mokki, Integer> cabinCol;
+    @FXML private TableColumn<Mokki, String> nameCol;
+    @FXML private TableColumn<Mokki, String> addressCol;
+    @FXML private TableColumn<Mokki, Integer> capasityCol;
+    @FXML private TableColumn<Mokki, Double> priceCol;
+    @FXML private TableColumn<Mokki, Integer> roomsCol;
+    @FXML private TableColumn<Mokki, Integer> bathroomsCol;
+    @FXML private TableColumn<Mokki, Integer> statusCol;
 
     @FXML private Label statusLabel;
 
@@ -57,44 +57,44 @@ public class MokkiController {
     public void initialize() {
 
         cabinCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getMokkiId()
+                ).asObject());
+
+        nameCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
                         data.getValue().getNimi()
                 ));
 
-        nameCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getSapo()
-                ));
-
         addressCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getPuhelinnumero()
+                        data.getValue().getOsoite()
                 ));
 
         capasityCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getOsoite()
-                ));
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getKapasiteetti()
+                ).asObject());
 
         priceCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getOsoite()
-                ));
+                new javafx.beans.property.SimpleDoubleProperty(
+                        data.getValue().getHinta()
+                ).asObject());
 
         roomsCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getOsoite()
-                ));
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getHuoneet()
+                ).asObject());
 
         bathroomsCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getOsoite()
-                ));
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getVessat()
+                ).asObject());
 
         statusCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getOsoite()
-                ));
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getTila()
+                ).asObject());
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
@@ -128,7 +128,7 @@ public class MokkiController {
         System.out.println("haeKaikki() palasi, lista = " + list);
         System.out.println("listan koko = " + list.size());
 
-        tableCabins.getItems().setAll(); //setAll(list) oli vituillaan,joten nyt tyhjä, jotta sovellus käynnistyy. Pitää selvittää jatkossa
+        tableCabins.getItems().setAll(list);
 
         System.out.println("refreshTable() LOPPU");
     }

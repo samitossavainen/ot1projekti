@@ -1,7 +1,9 @@
 package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
+import com.mokkikodit.logiikka.MokkiService;
 import com.mokkikodit.tietokanta.AsiakasRepository;
+import com.mokkikodit.tietokanta.MokkiRepository;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -68,6 +70,12 @@ public class MainController {
             if (controller instanceof AsiakasController) {
                 ((AsiakasController) controller).setAsiakasService(
                         new AsiakasService(new AsiakasRepository())
+                );
+            }
+
+            if (controller instanceof MokkiController) {
+                ((MokkiController) controller).setMokkiService(
+                        new MokkiService(new MokkiRepository())
                 );
             }
 
