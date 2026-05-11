@@ -67,6 +67,7 @@
                 <TableColumn fx:id="emailCol" text="Sähköposti" />
                 <TableColumn fx:id="phoneCol" text="Puhelin" />
                 <TableColumn fx:id="addressCol" text="Osoite" />
+            <TableColumn fx:id="tilaCol" text="Tila" />
             </columns>
         </TableView>
 
