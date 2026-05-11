@@ -56,12 +56,12 @@
         <TableView fx:id="tableLaskut" VBox.vgrow="ALWAYS">
 
             <columns>
-                <TableColumn text="Lasku ID" />
-                <TableColumn text="Varaus ID" />
-                <TableColumn text="Asiakas" />
-                <TableColumn text="Eräpäivä" />
-                <TableColumn text="Summa" />
-                <TableColumn text="Tila" />
+                <TableColumn fx:id="laskuCol" text="Lasku ID" />
+                <TableColumn fx:id="varausCol" text="Varaus ID" />
+                <TableColumn fx:id="asiakasCol" text="Asiakas" />
+                <TableColumn fx:id="erapvmCol" text="Eräpäivä" />
+                <TableColumn fx:id="summaCol" text="Summa" />
+                <TableColumn fx:id="tilaCol" text="Tila" />
             </columns>
         </TableView>
 
