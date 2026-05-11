@@ -2,6 +2,8 @@ package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
 import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,9 +12,9 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import com.mokkikodit.util.DialogUtil;
 import com.mokkikodit.mallit.Asiakas;
+import javafx.collections.transformation.FilteredList;
 
 public class AsiakasController {
 
@@ -23,6 +25,8 @@ public class AsiakasController {
     @FXML private TextField phoneField;
     @FXML private TextArea addressArea;
     @FXML private Label summaryLabel;
+    @FXML private Label addCustomerStatusLabel;
+    @FXML private TextField searchField;
 
     @FXML private Label nimiLabel;
     @FXML private Label phoneLabel;
@@ -42,6 +46,15 @@ public class AsiakasController {
     private boolean editMode = false;
 
     private AsiakasService service;
+
+    private Asiakas selectedAsiakas;
+    private Asiakas muokattavaAsiakas;
+    private Asiakas viimeksiLisattyAsiakas;
+
+    private final ObservableList<Asiakas> asiakkaat =
+            FXCollections.observableArrayList();
+
+    private FilteredList<Asiakas> filteredAsiakkaat;
 
     public void setAsiakasService(AsiakasService service) {
         this.service = service;
@@ -74,46 +87,93 @@ public class AsiakasController {
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
-
-        editMode = false;
         editButton.setText("Muokkaa");
 
-        setFieldsVisible(false);
         setEditMode(false);
+
+        tableAsiakkaat.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
 
+                    selectedAsiakas = newSelection;
+
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
-
-                    if (editMode && newSelection == null) {
-                        cancelEdit();
-                    }
                 });
 
-        System.out.println("Sarakkeita: " + tableAsiakkaat.getColumns().size());
+        tableAsiakkaat.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
+            if (editMode) {
+                event.consume();
+            }
+        });
 
+        filteredAsiakkaat = new FilteredList<>(asiakkaat, a -> true);
+        tableAsiakkaat.setItems(filteredAsiakkaat);
+
+        //Korostetaan juuri lisätyn asiakkaan rivi
+        tableAsiakkaat.setRowFactory(tv -> {
+            TableRow<Asiakas> row = new TableRow<>();
+
+            PauseTransition clear = new PauseTransition(Duration.seconds(2));
+
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                row.setStyle("");
+
+                if (newItem != null && newItem == viimeksiLisattyAsiakas) {
+                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
+
+                    clear.setOnFinished(e -> {
+                        row.setStyle("");
+                        if (viimeksiLisattyAsiakas == newItem) {
+                            viimeksiLisattyAsiakas = null;
+                        }
+                    });
+
+                    clear.playFromStart();
+                }
+            });
+
+            return row;
+        });
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+
+            String search = newValue == null
+                    ? ""
+                    : newValue.toLowerCase().trim();
+
+            filteredAsiakkaat.setPredicate(asiakas -> {
+
+                if (search.isEmpty()) {
+                    return true;
+                }
+
+                return (asiakas.getNimi() != null &&
+                        asiakas.getNimi().toLowerCase().contains(search))
+                        || (asiakas.getSapo() != null &&
+                        asiakas.getSapo().toLowerCase().contains(search))
+                        || (asiakas.getPuhelinnumero() != null &&
+                        asiakas.getPuhelinnumero().toLowerCase().contains(search))
+                        || (asiakas.getOsoite() != null &&
+                        asiakas.getOsoite().toLowerCase().contains(search));
+            });
+        });
+    }
+
+    @FXML
+    private void refreshView() {
+
+        if (editMode) return;
+
+        searchField.clear();
+        refreshTable();
     }
 
     private void refreshTable() {
-        System.out.println("refreshTable() ALKAA");
-
-        if (service == null) {
-            System.out.println("SERVICE ON NULL");
-            return;
-        }
-
-        java.util.List<Asiakas> list = service.haeKaikki();
-
-        System.out.println("haeKaikki() palasi, lista = " + list);
-        System.out.println("listan koko = " + list.size());
-
-        tableAsiakkaat.getItems().setAll(list);
-
-        System.out.println("refreshTable() LOPPU");
+        if (service == null) return;
+        asiakkaat.setAll(service.haeKaikki());
     }
 
     private void populateFields(Asiakas a) {
@@ -137,39 +197,85 @@ public class AsiakasController {
 
     @FXML
     private void toggleEdit() {
+
+        if (selectedAsiakas == null) return;
+
+
         if (!editMode) enterEditMode();
         else cancelEdit();
     }
 
     private void enterEditMode() {
         editMode = true;
+
+        // Luodaan muokattava kopio asiakkaasta
+        muokattavaAsiakas = new Asiakas();
+        muokattavaAsiakas.setNimi(selectedAsiakas.getNimi());
+        muokattavaAsiakas.setPuhelinnumero(selectedAsiakas.getPuhelinnumero());
+        muokattavaAsiakas.setOsoite(selectedAsiakas.getOsoite());
+        muokattavaAsiakas.setSapo(selectedAsiakas.getSapo());
+
+        // Näytetään kopion tiedot kentissä
+        nimiField.setText(muokattavaAsiakas.getNimi());
+        phoneField.setText(muokattavaAsiakas.getPuhelinnumero());
+        addressArea.setText(muokattavaAsiakas.getOsoite());
+
         setEditMode(true);
 
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
+
+        searchField.setDisable(true);
     }
 
     private void cancelEdit() {
         editMode = false;
+        muokattavaAsiakas = null;
+
+        populateFields(selectedAsiakas);
         setEditMode(false);
 
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
+
+        searchField.setDisable(false);
+        searchField.clear();
     }
 
     @FXML
     private void saveChanges() {
 
-        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (muokattavaAsiakas == null) return;
 
-        selected.setNimi(nimiField.getText());
-        selected.setPuhelinnumero(phoneField.getText());
-        selected.setOsoite(addressArea.getText());
+        // Päivitetään kopio asiakas oliosta
+        muokattavaAsiakas.setNimi(nimiField.getText());
+        muokattavaAsiakas.setPuhelinnumero(phoneField.getText());
+        muokattavaAsiakas.setOsoite(addressArea.getText());
 
-        service.paivita(selected);
+        try {
+            service.paivita(muokattavaAsiakas);
+        } catch (IllegalArgumentException e) {
 
-        refreshTable();
+            statusLabel.setText("Täytä puuttuvat tiedot");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+            statusLabel.setVisible(true);
+            statusLabel.setManaged(true);
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(ev -> {
+                statusLabel.setVisible(false);
+                statusLabel.setManaged(false);
+            });
+            pause.play();
+
+            return;
+        }
+
+        selectedAsiakas.setNimi(muokattavaAsiakas.getNimi());
+        selectedAsiakas.setPuhelinnumero(muokattavaAsiakas.getPuhelinnumero());
+        selectedAsiakas.setOsoite(muokattavaAsiakas.getOsoite());
+
+        muokattavaAsiakas = null;
 
         editMode = false;
         setEditMode(false);
@@ -177,15 +283,22 @@ public class AsiakasController {
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
+        populateFields(selectedAsiakas);
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
+
+        tableAsiakkaat.refresh();
+
+        searchField.setDisable(false);
+        searchField.clear();
     }
 
     @FXML
     private void deleteCustomer() {
 
-        Asiakas selected = tableAsiakkaat.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (editMode) return;
+
+        if (selectedAsiakas == null) return;
 
         Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
 
@@ -193,29 +306,18 @@ public class AsiakasController {
                 stage,
                 "Vahvista poisto",
                 "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakas " + selected.getSapo() + " poistetaan."
+                "Asiakas \"" + selectedAsiakas.getNimi() + "\" (" + selectedAsiakas.getSapo() + ") poistetaan."
         );
 
         if (confirmed) {
 
-            // service.poista(selected); // enable when implemented
+            // service.poista(selectedAsiakas);
 
-            tableAsiakkaat.getItems().remove(selected);
+            asiakkaat.remove(selectedAsiakas);
 
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         }
-    }
-
-    private void setFieldsVisible(boolean visible) {
-
-        nimiField.setVisible(visible);
-        phoneField.setVisible(visible);
-        addressArea.setVisible(visible);
-
-        nimiField.setManaged(visible);
-        phoneField.setManaged(visible);
-        addressArea.setManaged(visible);
     }
 
     private void setEditMode(boolean editable) {
@@ -260,25 +362,52 @@ public class AsiakasController {
     @FXML
     private void openNewCustomerWindow() {
 
+        if (editMode) return;
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/uusi_asiakas.fxml")
             );
             Parent root = loader.load();
+            UusiAsiakasController dialogController = loader.getController();
 
             Stage stage = new Stage();
             stage.setTitle("Uusi asiakas");
-
             stage.initOwner(tableAsiakkaat.getScene().getWindow());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
-
             stage.sizeToScene();
             stage.setResizable(false);
+
             stage.showAndWait();
+
+            if (dialogController.isAsiakasLisatty()) {
+
+                refreshTable();
+
+                if (!asiakkaat.isEmpty()) {
+                    viimeksiLisattyAsiakas =
+                            asiakkaat.get(asiakkaat.size() - 1);
+                }
+                showAddCustomerStatus("Asiakas lisätty");
+                addCustomerStatusLabel.setStyle("-fx-text-fill: #1e7f43;");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    //Näytetään käyttäjälle että asiakas lisättiin onnistuneesti
+    private void showAddCustomerStatus(String text) {
+        addCustomerStatusLabel.setText(text);
+        addCustomerStatusLabel.setVisible(true);
+        addCustomerStatusLabel.setManaged(true);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            addCustomerStatusLabel.setVisible(false);
+            addCustomerStatusLabel.setManaged(false);
+        });
+        pause.play();
     }
 }

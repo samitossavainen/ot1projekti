@@ -40,15 +40,22 @@
                 <HBox spacing="10.0">
                     <children>
                         <TextField fx:id="searchField" promptText="Hae asiakkaita..." HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" text="Hae" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshView" text="Päivitä" />
                     </children>
                 </HBox>
-
-                <Button fx:id="addCustomerButton" mnemonicParsing="false" onAction="#openNewCustomerWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi asiakas">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                      <Button fx:id="uusiAsiakasButton" mnemonicParsing="false" onAction="#openNewCustomerWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi asiakas">
+                          <font>
+                              <Font name="System Bold" size="14.0" />
+                          </font>
+                      </Button>
+                  <Label fx:id="addCustomerStatusLabel" managed="false" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
+               </children>
+            </HBox>
             </children>
         </VBox>
 
@@ -77,7 +84,10 @@
                     <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCustomer" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista asiakas" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän asiakkaan nimi) · (sähköposti) · (puh numero)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
             <HBox>
                 <children>
@@ -99,15 +109,15 @@
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
-                    <Label fx:id="nimiLabel" text="-" GridPane.columnIndex="1" />
+                    <Label fx:id="nimiLabel" GridPane.columnIndex="1" />
                     <TextField fx:id="nimiField" managed="false" prefWidth="200.0" visible="false" GridPane.columnIndex="1" />
                     <Label text="Puhelin:" GridPane.rowIndex="3" />
                     <Label text="Osoite:" GridPane.rowIndex="4" GridPane.valignment="TOP" />
-                    <Label fx:id="phoneLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="phoneLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     <TextField fx:id="phoneField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                    <Label fx:id="addressLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="addressLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                     <TextArea fx:id="addressArea" minHeight="45.0" prefHeight="45.0" prefRowCount="3" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                    <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="emailLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
