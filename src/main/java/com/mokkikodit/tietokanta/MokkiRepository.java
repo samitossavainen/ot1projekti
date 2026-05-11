@@ -82,7 +82,8 @@ public class MokkiRepository {
     public void update(Mokki m) {
 
         String sql =
-                "UPDATE mokki SET nimi=?, osoite=?, kapasiteetti=?, hinta=?, tila=? " +
+                "UPDATE mokki " +
+                        "SET nimi=?, osoite=?, kapasiteetti=?, hinta=?, lisatiedot=?, vessat=?, huoneet=?, tila=? " +
                         "WHERE mokki_ID=?";
 
         try (Connection c = Tietokanta.getYhteys();
@@ -92,8 +93,12 @@ public class MokkiRepository {
             ps.setString(2, m.getOsoite());
             ps.setInt(3, m.getKapasiteetti());
             ps.setDouble(4, m.getHinta());
-            ps.setInt(5, m.getTila());
-            ps.setInt(6, m.getMokkiId());
+            ps.setString(5, m.getLisatiedot());
+            ps.setInt(6, m.getVessat());
+            ps.setInt(7, m.getHuoneet());
+            ps.setInt(8, m.getTila());
+            ps.setInt(9, m.getMokkiId());
+
 
             ps.executeUpdate();
 

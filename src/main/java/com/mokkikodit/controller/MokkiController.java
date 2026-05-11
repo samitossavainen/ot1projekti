@@ -256,6 +256,7 @@ public class MokkiController {
 
         // Luodaan muokattava kopio
         muokattavaMokki = new Mokki();
+        muokattavaMokki.setMokkiId(selectedMokki.getMokkiId());
         muokattavaMokki.setNimi(selectedMokki.getNimi());
         muokattavaMokki.setKapasiteetti(selectedMokki.getKapasiteetti());
         muokattavaMokki.setHuoneet(selectedMokki.getHuoneet());
@@ -264,6 +265,7 @@ public class MokkiController {
         muokattavaMokki.setOsoite(selectedMokki.getOsoite());
         muokattavaMokki.setLisatiedot(selectedMokki.getLisatiedot());
         muokattavaMokki.setTila(selectedMokki.getTila());
+
 
         // Näytetään kopion tiedot kentissä
         nimiField.setText(String.valueOf(muokattavaMokki.getNimi()));
@@ -303,14 +305,11 @@ public class MokkiController {
         if (muokattavaMokki == null) return;
 
         // Päivitetään kopio mökkioliosta
-        muokattavaMokki.setKapasiteetti(
-                Integer.parseInt(capacityField.getText()));
-        muokattavaMokki.setHuoneet(
-                Integer.parseInt(roomsField.getText()));
-        muokattavaMokki.setVessat(
-                Integer.parseInt(vessatField.getText()));
-        muokattavaMokki.setHinta(
-                Double.parseDouble(pricePerNightField.getText()));
+        muokattavaMokki.setNimi(nimiField.getText());
+        muokattavaMokki.setKapasiteetti(Integer.parseInt(capacityField.getText()));
+        muokattavaMokki.setHuoneet(Integer.parseInt(roomsField.getText()));
+        muokattavaMokki.setVessat(Integer.parseInt(vessatField.getText()));
+        muokattavaMokki.setHinta(Double.parseDouble(pricePerNightField.getText()));
         muokattavaMokki.setOsoite(addressArea.getText());
         muokattavaMokki.setLisatiedot(lisatiedotArea.getText());
         muokattavaMokki.setTila((Integer) tilaComboBox.getValue());
@@ -335,6 +334,7 @@ public class MokkiController {
         }
 
         // Päivitetään TableView:ssa oleva valittu mökki
+        selectedMokki.setNimi(muokattavaMokki.getNimi());
         selectedMokki.setKapasiteetti(muokattavaMokki.getKapasiteetti());
         selectedMokki.setHuoneet(muokattavaMokki.getHuoneet());
         selectedMokki.setVessat(muokattavaMokki.getVessat());
