@@ -4,8 +4,10 @@ import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.mokkikodit.util.DateUtil;
 
 public class VarausRepository {
 
@@ -35,16 +37,15 @@ public class VarausRepository {
                 String luontiStr = rs.getString("luontipvm");
 
                 if (alkuStr != null) {
-                    v.setAlkuPvm(LocalDate.parse(alkuStr));
+                    v.setAlkuPvm(DateUtil.parseDate(alkuStr));
                 }
 
                 if (loppuStr != null) {
-                    v.setLoppuPvm(LocalDate.parse(loppuStr));
+                    v.setLoppuPvm(DateUtil.parseDate(loppuStr));
                 }
 
                 if (luontiStr != null) {
-                    // jos tietokannan muoto on YYYY-MM-DD
-                    v.setLuontiPvm(LocalDate.parse(luontiStr).atStartOfDay());
+                    v.setLuontiPvm(LocalDate.parse(rs.getString("luontipvm")).atStartOfDay());
 
                 }
 

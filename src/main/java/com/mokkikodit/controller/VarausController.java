@@ -253,6 +253,9 @@ public class VarausController {
             );
             Parent root = loader.load();
 
+            UusiVarausController ctrl = loader.getController();
+            ctrl.setVarausService(service);
+
             Stage stage = new Stage();
             stage.setTitle("Uusi varaus");
 
@@ -263,6 +266,8 @@ public class VarausController {
             stage.sizeToScene();
             stage.setResizable(false);
             stage.showAndWait();
+
+            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();
