@@ -33,33 +33,23 @@ public class LaskuRepository {
         return lista;
     }
 
-    public Lasku findById(int id) {
+    public Lasku findById(Integer id) {
 
-        String sql = "SELECT * FROM lasku WHERE lasku_ID = ?";
+        String sql = "SELECT * FROM laskut WHERE lasku_ID=?";
 
-        try (Connection yhteys = Tietokanta.getYhteys();
-             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+        try (Connection c = Tietokanta.getYhteys();
+             PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
-
                 if (rs.next()) {
-
-                    return new Lasku(
-                            rs.getInt("lasku_ID"),
-                            rs.getInt("varaus_ID"),
-                            null,
-                            rs.getString("tila"),
-                            rs.getTimestamp("aikaleima"),
-                            LocalDate.parse(rs.getString("eräpäivä")),
-                            rs.getDouble("summa")
-                    );
+                    return map(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Laskun haku epäonnistui", e);
+            e.printStackTrace();
         }
 
         return null;
@@ -68,7 +58,7 @@ public class LaskuRepository {
     public void save(Lasku l) {
 
         String sql =
-                "INSERT INTO lasku (tila, erapaiva, summa, varaus_ID) VALUES (?, ?, ?, ?)";
+                "INSERT INTO laskut (tila, erapaiva, summa, varaus_ID) VALUES (?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -88,7 +78,7 @@ public class LaskuRepository {
     public void update(Lasku l) {
 
         String sql =
-                "UPDATE lasku SET tila = ?, erapaiva = ?, summa = ?, varaus_ID = ? WHERE lasku_ID = ?";
+                "UPDATE laskut SET tila = ?, erapaiva = ?, summa = ?, varaus_ID = ? WHERE lasku_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
