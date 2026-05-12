@@ -11,6 +11,8 @@ public class Lasku {
     // Foreign key
     private int varausId;
 
+    private String sapo;
+
     // Optional object relation
     private Varaus varaus;
 
@@ -25,6 +27,10 @@ public class Lasku {
 
     // Invoice total
     private double summa;
+
+    private LocalDate maksupaiva;
+
+    private double maksettu;
 
     // ---------- CONSTRUCTORS ----------
 
@@ -57,6 +63,7 @@ public class Lasku {
      */
     public Lasku(int laskuId,
                  int varausId,
+                 String sapo,
                  Varaus varaus,
                  String tila,
                  LocalDateTime aikaleima,
@@ -65,11 +72,14 @@ public class Lasku {
 
         this.laskuId = laskuId;
         this.varausId = varausId;
+        this.sapo = sapo;
         this.varaus = varaus;
         this.tila = tila;
         this.aikaleima = aikaleima;
         this.erapaiva = erapaiva;
         this.summa = summa;
+        this.maksupaiva = maksupaiva;
+        this.maksettu = maksettu;
     }
 
     // ---------- GETTERS ----------
@@ -81,6 +91,8 @@ public class Lasku {
     public int getVarausId() {
         return varausId;
     }
+
+    public String getSapo() { return sapo; }
 
     public Varaus getVaraus() {
         return varaus;
@@ -102,6 +114,10 @@ public class Lasku {
         return summa;
     }
 
+    public LocalDate getMaksupaiva() { return maksupaiva; }
+
+    public double getMaksettu() { return maksettu; }
+
     // ---------- SETTERS ----------
 
     public void setLaskuId(int laskuId) {
@@ -111,6 +127,8 @@ public class Lasku {
     public void setVarausId(int varausId) {
         this.varausId = varausId;
     }
+
+    public void setSapo(String sapo) { this.sapo = sapo; }
 
     public void setVaraus(Varaus varaus) {
         this.varaus = varaus;
@@ -149,6 +167,10 @@ public class Lasku {
 
         this.summa = summa;
     }
+
+    public void setMaksupaiva(LocalDate maksupaiva) { this.maksupaiva = maksupaiva; }
+
+    public void setMaksettu(double maksettu) { this.maksettu = maksettu; }
 
     // ---------- HELPER METHODS ----------
 
