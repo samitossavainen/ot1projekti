@@ -56,10 +56,11 @@ public class AsiakasService {
     }
 
     /**
-     * Poistaa asiakkaan tunnuksen perusteella.
+     * Deaktivoi asiakkaan sähköpostin perusteella.
      */
-    public void poista(int id) {
-        repo.delete(id);
+
+    public void deaktivoi(String sapo) {
+        repo.deaktivoi(sapo);
     }
 
     // =====================================================

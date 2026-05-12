@@ -23,8 +23,8 @@ public class LaskuService {
                              double hintaPerYo) {
 
         long paivat = ChronoUnit.DAYS.between(
-                varaus.getAlkuPvm().toLocalDate(),
-                varaus.getLoppuPvm().toLocalDate()
+                varaus.getAlkuPvm(),
+                varaus.getLoppuPvm()
         );
 
         double summa = paivat * hintaPerYo;

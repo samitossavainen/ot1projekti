@@ -16,34 +16,6 @@ public class MokkiService {
     public MokkiService(MokkiRepository repository) {
         this.repository = repository;
     }
-
-    /**
-     * Lisää uuden mökin tietokantaan validoinnin jälkeen.
-     */
-    public void lisaaMokki(String nimi,
-                           String osoite,
-                           int kapasiteetti,
-                           double hinta,
-                           String lisatiedot,
-                           int vessat,
-                           int huoneet) {
-
-        Mokki mokki = new Mokki();
-
-        mokki.setNimi(nimi);
-        mokki.setOsoite(osoite);
-        mokki.setKapasiteetti(kapasiteetti);
-        mokki.setHinta(hinta);
-        mokki.setLisatiedot(lisatiedot);
-        mokki.setVessat(vessat);
-        mokki.setHuoneet(huoneet);
-        mokki.setTila(1); // oletuksena aktiivinen
-
-        validate(mokki);
-
-        repository.save(mokki);
-    }
-
     /**
      * Hakee kaikki mökit.
      */
