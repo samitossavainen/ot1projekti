@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -50,17 +49,20 @@ public class UusiMokkiController {
             mokkiLisatty = true;
             close(event);
 
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Virhe");
-            alert.setHeaderText("Mökkiä ei voitu lisätä");
-            alert.setContentText(
-                    e.getMessage() != null
-                            ? e.getMessage()
-                            : "Tarkista syöttämäsi arvot"
+            showError(
+                    "Virheellinen syöte",
+                    "Tarkista kapasiteetin, huoneiden, vessojen ja hinnan arvot.\n" +
+                            "Kenttiin tulee syöttää vain numeroita."
             );
-            alert.showAndWait();
+
+        } catch (IllegalArgumentException e) {
+
+            showError(
+                    "Mökkiä ei voitu lisätä",
+                    e.getMessage()
+            );
         }
     }
 
@@ -74,5 +76,13 @@ public class UusiMokkiController {
 
     public boolean isMokkiLisatty() {
         return mokkiLisatty;
+    }
+
+    private void showError(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Virhe");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
