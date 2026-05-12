@@ -127,28 +127,28 @@ public class AsiakasController {
         //Korostetaan juuri lisätyn asiakkaan rivi
         tableAsiakkaat.setRowFactory(tv -> {
             TableRow<Asiakas> row = new TableRow<>();
-
             PauseTransition clear = new PauseTransition(Duration.seconds(2));
 
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+            row.itemProperty().addListener((obs, o, item) -> {
                 row.setStyle("");
 
-                if (newItem != null && newItem == viimeksiLisattyAsiakas) {
+                if (item != null
+                        && viimeksiLisattyAsiakas != null
+                        && item.getSapo().equals(viimeksiLisattyAsiakas.getSapo())) {
+
                     row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
 
                     clear.setOnFinished(e -> {
                         row.setStyle("");
-                        if (viimeksiLisattyAsiakas == newItem) {
-                            viimeksiLisattyAsiakas = null;
-                        }
+                        viimeksiLisattyAsiakas = null;
                     });
 
                     clear.playFromStart();
                 }
             });
-
             return row;
         });
+
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
 
             String search = newValue == null
@@ -296,7 +296,8 @@ public class AsiakasController {
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
-        tableAsiakkaat.refresh();
+        viimeksiLisattyAsiakas = selectedAsiakas;
+        refreshTable();
 
         searchField.setDisable(false);
         searchField.clear();

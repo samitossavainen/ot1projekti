@@ -50,21 +50,12 @@
                             </padding>
                         </Label>
                         <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" />
-                    </children>
-                </HBox>
-
-                <!-- PÄIVÄMÄÄRÄT -->
-                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                    <children>
                         <Button fx:id="refreshButton" onAction="#refreshView" text="Päivitä">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Button>
                     </children>
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
                 </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
@@ -129,7 +120,7 @@
                <Font size="18.0" />
             </font></Label>
             <Separator prefWidth="200.0" />
-            <HBox>
+            <HBox spacing="10.0">
                 <children>
                     <Label text="MÖKIN TIEDOT" textFill="#574520">
                         <font>
@@ -137,7 +128,7 @@
                         </font>
                     </Label>
                     <Region prefWidth="40.0" />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" text="Tallennettu" visible="false">
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" visible="false">
                   <font>
                      <Font size="14.0" />
                   </font></Label>

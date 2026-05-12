@@ -169,20 +169,20 @@ public class MokkiController {
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 row.setStyle("");
 
-                if (newItem != null && newItem == viimeksiLisattyMokki) {
+                if (newItem != null
+                        && viimeksiLisattyMokki != null
+                        && newItem.getMokkiId() == viimeksiLisattyMokki.getMokkiId()) {
+
                     row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
 
                     clear.setOnFinished(e -> {
                         row.setStyle("");
-                        if (viimeksiLisattyMokki == newItem) {
-                            viimeksiLisattyMokki = null;
-                        }
+                        viimeksiLisattyMokki = null;
                     });
 
                     clear.playFromStart();
                 }
             });
-
             return row;
         });
 
@@ -368,7 +368,7 @@ public class MokkiController {
         // Haetaan päivitetyt tiedot tietokannasta
         selectedMokki = service.haeIdlla(muokattavaMokki.getMokkiId());
         populateFields(selectedMokki);
-        tableCabins.refresh();
+        viimeksiLisattyMokki = selectedMokki;
 
         muokattavaMokki = null;
 
@@ -378,11 +378,10 @@ public class MokkiController {
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
-        populateFields(selectedMokki);
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
-        tableCabins.refresh();
+        refreshTable();
 
         searchField.setDisable(false);
         searchField.clear();
@@ -520,14 +519,13 @@ public class MokkiController {
 
             if (dialogController.isMokkiLisatty()) {
 
-                refreshTable();
-
                 if (!mokit.isEmpty()) {
                     viimeksiLisattyMokki =
                             mokit.get(mokit.size() - 1);
                 }
                 showAddCabinStatus("Mökki lisätty");
                 addCabinStatusLabel.setStyle("-fx-text-fill: #1e7f43;");
+                refreshTable();
             }
 
         } catch (Exception e) {

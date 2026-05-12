@@ -40,7 +40,7 @@
                 <!-- HAKU -->
                 <HBox spacing="10.0">
                     <children>
-                        <TextField promptText="Hae varauksia..." HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchField" promptText="Hae varauksia..." HBox.hgrow="ALWAYS" />
                         <Label text="Tila:">
                             <HBox.margin>
                                 <Insets />
@@ -49,44 +49,53 @@
                                 <Insets top="5.0" />
                             </padding>
                         </Label>
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" />
                     </children>
                 </HBox>
 
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker promptText="Alku" />
+                        <DatePicker fx:id="alkuDatePickerFilter" promptText="Alku" />
                         <Label text="-" HBox.hgrow="ALWAYS" />
-                        <DatePicker promptText="Loppu" />
-                        <Button text="Reset">
+                        <DatePicker fx:id="loppuDatePickerFilter" promptText="Loppu" />
+                        <Button fx:id="refreshButton" onAction="#refreshView" text="Päivitä">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Button>
-                        <Button text="Hae" />
                     </children>
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
                 </HBox>
-                <Button mnemonicParsing="false" onAction="#openNewReservationWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi varaus">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Button>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                      <Button mnemonicParsing="false" onAction="#openNewReservationWindow" prefHeight="35.0" prefWidth="120.0" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="+ Uusi varaus">
+                          <font>
+                              <Font name="System Bold" size="14.0" />
+                          </font>
+                      </Button>
+                  <Label fx:id="upperStatusLabel">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
             </children>
         </VBox>
 
         <!-- TABLE -->
         <TableView fx:id="tableVaraukset" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="idCol" text="Varaus ID"/>
-                <TableColumn fx:id="mokkiCol" text="Mökki"/>
-                <TableColumn fx:id="asiakasCol" text="Asiakas"/>
-                <TableColumn fx:id="alkuCol" text="Alku"/>
-                <TableColumn fx:id="loppuCol" text="Loppu"/>
-                <TableColumn fx:id="tilaCol" text="Tila"/>
+                <TableColumn fx:id="idCol" text="Varaus ID" />
+                <TableColumn fx:id="mokkiCol" text="Mökki ID" />
+                <TableColumn fx:id="asiakasCol" text="Asiakas" />
+                <TableColumn fx:id="alkuCol" text="Alku" />
+                <TableColumn fx:id="loppuCol" text="Loppu" />
+                <TableColumn fx:id="tilaCol" text="Tila" />
+            <TableColumn fx:id="kokonaisSummaCol" prefWidth="100.0" text="Kokonaissumma" />
             </columns>
         </TableView>
 
@@ -94,19 +103,15 @@
         <VBox spacing="10.0">
             <HBox spacing="10.0">
                 <children>
-                    <Label text="VARAUS #" textFill="#574520">
+                    <Label text="VARAUS" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font></Label>
-                    <Label fx:id="varausIdLabel" text="-" textFill="#574520">
+                    <Label fx:id="varausIdLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
-                    <Label text="|" textFill="#574520">
-                        <font>
-                            <Font name="System Bold" size="18.0" />
-                        </font></Label>
-                    <Label fx:id="tilaLabel" text="(tähän varauksen tila)" textFill="#574520">
+                    <Label fx:id="tilaLabelHeader" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
@@ -116,17 +121,20 @@
                     <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelReservation" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Peru varaus" />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(tähän mökin nimi) · (alkupvm-loppupvm) · (hinta)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
-            <HBox>
+            <HBox spacing="10.0">
                 <children>
                     <Label text="VARAUKSEN TIEDOT" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="14.0" />
                         </font>
                     </Label>
-                    <Region />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                    <Region prefWidth="40.0" />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" />
                 </children>
             </HBox>
             <GridPane hgap="10.0" vgap="8.0">
@@ -135,18 +143,17 @@
                     <Label text="Saapumispäivä:" />
                     <Label text="Lähtöpäivä:" GridPane.rowIndex="1" />
                     <Label text="Varauksen tila:" GridPane.rowIndex="2" />
-                    <DatePicker fx:id="alkuDatePicker" prefWidth="170.0" GridPane.columnIndex="1" />
-                    <DatePicker fx:id="loppuDatePicker" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <ComboBox fx:id="tilaComboBox" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <GridPane.margin>
-                            <Insets />
-                        </GridPane.margin></ComboBox>
+                    <DatePicker fx:id="alkuDatePickerDetail" prefWidth="170.0" GridPane.columnIndex="1" />
+                    <DatePicker fx:id="loppuDatePickerDetail" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                         <GridPane.margin>
                             <Insets top="14.0" />
                         </GridPane.margin></Button>
                     <Label text="Luontipäivä:" GridPane.rowIndex="3" />
-                    <Label fx:id="luontiLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="luontiLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label fx:id="alkuLabel" GridPane.columnIndex="1" />
+               <Label fx:id="loppuLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <Label fx:id="tilaLabelDetail" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
@@ -170,9 +177,9 @@
                     <Label text="Nimi:" />
                     <Label text="Sähköposti:" GridPane.rowIndex="1" />
                     <Label text="Puhelin:" GridPane.rowIndex="2" />
-                    <Label fx:id="asiakasLabel" text="-" GridPane.columnIndex="1" />
-                    <Label fx:id="emailLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label fx:id="phoneLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="asiakasLabel" GridPane.columnIndex="1" />
+                    <Label fx:id="emailLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="phoneLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
