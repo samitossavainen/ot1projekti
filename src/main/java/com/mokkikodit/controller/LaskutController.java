@@ -57,7 +57,7 @@ public class LaskutController {
     private final ObservableList<Lasku> laskut =
             FXCollections.observableArrayList();
 
-    private FilteredList<Lasku> filteredMokit;
+    private FilteredList<Lasku> filteredLasku;
 
     public void setLaskuService(LaskuService service){
         this.service = service;
@@ -78,9 +78,12 @@ public class LaskutController {
                 ).asObject());
 
         asiakasCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
-                        data.getValue().getVaraus().getAsiakasEmail()
-                ));
+                new javafx.beans.property.SimpleStringProperty("TESTI"));
+
+        //asiakasCol.setCellValueFactory(data ->
+        //        new javafx.beans.property.SimpleStringProperty(
+        //                data.getValue().getVaraus().getAsiakasEmail()
+        //        ));
 
         erapvmCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -102,6 +105,9 @@ public class LaskutController {
 
         editMode = false;
         editButton.setText("Muokkaa");
+
+        filteredLasku = new FilteredList<>(laskut, a -> true);
+        tableLaskut.setItems(filteredLasku);
 
         // IMPORTANT: hide fields initially
         setFieldsVisible(false);

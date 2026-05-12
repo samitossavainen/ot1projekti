@@ -120,7 +120,8 @@ public class Lasku {
 
         if (!tila.equals("lähetetty")
                 && !tila.equals("maksettu")
-                && !tila.equals("myöhässä")) {
+                && !tila.equals("myöhässä")
+                && !tila.equals("peruttu")) {
 
             throw new IllegalArgumentException(
                     "Virheellinen laskun tila."
