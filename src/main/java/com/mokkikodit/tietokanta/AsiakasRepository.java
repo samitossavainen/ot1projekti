@@ -25,6 +25,7 @@ public class AsiakasRepository {
                 a.setSapo(rs.getString("sapo"));
                 a.setPuhelinnumero(rs.getString("puhelinnumero"));
                 a.setOsoite(rs.getString("osoite"));
+                a.setTila(rs.getInt("tila"));
 
                 lista.add(a);
             }
@@ -53,6 +54,7 @@ public class AsiakasRepository {
                     a.setNimi(rs.getString("nimi"));
                     a.setPuhelinnumero(rs.getString("puhelinnumero"));
                     a.setOsoite(rs.getString("osoite"));
+                    a.setTila(rs.getInt("tila"));
                     return a;
                 }
             }
@@ -86,7 +88,7 @@ public class AsiakasRepository {
     public void update(Asiakas a) {
 
         // asiakkaan tietoja päivittäessä sapo ei voi muuttua koska se on PK
-        String sql = "UPDATE asiakas SET nimi=?, puhelinnumero=?, osoite=? WHERE sapo=?";
+        String sql = "UPDATE asiakas SET nimi=?, puhelinnumero=?, osoite=?, tila=? WHERE sapo=?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {

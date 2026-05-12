@@ -50,7 +50,7 @@ public class MokkiService {
         Mokki mokki = repository.findById(mokkiId);
 
         if (mokki != null) {
-            mokki.setTila(0);
+            mokki.deaktivoi();
             repository.update(mokki);
         }
     }
@@ -63,7 +63,7 @@ public class MokkiService {
         Mokki mokki = repository.findById(mokkiId);
 
         if (mokki != null) {
-            mokki.setTila(1);
+            mokki.aktivoi();
             repository.update(mokki);
         }
     }

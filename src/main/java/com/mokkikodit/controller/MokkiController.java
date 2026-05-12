@@ -3,6 +3,7 @@ package com.mokkikodit.controller;
 import com.mokkikodit.logiikka.MokkiService;
 import com.mokkikodit.mallit.Mokki;
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -53,7 +54,7 @@ public class MokkiController {
     @FXML private TableColumn<Mokki, Double> priceCol;
     @FXML private TableColumn<Mokki, Integer> roomsCol;
     @FXML private TableColumn<Mokki, Integer> bathroomsCol;
-    @FXML private TableColumn<Mokki, Integer> statusCol;
+    @FXML private TableColumn<Mokki, String> statusCol;
 
     @FXML private Label statusLabel;
 
@@ -113,10 +114,14 @@ public class MokkiController {
                         data.getValue().getVessat()
                 ).asObject());
 
+
         statusCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleIntegerProperty(
-                        data.getValue().getTila()
-                ).asObject());
+                new SimpleStringProperty(
+                        data.getValue().getTila() == 1
+                                ? "Käytössä"
+                                : "Poissa käytöstä"
+                ));
+
 
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
@@ -390,55 +395,37 @@ public class MokkiController {
 
         Stage stage = (Stage) tableCabins.getScene().getWindow();
 
-        if (selectedMokki.getTila() == 1) {
-            // MökkI on käytössä → poistetaan käytöstä
+        boolean onKaytossa = selectedMokki.getTila() == 1;
 
-            boolean confirmed = DialogUtil.confirm(
-                    stage,
-                    "Vahvista",
-                    "Haluatko poistaa mökin käytöstä?",
-                    "Mökki \"" + selectedMokki.getNimi() +
-                            "\" (#" + selectedMokki.getMokkiId() + ") poistetaan käytöstä."
-            );
+        boolean confirmed = DialogUtil.confirm(
+                stage,
+                "Vahvista",
+                onKaytossa
+                        ? "Haluatko poistaa mökin käytöstä?"
+                        : "Haluatko ottaa mökin käyttöön?",
+                "Mökki \"" + selectedMokki.getNimi()
+                        + "\" (#" + selectedMokki.getMokkiId() + ")"
+        );
 
-            if (confirmed) {
+        if (!confirmed) return;
 
-                service.deaktivoiMokki(selectedMokki.getMokkiId());
-
-                selectedMokki = service.haeIdlla(selectedMokki.getMokkiId());
-
-                populateFields(selectedMokki);
-                tableCabins.refresh();
-                updateCabinStatus();
-
-                showSavedStatus("Mökki poistettu käytöstä");
-                statusLabel.setStyle("-fx-text-fill: #B04A30;");
-            }
-
+        // Päivitetään tietokanta
+        if (onKaytossa) {
+            service.deaktivoiMokki(selectedMokki.getMokkiId());
+            selectedMokki.deaktivoi();   // tila = 0
+            showSavedStatus("Mökki poistettu käytöstä");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
         } else {
-            // MökkI ei ole käytössä → otetaan käyttöön
-            boolean confirmed = DialogUtil.confirm(
-                    stage,
-                    "Vahvista",
-                    "Haluatko ottaa mökin käyttöön?",
-                    "Mökki \"" + selectedMokki.getNimi() +
-                            "\" (#" + selectedMokki.getMokkiId() + ") otetaan käyttöön."
-            );
-
-            if (confirmed) {
-
-                service.aktivoiMokki(selectedMokki.getMokkiId());
-
-                selectedMokki = service.haeIdlla(selectedMokki.getMokkiId());
-
-                populateFields(selectedMokki);
-                tableCabins.refresh();
-                updateCabinStatus();
-
-                showSavedStatus("Mökki otettu käyttöön");
-                statusLabel.setStyle("-fx-text-fill: #1e7f43;");
-            }
+            service.aktivoiMokki(selectedMokki.getMokkiId());
+            selectedMokki.aktivoi();     // tila = 1
+            showSavedStatus("Mökki otettu käyttöön");
+            statusLabel.setStyle("-fx-text-fill: #1e7f43;");
         }
+
+        // Päivitetään näkymä
+        tableCabins.refresh();
+        populateFields(selectedMokki);
+        updateCabinStatus();
     }
 
     private void setEditMode(boolean editable) {

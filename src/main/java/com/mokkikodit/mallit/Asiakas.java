@@ -6,6 +6,7 @@ public class Asiakas {
     private String nimi;
     private String puhelinnumero;
     private String osoite;
+    private int tila = 1;
 
     public Asiakas() {
     }
@@ -38,6 +39,8 @@ public class Asiakas {
         return osoite;
     }
 
+    public int getTila() {return tila;}
+
     // ---------- SETTERS ----------
     public void setSapo(String sapo) {
         this.sapo = sapo;
@@ -53,6 +56,30 @@ public class Asiakas {
 
     public void setOsoite(String osoite) {
         this.osoite = osoite;
+    }
+
+    public void setTila(int tila) {this.tila = tila;}
+
+    // ---------- VALIDATION ----------
+    public boolean hasValidSapo() {
+        return sapo != null
+                && !sapo.trim().isEmpty()
+                && sapo.contains("@");
+    }
+
+    public boolean isValid() {
+        return nimi != null && !nimi.trim().isEmpty()
+                && sapo != null && !sapo.trim().isEmpty()
+                && puhelinnumero != null && !puhelinnumero.trim().isEmpty()
+                && osoite != null && !osoite.trim().isEmpty();
+    }
+
+    public void deaktivoiAsiakas() {
+        this.tila = 0;
+    }
+
+    public void aktivoiAsiakas() {
+        this.tila = 1;
     }
 
     @Override
