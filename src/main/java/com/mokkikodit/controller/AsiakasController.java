@@ -2,6 +2,7 @@ package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,6 +41,7 @@ public class AsiakasController {
     @FXML private TableColumn<Asiakas, String> emailCol;
     @FXML private TableColumn<Asiakas, String> phoneCol;
     @FXML private TableColumn<Asiakas, String> addressCol;
+    @FXML private TableColumn<Asiakas, String> statusCol;
 
     @FXML private Label statusLabel;
 
@@ -85,6 +87,13 @@ public class AsiakasController {
                         data.getValue().getOsoite()
                 ));
 
+        statusCol.setCellValueFactory(data ->
+                new SimpleStringProperty(
+                        data.getValue().getTila() == 1
+                                ? "Käytössä"
+                                : "Poissa käytöstä"
+                ));
+
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
         editButton.setText("Muokkaa");
@@ -102,6 +111,8 @@ public class AsiakasController {
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
+                    updateCustomerStatus();
+
                 });
 
         tableAsiakkaat.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
@@ -292,30 +303,40 @@ public class AsiakasController {
     }
 
     @FXML
-    private void deleteCustomer() {
+    private void toggleCustomerStatus() {
 
         if (editMode) return;
-
         if (selectedAsiakas == null) return;
 
         Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
+        boolean onKaytossa = selectedAsiakas.getTila() == 1;
 
         boolean confirmed = DialogUtil.confirm(
                 stage,
-                "Vahvista poisto",
-                "Haluatko varmasti poistaa asiakkaan?",
-                "Asiakas \"" + selectedAsiakas.getNimi() + "\" (" + selectedAsiakas.getSapo() + ") poistetaan."
+                "Vahvista",
+                onKaytossa
+                        ? "Haluatko poistaa asiakkaan käytöstä?"
+                        : "Haluatko ottaa asiakkaan käyttöön?",
+                "Asiakas \"" + selectedAsiakas.getNimi()
+                        + "\" (" + selectedAsiakas.getSapo() + ")"
         );
 
-        if (confirmed) {
+        if (!confirmed) return;
 
-            service.poista(selectedAsiakas.getSapo());
-
-            asiakkaat.remove(selectedAsiakas);
-
-            showSavedStatus("Asiakas poistettu");
+        if (onKaytossa) {
+            service.deaktivoiAsiakas(selectedAsiakas.getSapo());
+            selectedAsiakas.deaktivoiAsiakas();
+            showSavedStatus("Asiakas poistettu käytöstä");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
+        } else {
+            service.aktivoiAsiakas(selectedAsiakas.getSapo());
+            selectedAsiakas.aktivoiAsiakas();
+            showSavedStatus("Asiakas otettu käyttöön");
+            statusLabel.setStyle("-fx-text-fill: #1e7f43;");
         }
+
+        tableAsiakkaat.refresh();
+        updateCustomerStatus();
     }
 
     private void setEditMode(boolean editable) {
@@ -407,5 +428,25 @@ public class AsiakasController {
             addCustomerStatusLabel.setManaged(false);
         });
         pause.play();
+    }
+
+    private void updateCustomerStatus() {
+
+        if (selectedAsiakas == null) {
+            deleteButton.setDisable(true);
+            return;
+        }
+
+        deleteButton.setDisable(false);
+
+        if (selectedAsiakas.getTila() == 0) {
+            // Asiakas EI käytössä
+            deleteButton.setText("Ota käyttöön");
+            deleteButton.setStyle("-fx-base: #4F8F8B; -fx-text-fill: white;");
+        } else {
+            // Asiakas käytössä
+            deleteButton.setText("Poista käytöstä");
+            deleteButton.setStyle("-fx-base: #B04A30; -fx-text-fill: white;");
+        }
     }
 }

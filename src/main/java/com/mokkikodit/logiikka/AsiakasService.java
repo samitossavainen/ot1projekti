@@ -56,6 +56,24 @@ public class AsiakasService {
         repo.update(a);
     }
 
+    public void deaktivoiAsiakas(String sapo) {
+        Asiakas asiakas = repo.findBySapo(sapo);
+
+        if (asiakas != null) {
+            asiakas.deaktivoiAsiakas();     // tila = 0
+            repo.update(asiakas);
+        }
+    }
+
+    public void aktivoiAsiakas(String sapo) {
+        Asiakas asiakas = repo.findBySapo(sapo);
+
+        if (asiakas != null) {
+            asiakas.aktivoiAsiakas();       // tila = 1
+            repo.update(asiakas);
+        }
+    }
+
     /**
      * Poistaa asiakkaan tunnuksen perusteella.
      */
