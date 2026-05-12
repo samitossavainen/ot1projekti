@@ -2,9 +2,7 @@ package com.mokkikodit.mallit;
 
 public class Asiakas {
 
-    private int id;
-
-    private String sapo;
+    private String sapo; // PK
     private String nimi;
     private String puhelinnumero;
     private String osoite;

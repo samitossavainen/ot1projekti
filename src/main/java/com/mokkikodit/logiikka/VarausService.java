@@ -55,5 +55,10 @@ public class VarausService {
         if (v.getKokonaissumma() < 0) {
             throw new IllegalArgumentException("Kokonaissumma ei voi olla negatiivinen.");
         }
+
+        if (v.getAsiakasEmail() == null || v.getAsiakasEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Asiakas puuttuu.");
+        }
+
     }
 }

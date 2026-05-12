@@ -212,6 +212,7 @@ public class AsiakasController {
         muokattavaAsiakas.setNimi(selectedAsiakas.getNimi());
         muokattavaAsiakas.setPuhelinnumero(selectedAsiakas.getPuhelinnumero());
         muokattavaAsiakas.setOsoite(selectedAsiakas.getOsoite());
+        muokattavaAsiakas.setSapo(selectedAsiakas.getSapo());
 
         // Näytetään kopion tiedot kentissä
         nimiField.setText(muokattavaAsiakas.getNimi());
@@ -248,13 +249,12 @@ public class AsiakasController {
         muokattavaAsiakas.setNimi(nimiField.getText());
         muokattavaAsiakas.setPuhelinnumero(phoneField.getText());
         muokattavaAsiakas.setOsoite(addressArea.getText());
-        muokattavaAsiakas.setSapo(selectedAsiakas.getSapo());
 
         try {
             service.paivita(muokattavaAsiakas);
         } catch (IllegalArgumentException e) {
 
-            statusLabel.setText(e.getMessage());
+            statusLabel.setText("Täytä puuttuvat tiedot");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
             statusLabel.setVisible(true);
             statusLabel.setManaged(true);
@@ -295,6 +295,7 @@ public class AsiakasController {
     private void deleteCustomer() {
 
         if (editMode) return;
+
         if (selectedAsiakas == null) return;
 
         Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
@@ -308,10 +309,9 @@ public class AsiakasController {
 
         if (confirmed) {
 
-            // Soft delete, tila = 0
-            service.deaktivoi(selectedAsiakas.getSapo());
-            refreshTable();
-            selectedAsiakas = null;
+            service.poista(selectedAsiakas.getSapo());
+
+            asiakkaat.remove(selectedAsiakas);
 
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");

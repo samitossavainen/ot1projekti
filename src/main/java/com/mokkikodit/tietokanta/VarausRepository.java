@@ -3,8 +3,11 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Varaus;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.mokkikodit.util.DateUtil;
 
 public class VarausRepository {
 
@@ -29,13 +32,22 @@ public class VarausRepository {
                 v.setTila(rs.getString("varauksen_tila"));
                 v.setKokonaissumma(rs.getDouble("kokonaissumma"));
 
-                Date alku = rs.getDate("alkamispvm");
-                Date loppu = rs.getDate("loppumispvm");
-                Timestamp luonti = rs.getTimestamp("luontipvm");
+                String alkuStr = rs.getString("alkamispvm");
+                String loppuStr = rs.getString("loppumispvm");
+                String luontiStr = rs.getString("luontipvm");
 
-                if (alku != null) v.setAlkuPvm(alku.toLocalDate());
-                if (loppu != null) v.setLoppuPvm(loppu.toLocalDate());
-                if (luonti != null) v.setLuontiPvm(luonti.toLocalDateTime());
+                if (alkuStr != null) {
+                    v.setAlkuPvm(DateUtil.parseDate(rs.getString("alkamispvm")));
+                }
+
+                if (loppuStr != null) {
+                    v.setLoppuPvm(DateUtil.parseDate(rs.getString("loppumispvm")));
+                }
+
+                if (luontiStr != null) {
+                    v.setLuontiPvm(DateUtil.parseDateTime(rs.getString("luontipvm")));
+
+                }
 
                 lista.add(v);
             }
@@ -60,8 +72,10 @@ public class VarausRepository {
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
             ps.setString(1, v.getAsiakasEmail());
-            ps.setDate(2, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(3, Date.valueOf(v.getLoppuPvm()));
+
+            ps.setString(2, v.getAlkuPvm().toString());
+            ps.setString(3, v.getLoppuPvm().toString());
+
             ps.setInt(4, v.getMokkiId());
             ps.setDouble(5, v.getKokonaissumma());
 
@@ -87,8 +101,10 @@ public class VarausRepository {
             ps.setString(1, v.getAsiakasEmail());
             ps.setInt(2, v.getMokkiId());
             ps.setString(3, v.getTila());
-            ps.setDate(4, Date.valueOf(v.getAlkuPvm()));
-            ps.setDate(5, Date.valueOf(v.getLoppuPvm()));
+
+            ps.setString(2, v.getAlkuPvm().toString());
+            ps.setString(3, v.getLoppuPvm().toString());
+
             ps.setInt(6, v.getVarausId());
 
             ps.executeUpdate();
