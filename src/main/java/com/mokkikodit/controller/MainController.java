@@ -1,8 +1,10 @@
 package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
+import com.mokkikodit.logiikka.LaskuService;
 import com.mokkikodit.logiikka.MokkiService;
 import com.mokkikodit.tietokanta.AsiakasRepository;
+import com.mokkikodit.tietokanta.LaskuRepository;
 import com.mokkikodit.tietokanta.MokkiRepository;
 import com.mokkikodit.logiikka.VarausService;
 import com.mokkikodit.tietokanta.VarausRepository;
@@ -85,6 +87,12 @@ public class MainController {
             if (controller instanceof MokkiController) {
                 ((MokkiController) controller).setMokkiService(
                         new MokkiService(new MokkiRepository())
+                );
+            }
+
+            if (controller instanceof LaskutController) {
+                ((LaskutController) controller).setLaskuService(
+                        new LaskuService(new LaskuRepository())
                 );
             }
 
