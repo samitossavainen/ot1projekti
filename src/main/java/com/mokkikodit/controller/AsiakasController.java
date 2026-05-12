@@ -336,6 +336,7 @@ public class AsiakasController {
         }
 
         tableAsiakkaat.refresh();
+        populateFields(selectedAsiakas);
         updateCustomerStatus();
     }
 
