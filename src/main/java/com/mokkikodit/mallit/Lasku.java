@@ -1,7 +1,5 @@
 package com.mokkikodit.mallit;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -20,7 +18,7 @@ public class Lasku {
     private String tila = "lähetetty";
 
     // Generated automatically by SQLite
-    private Timestamp aikaleima;
+    private LocalDateTime aikaleima;
 
     // Invoice due date
     private LocalDate erapaiva;
@@ -61,7 +59,7 @@ public class Lasku {
                  int varausId,
                  Varaus varaus,
                  String tila,
-                 Timestamp aikaleima,
+                 LocalDateTime aikaleima,
                  LocalDate erapaiva,
                  double summa) {
 
@@ -92,7 +90,7 @@ public class Lasku {
         return tila;
     }
 
-    public Timestamp getAikaleima() {
+    public LocalDateTime getAikaleima() {
         return aikaleima;
     }
 
@@ -132,7 +130,7 @@ public class Lasku {
         this.tila = tila;
     }
 
-    public void setAikaleima(Timestamp aikaleima) {
+    public void setAikaleima(LocalDateTime aikaleima) {
         this.aikaleima = aikaleima;
     }
 

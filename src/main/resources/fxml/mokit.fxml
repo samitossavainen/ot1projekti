@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -50,17 +49,14 @@
                                 <Insets top="5.0" />
                             </padding>
                         </Label>
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" />
                     </children>
                 </HBox>
 
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker fx:id="alkuDatePicker" promptText="Alku" />
-                        <Label text="-" HBox.hgrow="ALWAYS" />
-                        <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />
-                        <Button fx:id="refreshButton" text="Päivitä">
+                        <Button fx:id="refreshButton" onAction="#refreshView" text="Päivitä">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
@@ -94,7 +90,7 @@
                 <TableColumn fx:id="cabinCol" text="Mökin ID" />
                 <TableColumn fx:id="nameCol" text="Nimi" />
                 <TableColumn fx:id="addressCol" text="Osoite" />
-                <TableColumn fx:id="capasityCol" text="Kapasiteetti" />
+                <TableColumn fx:id="capacityCol" text="Kapasiteetti" />
                 <TableColumn fx:id="roomsCol" text="Huoneet" />
                 <TableColumn fx:id="bathroomsCol" text="Vessat" />
                 <TableColumn fx:id="priceCol" text="Hinta / Yö" />
@@ -125,7 +121,7 @@
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteCabin" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista mökki" />
+                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#toggleCabinStatus" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista käytöstä" />
                 </children>
             </HBox>
             <Label fx:id="summaryLabel">
@@ -150,10 +146,6 @@
                     <Label text="Nimi:" />
                     <Label text="Osoite:" GridPane.rowIndex="1" />
                     <Label text="Kapasiteetti:" GridPane.rowIndex="2" />
-                    <ComboBox fx:id="tilaComboBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                        <GridPane.margin>
-                            <Insets />
-                        </GridPane.margin></ComboBox>
                     <Button fx:id="saveButton" alignment="TOP_LEFT" managed="false" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                         <GridPane.margin>
                             <Insets top="14.0" />
@@ -166,7 +158,6 @@
                     <Label text="Huoneet:" GridPane.rowIndex="3" />
                     <Label text="Vessat:" GridPane.rowIndex="4" />
                     <Label text="Hinta / yö:" GridPane.rowIndex="5" />
-                    <Label text="Tila:" GridPane.rowIndex="6" />
                     <TextField fx:id="pricePerNightField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                     <Label text="Lisätiedot:" GridPane.rowIndex="7" />
                     <TextArea fx:id="lisatiedotArea" minHeight="45.0" prefHeight="45.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
@@ -176,7 +167,6 @@
                <Label fx:id="roomsLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                <Label fx:id="vessatLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                <Label fx:id="pricePerNightLabel" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-               <Label GridPane.columnIndex="1" GridPane.rowIndex="6" />
                <Label fx:id="lisatiedotLabel" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </children>
             <columnConstraints>
@@ -193,7 +183,6 @@
                <RowConstraints />
                <RowConstraints />
             </rowConstraints>
-
             </GridPane>
         </VBox>
 

@@ -31,26 +31,21 @@ public class UusiAsiakasController {
     @FXML
     private void create(ActionEvent event) {
 
-        Asiakas a = new Asiakas();
-
-        a.setNimi(nimiField.getText());
-        a.setSapo(emailField.getText());
-        a.setPuhelinnumero(phoneField.getText());
-        a.setOsoite(addressArea.getText());
-
         try {
+            Asiakas a = new Asiakas();
+
+            a.setNimi(nimiField.getText());
+            a.setSapo(emailField.getText());
+            a.setPuhelinnumero(phoneField.getText());
+            a.setOsoite(addressArea.getText());
 
             service.lisaa(a);
             asiakasLisatty = true;
             close(event);
 
-        } catch (IllegalArgumentException e) {
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Virhe");
-            alert.setHeaderText("Asiakasta ei voitu lisätä");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        }
+        catch (IllegalArgumentException e) {
+            showError("Asiakasta ei voitu lisätä", e.getMessage());
         }
     }
 
@@ -61,5 +56,13 @@ public class UusiAsiakasController {
 
     public boolean isAsiakasLisatty() {
         return asiakasLisatty;
+    }
+
+    private void showError(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Virhe");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

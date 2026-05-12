@@ -3,7 +3,7 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Lasku;
 import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.mallit.Varaus;
-
+import com.mokkikodit.util.DateUtil;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -119,8 +119,8 @@ public class LaskuRepository {
 
         l.setLaskuId(rs.getInt("lasku_ID"));
         l.setVarausId(rs.getInt("varaus_ID"));
-        l.setAikaleima(rs.getTimestamp("aikaleima"));
-        l.setErapaiva(LocalDate.parse(rs.getString("eräpäivä")));
+        l.setAikaleima(DateUtil.parseDateTime(rs.getString("aikaleima")));
+        l.setErapaiva(DateUtil.parseDate(rs.getString("eräpäivä")));
         l.setSumma(rs.getDouble("summa"));
         l.setTila(rs.getString("tila"));
 

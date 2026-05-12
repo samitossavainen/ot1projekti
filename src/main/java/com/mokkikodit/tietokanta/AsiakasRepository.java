@@ -36,21 +36,21 @@ public class AsiakasRepository {
         return lista;
     }
 
-    public Asiakas findById(int id) {
+    public Asiakas findBySapo(String sapo) {
 
-        String sql = "SELECT * FROM asiakas WHERE id = ?";
+        String sql = "SELECT * FROM asiakas WHERE sapo = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setString(1, sapo);
 
             try (ResultSet rs = ps.executeQuery()) {
 
                 if (rs.next()) {
                     Asiakas a = new Asiakas();
-                    a.setNimi(rs.getString("nimi"));
                     a.setSapo(rs.getString("sapo"));
+                    a.setNimi(rs.getString("nimi"));
                     a.setPuhelinnumero(rs.getString("puhelinnumero"));
                     a.setOsoite(rs.getString("osoite"));
                     return a;
@@ -85,16 +85,16 @@ public class AsiakasRepository {
 
     public void update(Asiakas a) {
 
-        String sql = "UPDATE asiakas SET sapo=?, puhelinnumero=?, nimi=?, osoite=? WHERE sapo=?";
+        // asiakkaan tietoja päivittäessä sapo ei voi muuttua koska se on PK
+        String sql = "UPDATE asiakas SET nimi=?, puhelinnumero=?, osoite=? WHERE sapo=?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setString(1, a.getSapo());
+            ps.setString(1, a.getNimi());
             ps.setString(2, a.getPuhelinnumero());
-            ps.setString(3, a.getNimi());
-            ps.setString(4, a.getOsoite());
-            ps.setString(5, a.getSapo());
+            ps.setString(3, a.getOsoite());
+            ps.setString(4, a.getSapo());
 
             ps.executeUpdate();
 
@@ -103,14 +103,14 @@ public class AsiakasRepository {
         }
     }
 
-    public void delete(int id) {
+    public void delete(String sapo) {
 
-        String sql = "DELETE FROM asiakas WHERE id = ?";
+        String sql = "DELETE FROM asiakas WHERE sapo = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setString(1, sapo);
             ps.executeUpdate();
 
         } catch (SQLException e) {
