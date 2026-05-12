@@ -55,20 +55,6 @@ public class Asiakas {
         this.osoite = osoite;
     }
 
-    // ---------- VALIDATION ----------
-    public boolean hasValidSapo() {
-        return sapo != null
-                && !sapo.trim().isEmpty()
-                && sapo.contains("@");
-    }
-
-    public boolean isValid() {
-        return nimi != null && !nimi.trim().isEmpty()
-                && sapo != null && !sapo.trim().isEmpty()
-                && puhelinnumero != null && !puhelinnumero.trim().isEmpty()
-                && osoite != null && !osoite.trim().isEmpty();
-    }
-
     @Override
     public String toString() {
         return nimi + " (" + sapo + ")";
