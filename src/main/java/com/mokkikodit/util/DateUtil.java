@@ -15,9 +15,6 @@ public class DateUtil {
     private static final DateTimeFormatter DATETIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    /**
-     * Parses SQLite TEXT date (YYYY-MM-DD) to LocalDate.
-     */
     public static LocalDate parseDate(Object dbValue) {
         if (dbValue == null) return null;
 
@@ -29,10 +26,6 @@ public class DateUtil {
             );
         }
     }
-
-    /**
-     * Parses SQLite TEXT datetime (YYYY-MM-DD HH:MM:SS) to LocalDateTime.
-     */
 
     public static LocalDateTime parseDateTime(Object dbValue) {
         if (dbValue == null) return null;
@@ -59,7 +52,6 @@ public class DateUtil {
     }
 
 
-    // Utility class → no instances
     private DateUtil() {
     }
 }
