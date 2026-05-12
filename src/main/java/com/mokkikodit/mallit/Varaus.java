@@ -1,6 +1,5 @@
 package com.mokkikodit.mallit;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
