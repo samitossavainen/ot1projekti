@@ -1,16 +1,21 @@
 package com.mokkikodit.logiikka;
 
+import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.mallit.Varaus;
+import com.mokkikodit.tietokanta.MokkiRepository;
 import com.mokkikodit.tietokanta.VarausRepository;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class VarausService {
 
     private final VarausRepository repo;
+    private final MokkiRepository mokkiRepo;
 
     public VarausService(VarausRepository repo) {
         this.repo = repo;
+        this.mokkiRepo = new MokkiRepository();
     }
 
     public List<Varaus> getAllVaraukset() {
@@ -19,6 +24,10 @@ public class VarausService {
 
     public void addVaraus(Varaus v) {
         validate(v);
+
+        double kokonaissumma = laskeKokonaissumma(v);
+        v.setKokonaissumma(kokonaissumma);
+
         repo.tallenna(v);
     }
 
@@ -30,6 +39,31 @@ public class VarausService {
     public void deleteVaraus(int id) {
         repo.poista(id);
     }
+
+    // business logic
+
+    private double laskeKokonaissumma(Varaus v){
+        Mokki mokki = mokkiRepo.findById(v.getMokkiId());
+
+        if (mokki == null){
+            throw new IllegalArgumentException(
+                    "Mökkiä ei löydy (ID: " + v.getMokkiId() + " )"
+            );
+        }
+
+        long kestoPaivina = ChronoUnit.DAYS.between(
+                v.getAlkuPvm(),
+                v.getLoppuPvm()
+        );
+
+        if (kestoPaivina <= 0){
+            throw new IllegalArgumentException(
+                    "Varauksen kesto on virheellinen."
+            );
+        }
+        return kestoPaivina * mokki.getHinta();
+    }
+
 
     // =========================
     // VALIDATION (DB aligned)
@@ -50,10 +84,6 @@ public class VarausService {
 
         if (v.getMokkiId() <= 0) {
             throw new IllegalArgumentException("Mökki_ID puuttuu tai on virheellinen.");
-        }
-
-        if (v.getKokonaissumma() < 0) {
-            throw new IllegalArgumentException("Kokonaissumma ei voi olla negatiivinen.");
         }
 
         if (v.getAsiakasEmail() == null || v.getAsiakasEmail().trim().isEmpty()) {
