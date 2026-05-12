@@ -107,22 +107,6 @@ public class MokkiRepository {
         }
     }
 
-
-    public void delete(Integer id) {
-
-        String sql = "DELETE FROM mokki WHERE mokki_ID=?";
-
-        try (Connection c = Tietokanta.getYhteys();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private Mokki map(ResultSet rs) throws SQLException {
 
         Mokki m = new Mokki();
