@@ -16,6 +16,8 @@ public class MokkiService {
     public MokkiService(MokkiRepository repository) {
         this.repository = repository;
     }
+
+
     /**
      * Hakee kaikki mökit.
      */

@@ -3,7 +3,7 @@ package com.mokkikodit.tietokanta;
 import com.mokkikodit.mallit.Lasku;
 import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.mallit.Varaus;
-
+import com.mokkikodit.util.DateUtil;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,33 +33,23 @@ public class LaskuRepository {
         return lista;
     }
 
-    public Lasku findById(int id) {
+    public Lasku findById(Integer id) {
 
-        String sql = "SELECT * FROM lasku WHERE lasku_ID = ?";
+        String sql = "SELECT * FROM laskut WHERE lasku_ID=?";
 
-        try (Connection yhteys = Tietokanta.getYhteys();
-             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+        try (Connection c = Tietokanta.getYhteys();
+             PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
-
                 if (rs.next()) {
-
-                    return new Lasku(
-                            rs.getInt("lasku_ID"),
-                            rs.getInt("varaus_ID"),
-                            null,
-                            rs.getString("tila"),
-                            rs.getTimestamp("aikaleima"),
-                            LocalDate.parse(rs.getString("eräpäivä")),
-                            rs.getDouble("summa")
-                    );
+                    return map(rs);
                 }
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Laskun haku epäonnistui", e);
+            e.printStackTrace();
         }
 
         return null;
@@ -68,7 +58,7 @@ public class LaskuRepository {
     public void save(Lasku l) {
 
         String sql =
-                "INSERT INTO lasku (tila, erapaiva, summa, varaus_ID) VALUES (?, ?, ?, ?)";
+                "INSERT INTO laskut (tila, erapaiva, summa, varaus_ID) VALUES (?, ?, ?, ?)";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -85,30 +75,32 @@ public class LaskuRepository {
         }
     }
 
-    public void update(Lasku l) {
+    public void update(Lasku m) {
 
         String sql =
-                "UPDATE lasku SET tila = ?, erapaiva = ?, summa = ?, varaus_ID = ? WHERE lasku_ID = ?";
+                "UPDATE laskut " +
+                        "SET tila=?, eräpäivä=?, summa=? " +
+                        "WHERE lasku_ID=?";
 
-        try (Connection yhteys = Tietokanta.getYhteys();
-             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+        try (Connection c = Tietokanta.getYhteys();
+             PreparedStatement ps = c.prepareStatement(sql)) {
 
-            ps.setString(1, l.getTila());
-            ps.setString(2, l.getErapaiva().toString());
-            ps.setDouble(3, l.getSumma());
-            ps.setInt(4, l.getVarausId());
-            ps.setInt(5, l.getLaskuId());
+            ps.setString(1, m.getTila());
+            ps.setString(2, m.getErapaiva().toString());
+            ps.setDouble(3, m.getSumma());
+            ps.setInt(4, m.getLaskuId());
+
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Laskun päivitys epäonnistui", e);
+            e.printStackTrace();
         }
     }
 
     public void delete(int id) {
 
-        String sql = "DELETE FROM lasku WHERE lasku_ID = ?";
+        String sql = "DELETE FROM laskut WHERE lasku_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -127,8 +119,8 @@ public class LaskuRepository {
 
         l.setLaskuId(rs.getInt("lasku_ID"));
         l.setVarausId(rs.getInt("varaus_ID"));
-        l.setAikaleima(rs.getTimestamp("aikaleima"));
-        l.setErapaiva(LocalDate.parse(rs.getString("eräpäivä")));
+        l.setAikaleima(DateUtil.parseDateTime(rs.getString("aikaleima")));
+        l.setErapaiva(DateUtil.parseDate(rs.getString("eräpäivä")));
         l.setSumma(rs.getDouble("summa"));
         l.setTila(rs.getString("tila"));
 

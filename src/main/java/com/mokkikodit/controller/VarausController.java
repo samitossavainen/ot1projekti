@@ -14,6 +14,8 @@ import com.mokkikodit.util.DialogUtil;
 import com.mokkikodit.logiikka.VarausService;
 import com.mokkikodit.mallit.Varaus;
 
+import java.time.LocalDate;
+
 public class VarausController {
 
     @FXML private TableView<Varaus> tableVaraukset;
@@ -29,6 +31,14 @@ public class VarausController {
     @FXML private Label statusLabel;
     @FXML private Button cancelButton;
 
+    @FXML private TableColumn<Varaus, Number> idCol;
+    @FXML private TableColumn<Varaus, String> asiakasCol;
+    @FXML private TableColumn<Varaus, Number> mokkiCol;
+    @FXML private TableColumn<Varaus, String> tilaCol;
+    @FXML private TableColumn<Varaus, LocalDate> alkuCol;
+    @FXML private TableColumn<Varaus, LocalDate> loppuCol;
+
+
     private boolean editMode = false;
 
     // injected service (NOT new)
@@ -36,6 +46,7 @@ public class VarausController {
 
     public void setVarausService(VarausService service) {
         this.service = service;
+        refreshTable();
     }
 
     // =========================
@@ -73,6 +84,43 @@ public class VarausController {
         loppuDatePicker.setOnShowing(e -> {
             if (!editMode) loppuDatePicker.hide();
         });
+
+        idCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getVarausId()
+                )
+        );
+
+        asiakasCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getAsiakasEmail()
+                )
+        );
+
+        mokkiCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleIntegerProperty(
+                        data.getValue().getMokkiId()
+                )
+        );
+
+        tilaCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getTila()
+                )
+        );
+
+        alkuCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleObjectProperty<>(
+                        data.getValue().getAlkuPvm()
+                )
+        );
+
+        loppuCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleObjectProperty<>(
+                        data.getValue().getLoppuPvm()
+                )
+        );
+
     }
 
     // =========================
@@ -205,6 +253,9 @@ public class VarausController {
             );
             Parent root = loader.load();
 
+            UusiVarausController ctrl = loader.getController();
+            ctrl.setVarausService(service);
+
             Stage stage = new Stage();
             stage.setTitle("Uusi varaus");
 
@@ -215,6 +266,8 @@ public class VarausController {
             stage.sizeToScene();
             stage.setResizable(false);
             stage.showAndWait();
+
+            refreshTable();
 
         } catch (Exception e) {
             e.printStackTrace();

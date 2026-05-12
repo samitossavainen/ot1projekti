@@ -4,6 +4,9 @@ import com.mokkikodit.logiikka.AsiakasService;
 import com.mokkikodit.logiikka.MokkiService;
 import com.mokkikodit.tietokanta.AsiakasRepository;
 import com.mokkikodit.tietokanta.MokkiRepository;
+import com.mokkikodit.logiikka.VarausService;
+import com.mokkikodit.tietokanta.VarausRepository;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -66,6 +69,12 @@ public class MainController {
             Parent view = loader.load();
 
             Object controller = loader.getController();
+
+            if (controller instanceof VarausController) {
+                ((VarausController) controller).setVarausService(
+                        new VarausService(new VarausRepository())
+                );
+            }
 
             if (controller instanceof AsiakasController) {
                 ((AsiakasController) controller).setAsiakasService(

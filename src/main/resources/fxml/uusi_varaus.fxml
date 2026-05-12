@@ -42,16 +42,19 @@
                 <Label alignment="CENTER_RIGHT" text="Mökki:" GridPane.rowIndex="1" />
                 <Label alignment="CENTER_RIGHT" text="Tulo pvm:" GridPane.rowIndex="2" />
                 <Label alignment="CENTER_RIGHT" text="Lähtö pvm:" GridPane.rowIndex="3" />
-                <DatePicker prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <DatePicker prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <ComboBox prefWidth="170.0" GridPane.columnIndex="1" />
-                <ComboBox prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <DatePicker fx:id="alkuDatePicker" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <DatePicker fx:id="loppuDatePicker" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <ComboBox fx:id="asiakasComboBox" prefWidth="170.0" GridPane.columnIndex="1" />
+                <ComboBox fx:id="mokkiComboBox" prefWidth="170.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
         <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
             <children>
                 <Button mnemonicParsing="false" onAction="#cancel" text="Peruuta" />
-                <Button mnemonicParsing="false" style="-fx-base: #6B8E23; -fx-text-fill: white;" text="Vahvista" />
+                <Button mnemonicParsing="false"
+                        onAction="#vahvista"
+                        style="-fx-base: #6B8E23; -fx-text-fill: white;"
+                        text="Vahvista" />
             </children>
         </HBox>
     </children>

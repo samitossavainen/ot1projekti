@@ -18,12 +18,7 @@ public class MaksuService {
 
         return repo.findAll();
     }
-    /**
-     * Saves payment to database.
-     * DB handles:
-     * - maksu_ID (auto)
-     * - maksupäivä (auto timestamp)
-     */
+
     public void tallenna(Maksu m) {
 
         if (m == null) {
