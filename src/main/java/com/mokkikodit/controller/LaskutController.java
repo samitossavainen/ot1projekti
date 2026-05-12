@@ -78,7 +78,7 @@ public class LaskutController {
                 ).asObject());
 
         asiakasCol.setCellValueFactory(data ->
-                new javafx.beans.property.uSimpleStringProperty("TESTI"));
+                new javafx.beans.property.SimpleStringProperty("TESTI"));
 
         //asiakasCol.setCellValueFactory(data ->
         //        new javafx.beans.property.SimpleStringProperty(
