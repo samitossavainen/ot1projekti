@@ -1,7 +1,9 @@
 package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.AsiakasService;
+import com.mokkikodit.logiikka.MokkiService;
 import com.mokkikodit.mallit.Asiakas;
+import com.mokkikodit.mallit.Mokki;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -49,7 +51,7 @@ public class VarausController {
 
     @FXML private TableColumn<Varaus, Number> idCol;
     @FXML private TableColumn<Varaus, String> asiakasCol;
-    @FXML private TableColumn<Varaus, Number> mokkiCol;
+    @FXML private TableColumn<Varaus, String> mokkiCol;
     @FXML private TableColumn<Varaus, String> tilaCol;
     @FXML private TableColumn<Varaus, LocalDate> alkuCol;
     @FXML private TableColumn<Varaus, LocalDate> loppuCol;
@@ -60,6 +62,7 @@ public class VarausController {
 
     private VarausService service;
     private AsiakasService asiakasService;
+    private MokkiService mokkiService;
 
     private Varaus selectedVaraus;
     private Varaus muokattavaVaraus;
@@ -77,6 +80,10 @@ public class VarausController {
 
     public void setAsiakasService(AsiakasService asiakasService) {
         this.asiakasService = asiakasService;
+    }
+
+    public void setMokkiService(MokkiService mokkiService) {
+        this.mokkiService = mokkiService;
     }
 
     @FXML
@@ -102,11 +109,19 @@ public class VarausController {
                 )
         );
 
-        mokkiCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleIntegerProperty(
-                        data.getValue().getMokkiId()
-                )
-        );
+        mokkiCol.setCellValueFactory(data -> {
+            Mokki m = null;
+
+            if (mokkiService != null) {
+                m = mokkiService.haeIdlla(data.getValue().getMokkiId());
+            }
+
+            String text = (m != null)
+                    ? m.getNimi()
+                    : "";
+
+            return new javafx.beans.property.SimpleStringProperty(text);
+        });
 
         tilaCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -307,28 +322,47 @@ public class VarausController {
             phoneLabel.setText("-");
         }
 
+        // MÖKIN HAKU
+        Mokki m = null;
+
+        if (mokkiService != null) {
+            m = mokkiService.haeIdlla(v.getMokkiId());
+        }
+
         updateTilaLabels(v);
 
         alkuLabel.setText(
                 v.getAlkuPvm() != null ? v.getAlkuPvm().toString() : ""
         );
+
         loppuLabel.setText(
                 v.getLoppuPvm() != null ? v.getLoppuPvm().toString() : ""
         );
+
         // KENTÄT (muokkaus)
         alkuDatePickerDetail.setValue(v.getAlkuPvm());
         loppuDatePickerDetail.setValue(v.getLoppuPvm());
+
         // Luontipäivä
         luontiLabel.setText(
                 v.getLuontiPvm() != null
                         ? v.getLuontiPvm().toLocalDate().toString()
                         : ""
         );
+
         // YHTEENVETO
-        summaryLabel.setText(
-                 v.getAsiakasEmail()
-                        + " · " + v.getKokonaissumma() + "€"
-        );
+        if (m != null) {
+            summaryLabel.setText(
+                    m.getNimi()
+                            + " · " + v.getAsiakasEmail()
+                            + " · " + v.getKokonaissumma() + "€"
+            );
+        } else {
+            summaryLabel.setText(
+                    v.getAsiakasEmail()
+                            + " · " + v.getKokonaissumma() + "€"
+            );
+        }
     }
 
     @FXML

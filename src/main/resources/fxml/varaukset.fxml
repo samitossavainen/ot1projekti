@@ -90,7 +90,7 @@
         <TableView fx:id="tableVaraukset" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idCol" text="Varaus ID" />
-                <TableColumn fx:id="mokkiCol" text="Mökki ID" />
+                <TableColumn fx:id="mokkiCol" text="Mökki" />
                 <TableColumn fx:id="asiakasCol" text="Asiakas" />
                 <TableColumn fx:id="alkuCol" text="Alku" />
                 <TableColumn fx:id="loppuCol" text="Loppu" />
