@@ -121,34 +121,9 @@ public class AsiakasController {
             }
         });
 
-        filteredAsiakkaat = new FilteredList<>(asiakkaat, a -> true);
+        filteredAsiakkaat = new FilteredList<>(asiakkaat);
         tableAsiakkaat.setItems(filteredAsiakkaat);
 
-        //Korostetaan juuri lisätyn asiakkaan rivi
-        tableAsiakkaat.setRowFactory(tv -> {
-            TableRow<Asiakas> row = new TableRow<>();
-
-            PauseTransition clear = new PauseTransition(Duration.seconds(2));
-
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                row.setStyle("");
-
-                if (newItem != null && newItem == viimeksiLisattyAsiakas) {
-                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
-
-                    clear.setOnFinished(e -> {
-                        row.setStyle("");
-                        if (viimeksiLisattyAsiakas == newItem) {
-                            viimeksiLisattyAsiakas = null;
-                        }
-                    });
-
-                    clear.playFromStart();
-                }
-            });
-
-            return row;
-        });
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
 
             String search = newValue == null
@@ -170,6 +145,57 @@ public class AsiakasController {
                         || (asiakas.getOsoite() != null &&
                         asiakas.getOsoite().toLowerCase().contains(search));
             });
+        });
+
+        // Rivin korostus värillä asiakkaan lisäyksen ja tallennuksen jälkeen.
+        tableAsiakkaat.setRowFactory(tv -> {
+            TableRow<Asiakas> row = new TableRow<>();
+            PauseTransition clear = new PauseTransition(Duration.seconds(2));
+
+            row.itemProperty().addListener((obs, oldItem, item) -> {
+
+                row.getStyleClass().remove("row-highlight");
+
+                if (item == null) return;
+
+                if (viimeksiLisattyAsiakas != null
+                        && item.getSapo().equals(viimeksiLisattyAsiakas.getSapo())) {
+
+                    row.getStyleClass().add("row-highlight");
+
+                    clear.setOnFinished(e -> {
+                        row.getStyleClass().remove("row-highlight");
+                        viimeksiLisattyAsiakas = null;
+                    });
+
+                    clear.playFromStart();
+                }
+            });
+            return row;
+        });
+
+        // Solun korostus värillä
+        statusCol.setCellFactory(col -> new TableCell<Asiakas, String>() {
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                getStyleClass().removeAll("cell-active", "cell-inactive");
+
+                if (empty || item == null) {
+                    setText(null);
+                    return;
+                }
+
+                setText(item);
+
+                if ("Käytössä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-active");
+                } else if ("Poissa käytöstä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-inactive");
+                }
+            }
         });
     }
 
@@ -296,7 +322,8 @@ public class AsiakasController {
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
-        tableAsiakkaat.refresh();
+        viimeksiLisattyAsiakas = selectedAsiakas;
+        refreshTable();
 
         searchField.setDisable(false);
         searchField.clear();
@@ -336,6 +363,7 @@ public class AsiakasController {
         }
 
         tableAsiakkaat.refresh();
+        populateFields(selectedAsiakas);
         updateCustomerStatus();
     }
 

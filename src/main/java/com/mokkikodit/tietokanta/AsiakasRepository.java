@@ -96,7 +96,8 @@ public class AsiakasRepository {
             ps.setString(1, a.getNimi());
             ps.setString(2, a.getPuhelinnumero());
             ps.setString(3, a.getOsoite());
-            ps.setString(4, a.getSapo());
+            ps.setInt(4, a.getTila());
+            ps.setString(5, a.getSapo());
 
             ps.executeUpdate();
 

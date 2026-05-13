@@ -52,3 +52,23 @@
 .report-card Label {
     -fx-text-fill: #574520;
 }
+/* aktiivinen */
+.table-cell.cell-active {
+    -fx-background-color: rgba(46, 204, 113, 0.25);
+}
+
+/* maksettu */
+.table-cell.cell-paid {
+    -fx-background-color: rgba(52, 152, 219, 0.25);
+}
+
+/* rivin highlight */
+.table-row-cell.row-highlight {
+    -fx-background-color: rgba(46, 204, 113, 0.35);
+}
+
+/* poissa käytöstä */
+.table-cell.cell-inactive {
+    -fx-background-color: rgba(231, 76, 60, 0.25);
+}
+

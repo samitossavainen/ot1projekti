@@ -149,7 +149,7 @@ public class MokkiController {
             }
         });
 
-        filteredMokit = new FilteredList<>(mokit, a -> true);
+        filteredMokit = new FilteredList<>(mokit);
         tableCabins.setItems(filteredMokit);
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
@@ -160,32 +160,6 @@ public class MokkiController {
         );
         statusFilterComboBox.setValue("Kaikki");
 
-        //Korostetaan juuri lisätyn asiakkaan rivi
-        tableCabins.setRowFactory(tv -> {
-            TableRow<Mokki> row = new TableRow<>();
-
-            PauseTransition clear = new PauseTransition(Duration.seconds(2));
-
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                row.setStyle("");
-
-                if (newItem != null && newItem == viimeksiLisattyMokki) {
-                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
-
-                    clear.setOnFinished(e -> {
-                        row.setStyle("");
-                        if (viimeksiLisattyMokki == newItem) {
-                            viimeksiLisattyMokki = null;
-                        }
-                    });
-
-                    clear.playFromStart();
-                }
-            });
-
-            return row;
-        });
-
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
@@ -193,6 +167,59 @@ public class MokkiController {
         statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
+
+        // Rivin korostus värillä varauksen lisäyksen ja tallennuksen jälkeen.
+        tableCabins.setRowFactory(tv -> {
+            TableRow<Mokki> row = new TableRow<>();
+
+            PauseTransition clear = new PauseTransition(Duration.seconds(2));
+
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+
+                row.getStyleClass().remove("row-highlight");
+
+                if (newItem == null) return;
+
+                if (viimeksiLisattyMokki != null
+                        && newItem.getMokkiId() == viimeksiLisattyMokki.getMokkiId()) {
+
+                    row.getStyleClass().add("row-highlight");
+
+                    clear.setOnFinished(e -> {
+                        row.getStyleClass().remove("row-highlight");
+                        viimeksiLisattyMokki = null;
+                    });
+
+                    clear.playFromStart();
+                }
+            });
+            return row;
+        });
+
+        // Solun korostus värillä
+        statusCol.setCellFactory(col -> new TableCell<Mokki, String>() {
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                getStyleClass().removeAll("cell-active", "cell-inactive");
+
+                if (empty || item == null) {
+                    setText(null);
+                    return;
+                }
+
+                setText(item);
+
+                if ("Käytössä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-active");
+                } else if ("Poissa käytöstä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-inactive");
+                }
+            }
+        });
+        applyFilters();
     }
 
     @FXML
@@ -302,7 +329,7 @@ public class MokkiController {
 
 
         // Näytetään kopion tiedot kentissä
-        nimiField.setText(String.valueOf(muokattavaMokki.getNimi()));
+        nimiField.setText(muokattavaMokki.getNimi());
         capacityField.setText(String.valueOf(muokattavaMokki.getKapasiteetti()));
         roomsField.setText(String.valueOf(muokattavaMokki.getHuoneet()));
         vessatField.setText(String.valueOf(muokattavaMokki.getVessat()));
@@ -368,7 +395,7 @@ public class MokkiController {
         // Haetaan päivitetyt tiedot tietokannasta
         selectedMokki = service.haeIdlla(muokattavaMokki.getMokkiId());
         populateFields(selectedMokki);
-        tableCabins.refresh();
+        viimeksiLisattyMokki = selectedMokki;
 
         muokattavaMokki = null;
 
@@ -378,11 +405,10 @@ public class MokkiController {
         editButton.setText("Muokkaa");
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
-        populateFields(selectedMokki);
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
-        tableCabins.refresh();
+        refreshTable();
 
         searchField.setDisable(false);
         searchField.clear();
@@ -520,14 +546,13 @@ public class MokkiController {
 
             if (dialogController.isMokkiLisatty()) {
 
-                refreshTable();
-
                 if (!mokit.isEmpty()) {
                     viimeksiLisattyMokki =
                             mokit.get(mokit.size() - 1);
                 }
                 showAddCabinStatus("Mökki lisätty");
                 addCabinStatusLabel.setStyle("-fx-text-fill: #1e7f43;");
+                refreshTable();
             }
 
         } catch (Exception e) {

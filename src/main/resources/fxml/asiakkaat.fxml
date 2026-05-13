@@ -97,8 +97,11 @@
                             <Font name="System Bold" size="14.0" />
                         </font>
                     </Label>
-                    <Region />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
+                    <Region prefWidth="40.0" />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" text="Tallennettu">
+                  <font>
+                     <Font size="14.0" />
+                  </font></Label>
                 </children>
             </HBox>
             <GridPane hgap="10.0" vgap="8.0">
