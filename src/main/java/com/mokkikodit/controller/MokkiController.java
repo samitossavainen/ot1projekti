@@ -149,7 +149,7 @@ public class MokkiController {
             }
         });
 
-        filteredMokit = new FilteredList<>(mokit, a -> true);
+        filteredMokit = new FilteredList<>(mokit);
         tableCabins.setItems(filteredMokit);
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
@@ -160,23 +160,33 @@ public class MokkiController {
         );
         statusFilterComboBox.setValue("Kaikki");
 
-        //Korostetaan juuri lisätyn asiakkaan rivi
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+            applyFilters();
+        });
+
+        statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            applyFilters();
+        });
+
+        // Rivin korostus värillä varauksen lisäyksen ja tallennuksen jälkeen.
         tableCabins.setRowFactory(tv -> {
             TableRow<Mokki> row = new TableRow<>();
 
             PauseTransition clear = new PauseTransition(Duration.seconds(2));
 
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                row.setStyle("");
 
-                if (newItem != null
-                        && viimeksiLisattyMokki != null
+                row.getStyleClass().remove("row-highlight");
+
+                if (newItem == null) return;
+
+                if (viimeksiLisattyMokki != null
                         && newItem.getMokkiId() == viimeksiLisattyMokki.getMokkiId()) {
 
-                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
+                    row.getStyleClass().add("row-highlight");
 
                     clear.setOnFinished(e -> {
-                        row.setStyle("");
+                        row.getStyleClass().remove("row-highlight");
                         viimeksiLisattyMokki = null;
                     });
 
@@ -186,13 +196,30 @@ public class MokkiController {
             return row;
         });
 
-        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
-            applyFilters();
-        });
+        // Solun korostus värillä
+        statusCol.setCellFactory(col -> new TableCell<Mokki, String>() {
 
-        statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
-            applyFilters();
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                getStyleClass().removeAll("cell-active", "cell-inactive");
+
+                if (empty || item == null) {
+                    setText(null);
+                    return;
+                }
+
+                setText(item);
+
+                if ("Käytössä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-active");
+                } else if ("Poissa käytöstä".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-inactive");
+                }
+            }
         });
+        applyFilters();
     }
 
     @FXML
@@ -302,7 +329,7 @@ public class MokkiController {
 
 
         // Näytetään kopion tiedot kentissä
-        nimiField.setText(String.valueOf(muokattavaMokki.getNimi()));
+        nimiField.setText(muokattavaMokki.getNimi());
         capacityField.setText(String.valueOf(muokattavaMokki.getKapasiteetti()));
         roomsField.setText(String.valueOf(muokattavaMokki.getHuoneet()));
         vessatField.setText(String.valueOf(muokattavaMokki.getVessat()));

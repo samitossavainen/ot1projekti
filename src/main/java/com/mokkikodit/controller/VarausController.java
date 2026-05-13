@@ -188,32 +188,7 @@ public class VarausController {
         );
         statusFilterComboBox.setValue("Aktiivinen");
 
-        //Korostetaan juuri lisätyn varauksen rivi
-        tableVaraukset.setRowFactory(tv -> {
-            TableRow<Varaus> row = new TableRow<>();
 
-            PauseTransition clear = new PauseTransition(Duration.seconds(2));
-
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                row.setStyle("");
-
-                if (newItem != null
-                        && viimeksiLisattyVaraus != null
-                        && newItem.getVarausId() == viimeksiLisattyVaraus.getVarausId()) {
-
-                    row.setStyle("-fx-background-color: rgba(46, 204, 113, 0.3);");
-
-                    clear.setOnFinished(e -> {
-                        row.setStyle("");
-                        viimeksiLisattyVaraus = null;
-                    });
-
-                    clear.playFromStart();
-                }
-            });
-
-            return row;
-        });
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
@@ -231,8 +206,63 @@ public class VarausController {
             applyFilters();
         });
         applyFilters();
+
+        // Rivin korostus värillä mökin lisäyksen ja tallennuksen jälkeen.
+        tableVaraukset.setRowFactory(tv -> {
+            TableRow<Varaus> row = new TableRow<>();
+
+            PauseTransition clear = new PauseTransition(Duration.seconds(2));
+
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+
+                row.getStyleClass().remove("row-highlight");
+
+                if (newItem == null) return;
+
+                if (viimeksiLisattyVaraus != null
+                        && newItem.getVarausId() == viimeksiLisattyVaraus.getVarausId()) {
+
+                    row.getStyleClass().add("row-highlight");
+
+                    clear.setOnFinished(e -> {
+                        row.getStyleClass().remove("row-highlight");
+                        viimeksiLisattyVaraus = null;
+                    });
+
+                    clear.playFromStart();
+                }
+            });
+            return row;
+        });
+
+        // Solun korostus värillä
+        tilaCol.setCellFactory(col -> new TableCell<Varaus, String>() {
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                // nollaa tyylit
+                getStyleClass().removeAll("cell-active", "cell-paid");
+
+                if (empty || item == null) {
+                    setText(null);
+                    return;
+                }
+                setText(item);
+
+                // lisätään CSS-luokka
+                if ("Aktiivinen".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-active");
+                } else if ("Maksettu".equalsIgnoreCase(item)) {
+                    getStyleClass().add("cell-paid");
+                }
+            }
+        });
+        applyFilters();
     }
 
+    // Näkymän päivitys
     @FXML
     private void refreshView() {
 
@@ -251,6 +281,7 @@ public class VarausController {
         if (service == null) return;
         varaukset.setAll(service.getAllVaraukset());
     }
+    // Tietojen suodatus tauluun usealla tavalla
     private void applyFilters() {
 
         String search = searchField.getText() == null
@@ -573,6 +604,7 @@ public class VarausController {
         showSavedStatus("Varaus peruttu");
         statusLabel.setStyle("-fx-text-fill: #B04A30;");
         selectedVaraus = null;
+        tableVaraukset.getSelectionModel().clearSelection();
     }
 
     private void updateReservationStatus() {
