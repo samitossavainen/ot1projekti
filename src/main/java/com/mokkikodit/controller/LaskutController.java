@@ -78,12 +78,9 @@ public class LaskutController {
                 ).asObject());
 
         asiakasCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty("TESTI"));
-
-        //asiakasCol.setCellValueFactory(data ->
-        //        new javafx.beans.property.SimpleStringProperty(
-        //                data.getValue().getVaraus().getAsiakasEmail()
-        //        ));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getSapo()
+                ));
 
         erapvmCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -237,11 +234,13 @@ public class LaskutController {
         // LABELIT (lukutila)
         laskuIdLabel.setText(String.valueOf(m.getLaskuId()));
         varausIdLabel.setText(String.valueOf(m.getVarausId()));
-        asiakasLabel.setText(String.valueOf(m.getVaraus().getAsiakasEmail()));
+        asiakasLabel.setText(String.valueOf(m.getSapo()));
         laskuLuotuLabel.setText(String.valueOf(m.getAikaleima()));
         eraLabel.setText(String.valueOf(m.getErapaiva()));
         summaLabel.setText(String.valueOf(m.getSumma()));
-        maksupaivaLabel.setText(String.valueOf(m.getAikaleima()));
-        maksettuSummaLabel.setText(String.valueOf(m.getSumma()));
+        maksupaivaLabel.setText(String.valueOf(m.getMaksupaiva()));
+        maksettuSummaLabel.setText(String.valueOf(m.getMaksettu()));
+        maksupaivaLabel.setText(String.valueOf(m.getMaksupaiva()));
+        maksettuSummaLabel.setText(String.valueOf(m.getMaksettu()));
     }
 }
