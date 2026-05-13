@@ -72,9 +72,19 @@ public class MainController {
 
             Object controller = loader.getController();
 
+            // VarausControllerilla on pääsy asiakas ja mökki serviceihin
+            // että niitä tietoja voi näyttää varaus näkymässä.
             if (controller instanceof VarausController) {
-                ((VarausController) controller).setVarausService(
+                VarausController vc = (VarausController) controller;
+
+                vc.setVarausService(
                         new VarausService(new VarausRepository())
+                );
+                vc.setAsiakasService(
+                        new AsiakasService(new AsiakasRepository())
+                );
+                vc.setMokkiService(
+                        new MokkiService(new MokkiRepository())
                 );
             }
 

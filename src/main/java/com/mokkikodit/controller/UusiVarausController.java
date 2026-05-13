@@ -22,16 +22,12 @@ public class UusiVarausController {
 
     @FXML
     private ComboBox<Asiakas> asiakasComboBox;
-
     @FXML
     private ComboBox<Mokki> mokkiComboBox;
-
     @FXML
     private DatePicker alkuDatePicker;
-
     @FXML
     private DatePicker loppuDatePicker;
-
     private VarausService varausService;
 
     private final AsiakasRepository asiakasRepo =
@@ -41,6 +37,8 @@ public class UusiVarausController {
             new MokkiRepository();
 
     private Runnable onVarausCreated;
+
+    private boolean varausLisatty = false;
 
 
     public void setVarausService(VarausService varausService) {
@@ -87,6 +85,7 @@ public class UusiVarausController {
             v.setKokonaissumma(0.0);
 
             varausService.addVaraus(v);
+            varausLisatty = true;
 
             if (onVarausCreated != null){
                 onVarausCreated.run();
@@ -151,5 +150,9 @@ public class UusiVarausController {
                 .getWindow();
 
         stage.close();
+    }
+
+    public boolean isVarausLisatty() {
+        return varausLisatty;
     }
 }

@@ -66,6 +66,14 @@
         <TableView fx:id="tableRaportti" VBox.vgrow="ALWAYS">
 
             <columns>
+                <TableColumn fx:id="idCol" text="Mökki" />
+                <TableColumn fx:id="nameCol" text="Nimi" />
+                <TableColumn fx:id="addressCol" text="Osoite" />
+                <TableColumn fx:id="capacityCol" text="Kapasiteetti" />
+                <TableColumn fx:id="priceCol" text="Hinta" />
+                <TableColumn fx:id="roomsCol" text="Huoneet" />
+                <TableColumn fx:id="bathroomsCol" text="Vessat" />
+                <TableColumn fx:id="statusCol" text="Tila" />
                 <TableColumn text="Mökki" />
                 <TableColumn text="Varauksia" />
                 <TableColumn text="Vuorokaudet" />

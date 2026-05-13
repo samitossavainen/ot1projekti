@@ -11,9 +11,6 @@ import com.mokkikodit.util.DateUtil;
 
 public class VarausRepository {
 
-    // =========================
-    // GET ALL
-    // =========================
     public List<Varaus> haeKaikki() {
         List<Varaus> lista = new ArrayList<>();
 
@@ -86,9 +83,6 @@ public class VarausRepository {
         }
     }
 
-    // =========================
-    // UPDATE
-    // =========================
     public void paivita(Varaus v) {
 
         String sql =
@@ -101,10 +95,8 @@ public class VarausRepository {
             ps.setString(1, v.getAsiakasEmail());
             ps.setInt(2, v.getMokkiId());
             ps.setString(3, v.getTila());
-
-            ps.setString(2, v.getAlkuPvm().toString());
-            ps.setString(3, v.getLoppuPvm().toString());
-
+            ps.setString(4, v.getAlkuPvm().toString());
+            ps.setString(5, v.getLoppuPvm().toString());
             ps.setInt(6, v.getVarausId());
 
             ps.executeUpdate();
@@ -114,12 +106,10 @@ public class VarausRepository {
         }
     }
 
-    // =========================
-    // DELETE
-    // =========================
-    public void poista(int id) {
+    public void peruuta(int id) {
 
-        String sql = "DELETE FROM varaus WHERE varaus_ID = ?";
+        String sql =
+                "UPDATE varaus SET varauksen_tila = 'peruutettu' WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -128,7 +118,7 @@ public class VarausRepository {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Varauksen poisto epäonnistui", e);
+            throw new RuntimeException("Varauksen peruutus epäonnistui", e);
         }
     }
 }

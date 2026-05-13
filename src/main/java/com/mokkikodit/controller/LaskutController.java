@@ -22,7 +22,7 @@ public class LaskutController {
     @FXML private Label summaryLabel;
 
     // -------------------------
-    // DETAIL FIELDS
+    // TIETOKENTÄT
     // -------------------------
 
     @FXML private Label varausIdLabel;
@@ -78,12 +78,9 @@ public class LaskutController {
                 ).asObject());
 
         asiakasCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty("TESTI"));
-
-        //asiakasCol.setCellValueFactory(data ->
-        //        new javafx.beans.property.SimpleStringProperty(
-        //                data.getValue().getVaraus().getAsiakasEmail()
-        //        ));
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getSapo()
+                ));
 
         erapvmCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
@@ -109,7 +106,7 @@ public class LaskutController {
         filteredLasku = new FilteredList<>(laskut, a -> true);
         tableLaskut.setItems(filteredLasku);
 
-        // IMPORTANT: hide fields initially
+        // Piilotetaan kentät aluksi
         setFieldsVisible(false);
 
         setEditMode(false);
@@ -140,7 +137,7 @@ public class LaskutController {
     }
 
     // -------------------------
-    // EDIT MODE TOGGLE
+    // VAIHDA MUOKKAUSTILAAN
     // -------------------------
 
     @FXML
@@ -169,7 +166,7 @@ public class LaskutController {
     }
 
     // -------------------------
-    // SAVE
+    // TALLENNA
     // -------------------------
 
     @FXML
@@ -186,7 +183,7 @@ public class LaskutController {
     }
 
     // -------------------------
-    // FIELD VISIBILITY CONTROL
+    // KENTÄN NÄKYVYYDEN SÄÄTÖ
     // -------------------------
 
     private void setFieldsVisible(boolean visible) {
@@ -196,15 +193,15 @@ public class LaskutController {
     }
 
     // -------------------------
-    // EDIT MODE SETTINGS
+    // MUOKKAA TILAN ASETUKSIA
     // -------------------------
 
     private void setEditMode(boolean editable) {
 
-        // show/hide fields
+        // näytä/piilota kentät
         setFieldsVisible(editable);
 
-        // lock/unlock interaction
+        // lukitus-/lukituksen avaus -toiminto
         tilaComboBox.setMouseTransparent(!editable);
         tilaComboBox.setFocusTraversable(editable);
 
@@ -214,7 +211,7 @@ public class LaskutController {
     }
 
     // -------------------------
-    // STATUS MESSAGE
+    // TILAVIESTI
     // -------------------------
 
     private void showSavedStatus(String text) {
@@ -237,11 +234,13 @@ public class LaskutController {
         // LABELIT (lukutila)
         laskuIdLabel.setText(String.valueOf(m.getLaskuId()));
         varausIdLabel.setText(String.valueOf(m.getVarausId()));
-        asiakasLabel.setText(String.valueOf(m.getVaraus().getAsiakasEmail()));
+        asiakasLabel.setText(String.valueOf(m.getSapo()));
         laskuLuotuLabel.setText(String.valueOf(m.getAikaleima()));
         eraLabel.setText(String.valueOf(m.getErapaiva()));
         summaLabel.setText(String.valueOf(m.getSumma()));
-        maksupaivaLabel.setText(String.valueOf(m.getAikaleima()));
-        maksettuSummaLabel.setText(String.valueOf(m.getSumma()));
+        maksupaivaLabel.setText(String.valueOf(m.getMaksupaiva()));
+        maksettuSummaLabel.setText(String.valueOf(m.getMaksettu()));
+        maksupaivaLabel.setText(String.valueOf(m.getMaksupaiva()));
+        maksettuSummaLabel.setText(String.valueOf(m.getMaksettu()));
     }
 }

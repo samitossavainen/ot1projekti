@@ -36,8 +36,8 @@ public class VarausService {
         repo.paivita(v);
     }
 
-    public void deleteVaraus(int id) {
-        repo.poista(id);
+    public void peruutaVaraus(int id) {
+        repo.peruuta(id);
     }
 
     // business logic
