@@ -67,7 +67,6 @@
                 <TableColumn fx:id="emailCol" text="Sähköposti" />
                 <TableColumn fx:id="phoneCol" text="Puhelin" />
                 <TableColumn fx:id="addressCol" text="Osoite" />
-            <TableColumn fx:id="statusCol" text="Tila" />
             </columns>
         </TableView>
 
@@ -82,7 +81,7 @@
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                     <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
                     <Region />
-                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#toggleCustomerStatus" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista käytöstä" />
+                    <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#toggleCustomerStatus" style="-fx-base: #B04A30; -fx-text-fill: white;" text="Poista asiakas" />
                 </children>
             </HBox>
             <Label fx:id="summaryLabel">

@@ -41,7 +41,6 @@ public class AsiakasController {
     @FXML private TableColumn<Asiakas, String> emailCol;
     @FXML private TableColumn<Asiakas, String> phoneCol;
     @FXML private TableColumn<Asiakas, String> addressCol;
-    @FXML private TableColumn<Asiakas, String> statusCol;
 
     @FXML private Label statusLabel;
 
@@ -87,13 +86,6 @@ public class AsiakasController {
                         data.getValue().getOsoite()
                 ));
 
-        statusCol.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getTila() == 1
-                                ? "Käytössä"
-                                : "Poissa käytöstä"
-                ));
-
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
         editButton.setText("Muokkaa");
@@ -111,8 +103,7 @@ public class AsiakasController {
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
-                    updateCustomerStatus();
-
+                    deleteButton.setDisable(newSelection == null);
                 });
 
         tableAsiakkaat.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
@@ -125,27 +116,9 @@ public class AsiakasController {
         tableAsiakkaat.setItems(filteredAsiakkaat);
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
-
-            String search = newValue == null
-                    ? ""
-                    : newValue.toLowerCase().trim();
-
-            filteredAsiakkaat.setPredicate(asiakas -> {
-
-                if (search.isEmpty()) {
-                    return true;
-                }
-
-                return (asiakas.getNimi() != null &&
-                        asiakas.getNimi().toLowerCase().contains(search))
-                        || (asiakas.getSapo() != null &&
-                        asiakas.getSapo().toLowerCase().contains(search))
-                        || (asiakas.getPuhelinnumero() != null &&
-                        asiakas.getPuhelinnumero().toLowerCase().contains(search))
-                        || (asiakas.getOsoite() != null &&
-                        asiakas.getOsoite().toLowerCase().contains(search));
-            });
+            applyFilters();
         });
+        applyFilters();
 
         // Rivin korostus värillä asiakkaan lisäyksen ja tallennuksen jälkeen.
         tableAsiakkaat.setRowFactory(tv -> {
@@ -173,30 +146,6 @@ public class AsiakasController {
             });
             return row;
         });
-
-        // Solun korostus värillä
-        statusCol.setCellFactory(col -> new TableCell<Asiakas, String>() {
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-
-                getStyleClass().removeAll("cell-active", "cell-inactive");
-
-                if (empty || item == null) {
-                    setText(null);
-                    return;
-                }
-
-                setText(item);
-
-                if ("Käytössä".equalsIgnoreCase(item)) {
-                    getStyleClass().add("cell-active");
-                } else if ("Poissa käytöstä".equalsIgnoreCase(item)) {
-                    getStyleClass().add("cell-inactive");
-                }
-            }
-        });
     }
 
     @FXML
@@ -211,6 +160,37 @@ public class AsiakasController {
     private void refreshTable() {
         if (service == null) return;
         asiakkaat.setAll(service.haeKaikki());
+
+        applyFilters();
+    }
+
+    private void applyFilters() {
+
+        String search = searchField.getText() == null
+                ? ""
+                : searchField.getText().toLowerCase().trim();
+
+        filteredAsiakkaat.setPredicate(asiakas -> {
+
+            // piilotetaan poistettu
+            if (asiakas.getTila() == 0) {
+                return false;
+            }
+
+            // ei hakua → näytetään kaikki aktiiviset
+            if (search.isEmpty()) {
+                return true;
+            }
+
+            return (asiakas.getNimi() != null &&
+                    asiakas.getNimi().toLowerCase().contains(search))
+                    || (asiakas.getSapo() != null &&
+                    asiakas.getSapo().toLowerCase().contains(search))
+                    || (asiakas.getPuhelinnumero() != null &&
+                    asiakas.getPuhelinnumero().toLowerCase().contains(search))
+                    || (asiakas.getOsoite() != null &&
+                    asiakas.getOsoite().toLowerCase().contains(search));
+        });
     }
 
     private void populateFields(Asiakas a) {
@@ -341,9 +321,7 @@ public class AsiakasController {
         boolean confirmed = DialogUtil.confirm(
                 stage,
                 "Vahvista",
-                onKaytossa
-                        ? "Haluatko poistaa asiakkaan käytöstä?"
-                        : "Haluatko ottaa asiakkaan käyttöön?",
+                "Haluatko varmasti poistaa asiakkaan?",
                 "Asiakas \"" + selectedAsiakas.getNimi()
                         + "\" (" + selectedAsiakas.getSapo() + ")"
         );
@@ -353,18 +331,21 @@ public class AsiakasController {
         if (onKaytossa) {
             service.deaktivoiAsiakas(selectedAsiakas.getSapo());
             selectedAsiakas.deaktivoiAsiakas();
-            showSavedStatus("Asiakas poistettu käytöstä");
-            statusLabel.setStyle("-fx-text-fill: #B04A30;");
-        } else {
-            service.aktivoiAsiakas(selectedAsiakas.getSapo());
-            selectedAsiakas.aktivoiAsiakas();
-            showSavedStatus("Asiakas otettu käyttöön");
-            statusLabel.setStyle("-fx-text-fill: #1e7f43;");
-        }
 
-        tableAsiakkaat.refresh();
-        populateFields(selectedAsiakas);
-        updateCustomerStatus();
+            // Poistetaan asiakas tableviewistä
+            tableAsiakkaat.getSelectionModel().clearSelection();
+            selectedAsiakas = null;
+
+            nimiLabel.setText("");
+            emailLabel.setText("");
+            phoneLabel.setText("");
+            addressLabel.setText("");
+            summaryLabel.setText("");
+
+            showSavedStatus("Asiakas poistettu");
+            statusLabel.setStyle("-fx-text-fill: #B04A30;");
+        }
+        refreshTable();
     }
 
     private void setEditMode(boolean editable) {
@@ -456,25 +437,5 @@ public class AsiakasController {
             addCustomerStatusLabel.setManaged(false);
         });
         pause.play();
-    }
-
-    private void updateCustomerStatus() {
-
-        if (selectedAsiakas == null) {
-            deleteButton.setDisable(true);
-            return;
-        }
-
-        deleteButton.setDisable(false);
-
-        if (selectedAsiakas.getTila() == 0) {
-            // Asiakas EI käytössä
-            deleteButton.setText("Ota käyttöön");
-            deleteButton.setStyle("-fx-base: #4F8F8B; -fx-text-fill: white;");
-        } else {
-            // Asiakas käytössä
-            deleteButton.setText("Poista käytöstä");
-            deleteButton.setStyle("-fx-base: #B04A30; -fx-text-fill: white;");
-        }
     }
 }
