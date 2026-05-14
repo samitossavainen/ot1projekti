@@ -25,6 +25,8 @@ public class VarausService {
     public void addVaraus(Varaus v) {
         validate(v);
 
+        tarkistaPaallekaisyys(v);
+
         double kokonaissumma = laskeKokonaissumma(v);
         v.setKokonaissumma(kokonaissumma);
 
@@ -90,5 +92,31 @@ public class VarausService {
             throw new IllegalArgumentException("Asiakas puuttuu.");
         }
 
+    }
+
+    // estetään tuplavaraukset
+
+    private void tarkistaPaallekaisyys(Varaus uusi) {
+
+        List<Varaus> olemassaOlevat = repo.findByMokkiId(uusi.getMokkiId());
+
+        for (Varaus v : olemassaOlevat) {
+
+            // ohitetaan peruutettu tilan varaukset
+            if ("peruutettu".equalsIgnoreCase(v.getTila())) {
+                continue;
+            }
+
+            // päällekkäin, jos uuden varauksen alku < olemassa olevan loppu tai uuden loppu > olemassa olevan alku
+
+            boolean paallekkainen =
+                    uusi.getAlkuPvm().isBefore(v.getLoppuPvm()) && uusi.getLoppuPvm().isAfter(v.getAlkuPvm());
+
+            if (paallekkainen) {
+                throw new IllegalArgumentException(
+                        "Valitulla mökillä on jo varaus tällä ajanjaksolla."
+                );
+            }
+        }
     }
 }
