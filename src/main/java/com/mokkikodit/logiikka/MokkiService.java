@@ -97,7 +97,7 @@ public class MokkiService {
             throw new IllegalArgumentException("Hinta ei voi olla negatiivinen.");
         }
 
-        if (m.getVessat() < 0 || m.getHuoneet() < 0) {
+        if (m.getVessat() <= 0 || m.getHuoneet() <= 0) {
             throw new IllegalArgumentException("Vessojen ja huoneiden määrä ei voi olla negatiivinen.");
         }
     }
