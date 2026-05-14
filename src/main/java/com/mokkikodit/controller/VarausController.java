@@ -299,11 +299,31 @@ public class VarausController {
                 return false;
             }
 
+            Mokki m = mokkiService != null
+                    ? mokkiService.haeIdlla(v.getMokkiId())
+                    : null;
+
+            Asiakas a = asiakasService != null
+                    ? asiakasService.hae(v.getAsiakasEmail())
+                    : null;
+
             boolean matchesSearch =
                     search.isEmpty()
                             || String.valueOf(v.getVarausId()).contains(search)
                             || v.getAsiakasEmail().toLowerCase().contains(search)
-                            || String.valueOf(v.getMokkiId()).contains(search);
+
+                            // Suodatus asiakkaan nimellä
+                            || (
+                            a != null &&
+                                    a.getNimi() != null &&
+                                    a.getNimi().toLowerCase().contains(search)
+                    )
+                            // Suodatus mökin nimellä
+                            || (
+                            m != null &&
+                                    m.getNimi() != null &&
+                                    m.getNimi().toLowerCase().contains(search)
+                    );
 
             boolean matchesTila = true;
 
