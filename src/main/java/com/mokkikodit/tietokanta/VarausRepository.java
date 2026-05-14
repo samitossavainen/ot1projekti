@@ -56,6 +56,54 @@ public class VarausRepository {
         return lista;
     }
 
+    public List<Varaus> findByMokkiId(int mokkiId) {
+        List<Varaus> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM varaus WHERE mokki_ID = ?";
+
+        try (Connection yhteys = Tietokanta.getYhteys();
+             PreparedStatement ps = yhteys.prepareStatement(sql)) {
+
+            ps.setInt(1, mokkiId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+
+                    Varaus v = new Varaus();
+
+                    v.setVarausId(rs.getInt("varaus_ID"));
+                    v.setAsiakasEmail(rs.getString("sapo"));
+                    v.setMokkiId(rs.getInt("mokki_ID"));
+                    v.setTila(rs.getString("varauksen_tila"));
+                    v.setKokonaissumma(rs.getDouble("kokonaissumma"));
+
+                    String alkuStr = rs.getString("alkamispvm");
+                    String loppuStr = rs.getString("loppumispvm");
+                    String luontiStr = rs.getString("luontipvm");
+
+                    if (alkuStr != null) {
+                        v.setAlkuPvm(DateUtil.parseDate(alkuStr));
+                    }
+
+                    if (loppuStr != null) {
+                        v.setLoppuPvm(DateUtil.parseDate(loppuStr));
+                    }
+
+                    if (luontiStr != null) {
+                        v.setLuontiPvm(DateUtil.parseDateTime(luontiStr));
+                    }
+
+                    lista.add(v);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Varauksien haku mökille epäonnistui", e);
+        }
+
+        return lista;
+    }
+
     // =========================
     // INSERT
     // =========================
