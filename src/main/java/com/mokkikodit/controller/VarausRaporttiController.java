@@ -309,13 +309,15 @@ public class VarausRaporttiController {
                     "maksettu".equalsIgnoreCase(v.getTila())) {
 
                 aktiiviset++;
+
+                summa += v.getKokonaissumma();
             }
 
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
                 perutut++;
             }
 
-            summa += v.getKokonaissumma();
+
         }
 
         yhteensaLabel.setText(String.valueOf(yhteensa));
