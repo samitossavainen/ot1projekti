@@ -16,7 +16,7 @@ public class LaskuRepository {
 
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID";
+        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo, m.maksettu_summa, m.maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID";
 
         try (Connection c = Tietokanta.getYhteys();
              Statement st = c.createStatement();
@@ -119,6 +119,7 @@ public class LaskuRepository {
 
         l.setLaskuId(rs.getInt("lasku_ID"));
         l.setVarausId(rs.getInt("varaus_ID"));
+        l.setAsiakasnmi(rs.getString("asiakkaan_nimi"));
         l.setSapo(rs.getString("sapo"));
         l.setAikaleima(DateUtil.parseDateTime(rs.getString("aikaleima")));
         l.setErapaiva(DateUtil.parseDate(rs.getString("eräpäivä")));

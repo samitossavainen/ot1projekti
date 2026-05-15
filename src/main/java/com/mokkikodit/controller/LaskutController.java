@@ -39,6 +39,7 @@ public class LaskutController {
 
     @FXML private TableColumn<Lasku, Integer> laskuCol;
     @FXML private TableColumn<Lasku, Integer> varausCol;
+    @FXML private TableColumn<Lasku, String> asiakasnmiCol;
     @FXML private TableColumn<Lasku, String> asiakasCol;
     @FXML private TableColumn<Lasku, String> erapvmCol;
     @FXML private TableColumn<Lasku, Double> summaCol;
@@ -72,6 +73,11 @@ public class LaskutController {
                 new javafx.beans.property.SimpleIntegerProperty(
                         data.getValue().getVarausId()
                 ).asObject());
+
+        asiakasnmiCol.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(
+                        data.getValue().getAsiakasnmi()
+                ));
 
         asiakasCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(

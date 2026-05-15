@@ -32,6 +32,8 @@ public class Lasku {
 
     private double maksettu;
 
+    private String asiakasnmi;
+
     // ---------- CONSTRUCTORS ----------
 
     public Lasku() {
@@ -68,7 +70,8 @@ public class Lasku {
                  String tila,
                  LocalDateTime aikaleima,
                  LocalDate erapaiva,
-                 double summa) {
+                 double summa,
+                 String asiakasnmi) {
 
         this.laskuId = laskuId;
         this.varausId = varausId;
@@ -78,8 +81,7 @@ public class Lasku {
         this.aikaleima = aikaleima;
         this.erapaiva = erapaiva;
         this.summa = summa;
-        this.maksupaiva = maksupaiva;
-        this.maksettu = maksettu;
+        this.asiakasnmi = asiakasnmi;
     }
 
     // ---------- GETTERS ----------
@@ -113,6 +115,8 @@ public class Lasku {
     public double getSumma() {
         return summa;
     }
+
+    public String getAsiakasnmi() { return asiakasnmi; }
 
     public LocalDate getMaksupaiva() { return maksupaiva; }
 
@@ -167,6 +171,8 @@ public class Lasku {
 
         this.summa = summa;
     }
+
+    public void setAsiakasnmi(String asiakasnmi) { this.asiakasnmi = asiakasnmi; }
 
     public void setMaksupaiva(LocalDate maksupaiva) { this.maksupaiva = maksupaiva; }
 
