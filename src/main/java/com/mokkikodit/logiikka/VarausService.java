@@ -33,6 +33,14 @@ public class VarausService {
         repo.tallenna(v);
     }
 
+    public List<Varaus> haeAsiakkaanVaraukset(String email) {
+
+        return getAllVaraukset().stream()
+                .filter(v -> v.getAsiakasEmail() != null
+                        && v.getAsiakasEmail().equalsIgnoreCase(email))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     public void updateVaraus(Varaus v) {
         validate(v);
 

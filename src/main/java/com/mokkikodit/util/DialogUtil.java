@@ -1,6 +1,8 @@
 package com.mokkikodit.util;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -55,7 +57,6 @@ public class DialogUtil {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-        // Liitä valintaikkuna pääikkunaan ja estä vuorovaikutus muiden ikkunoiden kanssa
         alert.initOwner(owner);
         alert.initModality(Modality.WINDOW_MODAL);
 
@@ -63,13 +64,24 @@ public class DialogUtil {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
-        ButtonType yes = new ButtonType("Kyllä");
-        ButtonType no = new ButtonType("Ei");
+        ButtonType yes = new ButtonType("Kyllä", ButtonBar.ButtonData.YES);
+        ButtonType no = new ButtonType("Ei", ButtonBar.ButtonData.NO);
 
-        // Korvaa oletuspainikkeet sovelluskohtaisilla painikkeilla
         alert.getButtonTypes().setAll(no, yes);
 
-        // Palauta true vain, jos käyttäjä valitsee ”Kyllä”
+        alert.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+            if (isShowing) {
+                Button yesBtn = (Button) alert.getDialogPane().lookupButton(yes);
+                Button noBtn = (Button) alert.getDialogPane().lookupButton(no);
+
+                yesBtn.setDefaultButton(false);
+                noBtn.setDefaultButton(false);
+
+                noBtn.setCancelButton(true);
+                noBtn.requestFocus();
+            }
+        });
+
         return alert.showAndWait()
                 .filter(response -> response == yes)
                 .isPresent();

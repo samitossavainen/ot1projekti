@@ -1,6 +1,8 @@
 package com.mokkikodit.controller;
 
 import com.mokkikodit.logiikka.MokkiService;
+import com.mokkikodit.logiikka.LaskuService;
+import com.mokkikodit.logiikka.VarausService;
 import com.mokkikodit.mallit.Mokki;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +16,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class MokkiRaporttiController {
 
     private MokkiService service;
+    private LaskuService LaskuService;
+    private VarausService VarausService;
 
     private final ObservableList<Mokki> mokit = FXCollections.observableArrayList();
     private FilteredList<Mokki> filteredMokit;
@@ -21,7 +25,7 @@ public class MokkiRaporttiController {
     // ===== Taulu =====
     @FXML private TableView<Mokki> tableRaportti;
 
-    @FXML private TableColumn<Mokki, Integer> idCol;
+    @FXML private TableColumn<Mokki, Integer> cabinCol;
     @FXML private TableColumn<Mokki, String> nameCol;
     @FXML private TableColumn<Mokki, String> addressCol;
     @FXML private TableColumn<Mokki, Integer> capacityCol;
@@ -31,24 +35,26 @@ public class MokkiRaporttiController {
     @FXML private TableColumn<Mokki, String> statusCol;
 
     // ===== UI =====
-    @FXML private Label nameLabel;
+    @FXML private Label nimiLabel;
     @FXML private Label addressLabel;
+    @FXML private Label pricePerNightLabel;
+    @FXML private Label vessatLabel;
     @FXML private Label capacityLabel;
-    @FXML private Label priceLabel;
     @FXML private Label roomsLabel;
-    @FXML private Label bathroomsLabel;
-    @FXML private Label statusLabel;
-    @FXML private Label notesLabel;
+    @FXML private Label tilaLabel;
+    @FXML private Label lisatiedotLabel;
     @FXML private Label summaryLabel;
+    @FXML private Label addCabinStatusLabel;
+    @FXML private Label cabinIdLabel;
+    @FXML private Label statusLabel;
 
     @FXML
     public void initialize() {
 
         filteredMokit = new FilteredList<>(mokit, m -> true);
-
         tableRaportti.setItems(filteredMokit);
 
-        idCol.setCellValueFactory(d ->
+        cabinCol.setCellValueFactory(d ->
                 new SimpleIntegerProperty(d.getValue().getMokkiId()).asObject());
 
         nameCol.setCellValueFactory(d ->
@@ -89,6 +95,15 @@ public class MokkiRaporttiController {
         refreshTable();
     }
 
+    public void setLaskuService(LaskuService laskuService) {
+        this.LaskuService = laskuService;
+        refreshTable();
+    }
+
+    public void setVarausService(VarausService varausService) {
+        this.VarausService = varausService;
+    }
+
     private void refreshTable() {
         if (service == null) return;
         mokit.setAll(service.haeKaikki());
@@ -101,17 +116,17 @@ public class MokkiRaporttiController {
         }
     }
 
-    // ===== KÄYTTÖLIITTYMÄN KÄYTTÄJÄMÄÄRÄ =====
+    // ===== UI UPDATE =====
     private void populateReport(Mokki m) {
 
-        nameLabel.setText(m.getNimi());
+        nimiLabel.setText(m.getNimi());
         addressLabel.setText(m.getOsoite() != null ? m.getOsoite() : "");
         capacityLabel.setText(String.valueOf(m.getKapasiteetti()));
         roomsLabel.setText(String.valueOf(m.getHuoneet()));
-        bathroomsLabel.setText(String.valueOf(m.getVessat()));
-        priceLabel.setText(m.getHinta() + " €/yö");
+        vessatLabel.setText(String.valueOf(m.getVessat()));
+        pricePerNightLabel.setText(m.getHinta() + " €/yö");
         statusLabel.setText(m.getTila() == 1 ? "Käytössä" : "Poissa käytöstä");
-        notesLabel.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
+        lisatiedotLabel.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
 
         summaryLabel.setText(
                 m.getNimi() + " · " +
