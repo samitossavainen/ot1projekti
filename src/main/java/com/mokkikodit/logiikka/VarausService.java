@@ -35,6 +35,12 @@ public class VarausService {
 
     public void updateVaraus(Varaus v) {
         validate(v);
+
+        tarkistaPaallekaisyys(v);
+
+        double kokonaissumma = laskeKokonaissumma(v);
+        v.setKokonaissumma(kokonaissumma);
+
         repo.paivita(v);
     }
 
@@ -104,6 +110,11 @@ public class VarausService {
 
             // ohitetaan peruutettu tilan varaukset
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
+                continue;
+            }
+
+            // ohitetaan sama varaus
+            if (v.getVarausId() == uusi.getVarausId()){
                 continue;
             }
 
