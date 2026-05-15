@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -39,15 +38,13 @@
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker fx:id="alkuDatePicker" promptText="Alku" />
-                        <Label text="-" HBox.hgrow="ALWAYS" />
-                        <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />
                         <Label text="Asiakas:">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Label>
-                        <ComboBox fx:id="asiakasComboBox" prefWidth="200.0" promptText="Valitse asiakas" />
+                        <ComboBox fx:id="asiakasComboBox" prefWidth="200.0" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refreshView" text="Päivitä" />
                     </children>
                     <VBox.margin>
                         <Insets />
@@ -62,9 +59,9 @@
             <columns>
                 <TableColumn fx:id="emailCol" text="Sähköposti" />
                 <TableColumn fx:id="nimiCol" text="Nimi" />
-                <TableColumn fx:id="phoneCol" text="Puhelinumero" />
-                <TableColumn fx:id="addressCol" prefWidth="52.0" text="Osoite" />
-            <TableColumn fx:id="varaustenMaaraCol" prefWidth="81.0" text="Varaustenmäärä" />
+                <TableColumn fx:id="phoneCol" prefWidth="90.0" text="Puhelinumero" />
+                <TableColumn fx:id="addressCol" text="Osoite" />
+            <TableColumn fx:id="varaustenMaaraCol" prefWidth="100.0" text="Varaustenmäärä" />
             </columns>
         </TableView>
 
@@ -78,6 +75,13 @@
                         </font></Label>
                 </children>
             </HBox>
+         <GridPane hgap="10.0" vgap="8.0">
+
+            <children>
+               <Label text="Asiakkaita yhteensä:" />
+               <Label fx:id="customerCountLabel" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
             <Separator prefWidth="200.0" />
             <GridPane hgap="10.0" vgap="8.0">
 
@@ -85,25 +89,10 @@
                     <Label text="Varauksia yhteensä:" />
                     <Label text="Varattuja:" GridPane.rowIndex="1" />
                     <Label text="Peruttuja:" GridPane.rowIndex="2" />
-                    <Label text="Ensimmäinen varaus:" GridPane.rowIndex="3" />
-                    <Label fx:id="totalBookingsLabel" text="Label" GridPane.columnIndex="1" />
-                    <Label fx:id="confirmedLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label fx:id="canceledLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label fx:id="firstBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-               <Label text="Viimeisin varaus:" GridPane.rowIndex="4" />
-               <Label fx:id="latestBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="totalBookingsLabel" GridPane.columnIndex="1" />
+                    <Label fx:id="confirmedLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="canceledLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
 
             </GridPane>
         </VBox>
