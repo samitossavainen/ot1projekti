@@ -30,6 +30,29 @@ public class MokkiRepository {
         return lista;
     }
 
+    public List<Mokki> findAllAvailable() {
+
+        List<Mokki> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM mokki";
+
+        try (Connection c = Tietokanta.getYhteys();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                if (map(rs).getTila() == 1) {
+                    lista.add(map(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
 
     public Mokki findById(Integer id) {
 

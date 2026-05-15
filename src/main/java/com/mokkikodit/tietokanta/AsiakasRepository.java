@@ -1,6 +1,7 @@
 package com.mokkikodit.tietokanta;
 
 import com.mokkikodit.mallit.Asiakas;
+import com.mokkikodit.mallit.Mokki;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class AsiakasRepository {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-
                 Asiakas a = new Asiakas();
                 a.setNimi(rs.getString("nimi"));
                 a.setSapo(rs.getString("sapo"));
@@ -28,6 +28,36 @@ public class AsiakasRepository {
                 a.setTila(rs.getInt("tila"));
 
                 lista.add(a);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Asiakkaiden haku epäonnistui", e);
+        }
+
+        return lista;
+    }
+
+    public List<Asiakas> findAllAvailable() {
+
+        List<Asiakas> lista = new ArrayList<>();
+
+        String sql = "SELECT * FROM asiakas";
+
+        try (Connection yhteys = Tietokanta.getYhteys();
+             Statement stmt = yhteys.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                if (rs.getInt("tila") == 1)  {
+                    Asiakas a = new Asiakas();
+                    a.setNimi(rs.getString("nimi"));
+                    a.setSapo(rs.getString("sapo"));
+                    a.setPuhelinnumero(rs.getString("puhelinnumero"));
+                    a.setOsoite(rs.getString("osoite"));
+                    a.setTila(rs.getInt("tila"));
+
+                    lista.add(a);
+                }
             }
 
         } catch (SQLException e) {
