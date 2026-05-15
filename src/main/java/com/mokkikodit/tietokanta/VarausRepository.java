@@ -135,7 +135,7 @@ public class VarausRepository {
 
         String sql =
                 "UPDATE varaus SET sapo = ?, mokki_ID = ?, varauksen_tila = ?, " +
-                        "alkamispvm = ?, loppumispvm = ? WHERE varaus_ID = ?";
+                        "alkamispvm = ?, loppumispvm = ?, kokonaissumma = ? WHERE varaus_ID = ?";
 
         try (Connection yhteys = Tietokanta.getYhteys();
              PreparedStatement ps = yhteys.prepareStatement(sql)) {
@@ -145,7 +145,8 @@ public class VarausRepository {
             ps.setString(3, v.getTila());
             ps.setString(4, v.getAlkuPvm().toString());
             ps.setString(5, v.getLoppuPvm().toString());
-            ps.setInt(6, v.getVarausId());
+            ps.setDouble(6, v.getKokonaissumma());
+            ps.setInt(7, v.getVarausId());
 
             ps.executeUpdate();
 
