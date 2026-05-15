@@ -473,6 +473,8 @@ public class VarausController {
         muokattavaVaraus.setAlkuPvm(alkuDatePickerDetail.getValue());
         muokattavaVaraus.setLoppuPvm(loppuDatePickerDetail.getValue());
 
+        selectedVaraus.setKokonaissumma(muokattavaVaraus.getKokonaissumma());
+
         try {
             service.updateVaraus(muokattavaVaraus);
 
@@ -496,6 +498,8 @@ public class VarausController {
         // Päivitetään näkymässä oleva valittu varaus
         selectedVaraus.setAlkuPvm(muokattavaVaraus.getAlkuPvm());
         selectedVaraus.setLoppuPvm(muokattavaVaraus.getLoppuPvm());
+
+        selectedVaraus.setKokonaissumma(muokattavaVaraus.getKokonaissumma());
 
         viimeksiLisattyVaraus = selectedVaraus;
         populateFields(selectedVaraus);
