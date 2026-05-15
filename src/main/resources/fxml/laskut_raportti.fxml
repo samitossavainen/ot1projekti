@@ -15,7 +15,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.LaskutRaporttiController">
+<VBox spacing="10.0"
+      style="-fx-background-color: #F7F9F2;"
+      VBox.vgrow="ALWAYS"
+      xmlns="http://javafx.com/javafx/26"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mokkikodit.controller.LaskutRaporttiController">
 
     <!-- PADDING -->
     <padding>
@@ -23,7 +28,12 @@
     </padding>
 
     <children>
-        <Button mnemonicParsing="false"  onAction="#goBack" text="&lt;- Palaa takaisin" style="-fx-base: #8A8A8A; -fx-text-fill: white;"/>
+
+        <Button mnemonicParsing="false"
+                onAction="#goBack"
+                text="&lt;- Palaa takaisin"
+                style="-fx-base: #8A8A8A; -fx-text-fill: white;"/>
+
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <children>
                 <Label text="LASKURAPORTTI" textFill="#574520">
@@ -33,88 +43,171 @@
                 </Label>
             </children>
         </HBox>
+
         <VBox prefWidth="100.0" spacing="10.0">
+
             <children>
 
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
+
                     <children>
-                        <DatePicker promptText="Alku" />
+
+                        <DatePicker fx:id="alkuDatePicker"
+                                    promptText="Alku" />
+
                         <Label text="-" HBox.hgrow="ALWAYS">
                             <padding>
                                 <Insets top="5.0" />
                             </padding>
                         </Label>
-                        <DatePicker promptText="Loppu" />
+
+                        <DatePicker fx:id="loppuDatePicker"
+                                    promptText="Loppu" />
+
                         <Label text="Maksutila:">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Label>
-                        <ComboBox prefWidth="150.0" />
+
+                        <ComboBox fx:id="tilaComboBox"
+                                  prefWidth="150.0" />
+
                         <Label text="Asiakas:" />
-                        <ComboBox prefWidth="150.0" />
+
+                        <ComboBox fx:id="asiakasComboBox"
+                                  prefWidth="150.0" />
+
                     </children>
+
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
+
                 </HBox>
+
             </children>
+
         </VBox>
 
-        <!-- TABLE -->
-        <TableView fx:id="tableRaportti" VBox.vgrow="ALWAYS">
+        <!-- TAULU -->
+        <TableView fx:id="tableRaportti"
+                   VBox.vgrow="ALWAYS">
 
             <columns>
-                <TableColumn text="Lasku ID" />
-                <TableColumn text="Asiakas" />
-                <TableColumn text="Varaus ID" />
-                <TableColumn text="Laskupvm" />
-                <TableColumn text="Eräpäivä" />
-            <TableColumn text="Summa" />
-            <TableColumn text="Tila" />
+
+                <TableColumn fx:id="laskuIdCol"
+                             text="Lasku ID" />
+
+                <TableColumn fx:id="asiakasCol"
+                             text="Asiakas" />
+
+                <TableColumn fx:id="varausIdCol"
+                             text="Varaus ID" />
+
+                <TableColumn fx:id="laskuPvmCol"
+                             text="Laskupvm" />
+
+                <TableColumn fx:id="eraPvmCol"
+                             text="Eräpäivä" />
+
+                <TableColumn fx:id="summaCol"
+                             text="Summa" />
+
+                <TableColumn fx:id="tilaCol"
+                             text="Tila" />
+
             </columns>
+
         </TableView>
 
-        <!-- DETAIL -->
+        <!-- YKSITYISKOHDAT -->
         <VBox spacing="10.0">
+
             <HBox spacing="10.0">
-                <children>
-                    <Label text="YHTEENVETO" textFill="#574520">
-                        <font>
-                            <Font name="System Bold" size="20.0" />
-                        </font></Label>
-                </children>
-            </HBox>
-            <Separator prefWidth="200.0" />
-            <GridPane hgap="10.0" vgap="8.0">
 
                 <children>
-                    <Label text="Laskuja yhteensä:" />
-                    <Label text="Maksettuja:" GridPane.rowIndex="1" />
-                    <Label text="Avoimia:" GridPane.rowIndex="2" />
-                    <Label text="Myöhässä olevia:" GridPane.rowIndex="3" />
-                    <Label text="Label" GridPane.columnIndex="1" />
-                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-               <Label text="Avoin summa yhteensä:" GridPane.rowIndex="4" />
-               <Label text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                    <Label text="YHTEENVETO"
+                           textFill="#574520">
+
+                        <font>
+                            <Font name="System Bold"
+                                  size="20.0" />
+                        </font>
+
+                    </Label>
+
                 </children>
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints minHeight="10.0" prefHeight="30.0" />
-            </rowConstraints>
+
+            </HBox>
+
+            <Separator prefWidth="200.0" />
+
+            <GridPane hgap="10.0"
+                      vgap="8.0">
+
+                <children>
+
+                    <Label text="Laskuja yhteensä:" />
+
+                    <Label text="Maksettuja:"
+                           GridPane.rowIndex="1" />
+
+                    <Label text="Avoimia:"
+                           GridPane.rowIndex="2" />
+
+                    <Label text="Myöhässä olevia:"
+                           GridPane.rowIndex="3" />
+
+                    <Label fx:id="yhteensaLabel"
+                           text="0"
+                           GridPane.columnIndex="1" />
+
+                    <Label fx:id="maksetutLabel"
+                           text="0"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="1" />
+
+                    <Label fx:id="avoimetLabel"
+                           text="0"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="2" />
+
+                    <Label fx:id="myohassaLabel"
+                           text="0"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="3" />
+
+                    <Label text="Avoin summa yhteensä:"
+                           GridPane.rowIndex="4" />
+
+                    <Label fx:id="avoinSummaLabel"
+                           text="0.00 €"
+                           GridPane.columnIndex="1"
+                           GridPane.rowIndex="4" />
+
+                </children>
+
+                <columnConstraints>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                </columnConstraints>
+
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints minHeight="10.0"
+                                    prefHeight="30.0" />
+                </rowConstraints>
 
             </GridPane>
+
         </VBox>
 
     </children>
+
 </VBox>

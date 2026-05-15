@@ -93,15 +93,11 @@
         <VBox spacing="10.0">
             <HBox spacing="10.0">
                 <children>
-                    <Label text="MÖKKI #" textFill="#574520">
+                    <Label text="MÖKKI" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font></Label>
                     <Label fx:id="cabinIdLabel" textFill="#574520">
-                        <font>
-                            <Font name="System Bold" size="18.0" />
-                        </font></Label>
-                    <Label text="|" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>

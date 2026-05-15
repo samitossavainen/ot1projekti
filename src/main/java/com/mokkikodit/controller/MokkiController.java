@@ -284,7 +284,7 @@ public class MokkiController {
         addressLabel.setText(m.getOsoite() != null ? m.getOsoite() : "");
         lisatiedotLabel.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
         tilaLabel.setText(m.getTila() == 1 ? "Käytössä" : "Poissa käytöstä");
-        cabinIdLabel.setText(String.valueOf(m.getMokkiId()));
+        cabinIdLabel.setText("#" + m.getMokkiId() + "   |");
 
         // KENTÄT (muokkaus)
         nimiField.setText(m.getNimi());

@@ -39,14 +39,14 @@
                 <!-- HAKU -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <TextField promptText="Hae laskuja..." HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchField" promptText="Hae laskuja..." HBox.hgrow="ALWAYS" />
                         <Label text="Tila:">
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
                         </Label>
-                        <ComboBox prefWidth="150.0" />
-                        <Button text="Hae" />
+                        <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" />
+                        <Button fx:id="refreshButton" onAction="#refreshView" text="Päivitä" />
                     </children>
                 </HBox>
             </children>
@@ -69,34 +69,42 @@
         <VBox spacing="10.0">
             <HBox spacing="10.0">
                 <children>
-                    <Label text="LASKU #" textFill="#574520">
+                    <Label text="LASKU" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font></Label>
-                    <Label fx:id="laskuIdLabel" text="-" textFill="#574520">
+                    <Label fx:id="laskuIdLabel" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
-                    <Label text="|" textFill="#574520">
-                        <font>
-                            <Font name="System Bold" size="18.0" />
-                        </font></Label>
-                    <Label fx:id="tilaLabel" text="(tähän laskun tila)" textFill="#574520">
+                    <Label fx:id="tilaLabelHeader" textFill="#574520">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font></Label>
                     <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                    <Button fx:id="editButton" mnemonicParsing="false" onAction="#toggleEdit" style="-fx-base: #7A9E2E; -fx-text-fill: white;" text="Muokkaa" />
+                    <Button fx:id="markAsPaidButton" mnemonicParsing="false" onAction="#merkitseMaksetuksi" style="-fx-base: #4F8F8B; -fx-text-fill: white;" text="Merkitse Maksetuksi" />
                     <Region />
                 </children>
             </HBox>
-            <Label fx:id="summaryLabel" text="(Varaus # -) · (summa) · (Eräpäivä)" />
+            <Label fx:id="summaryLabel">
+            <font>
+               <Font size="18.0" />
+            </font></Label>
             <Separator prefWidth="200.0" />
-            <Label text="LASKUN TIEDOT" textFill="#574520">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-            </Label>
+         <HBox spacing="10.0">
+            <children>
+                  <Label text="LASKUN TIEDOT" textFill="#574520">
+                      <font>
+                          <Font name="System Bold" size="14.0" />
+                      </font>
+                  </Label>
+                    <Region prefWidth="40.0" />
+                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT">
+                  <font>
+                     <Font size="14.0" />
+                  </font></Label>
+            </children>
+         </HBox>
             <GridPane hgap="10.0" vgap="8.0">
 
                 <children>
@@ -104,13 +112,14 @@
                     <Label text="Asiakas:" GridPane.rowIndex="1" />
                     <Label text="Luotu:" GridPane.rowIndex="2" />
                     <Label text="Eräpäivä:" GridPane.rowIndex="3" />
-                    <Label text="Summa:" GridPane.rowIndex="5" />
-                    <Label fx:id="summaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                    <Label fx:id="varausIdLabel" text="-" GridPane.columnIndex="1" />
-                    <Label fx:id="asiakasLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label fx:id="laskuLuotuLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                    <Label fx:id="eraLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label text="Summa:" GridPane.rowIndex="6" />
+                    <Label fx:id="summaLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label fx:id="varausIdLabel" GridPane.columnIndex="1" />
+                    <Label fx:id="asiakasLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="laskuLuotuLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="tilaLabelDetail" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label fx:id="eraLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label text="Tila:" GridPane.rowIndex="4" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
@@ -123,8 +132,8 @@
                <RowConstraints />
                <RowConstraints />
                <RowConstraints />
+               <RowConstraints />
             </rowConstraints>
-
             </GridPane>
             <Separator prefWidth="200.0" />
             <HBox>
@@ -134,26 +143,15 @@
                             <Font name="System Bold" size="14.0" />
                         </font>
                     </Label>
-                    <Region />
-                    <Label fx:id="statusLabel" alignment="CENTER_RIGHT" prefWidth="140.0" text="Tallennettu" />
                 </children>
             </HBox>
             <GridPane hgap="10.0" vgap="8.0">
 
                 <children>
-                    <Label text="Tila:" />
-                    <ComboBox fx:id="tilaComboBox" prefWidth="200.0" GridPane.columnIndex="1">
-                        <GridPane.margin>
-                            <Insets />
-                        </GridPane.margin></ComboBox>
                     <Label text="Maksupäivä:" GridPane.rowIndex="1" />
                     <Label text="Maksettu summa:" GridPane.rowIndex="2" />
-                    <Label fx:id="maksupaivaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label fx:id="maksettuSummaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Button fx:id="saveButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#saveChanges" style="-fx-base: #6B8E3A; -fx-text-fill: white;" text="Tallenna" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                        <GridPane.margin>
-                            <Insets top="14.0" />
-                        </GridPane.margin></Button>
+                    <Label fx:id="maksupaivaLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="maksettuSummaLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
@@ -163,10 +161,7 @@
                <RowConstraints />
                <RowConstraints />
                <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
             </rowConstraints>
-
             </GridPane>
         </VBox>
 
