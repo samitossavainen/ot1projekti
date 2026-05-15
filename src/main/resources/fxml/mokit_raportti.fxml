@@ -1,24 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS"
-      xmlns="http://javafx.com/javafx/26"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.mokkikodit.controller.MokkiRaporttiController">
+<VBox spacing="10.0" style="-fx-background-color: #F7F9F2;" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mokkikodit.controller.MokkiRaporttiController">
 
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -26,10 +13,7 @@
 
     <children>
 
-        <Button mnemonicParsing="false"
-                onAction="#goBack"
-                text="&lt;- Palaa takaisin"
-                style="-fx-base: #8A8A8A; -fx-text-fill: white;"/>
+        <Button mnemonicParsing="false" onAction="#goBack" style="-fx-base: #8A8A8A; -fx-text-fill: white;" text="&lt;- Palaa takaisin" />
 
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <children>
@@ -46,14 +30,13 @@
 
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker promptText="Alku" />
+                        <DatePicker fx:id="alkuDatePicker" promptText="Alku" />
                         <Label text="-" HBox.hgrow="ALWAYS">
                             <padding>
                                 <Insets top="5.0" />
                             </padding>
                         </Label>
-                        <DatePicker promptText="Loppu" />
-                        <Label text="Tila:" />
+                        <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />                        <Label text="Tila:" />
                         <ComboBox prefWidth="150.0" />
                         <Label text="Mökki:" />
                         <ComboBox prefWidth="150.0" />
@@ -69,22 +52,19 @@
             <columns>
 
                 <!-- FIXED: matches controller cabinCol -->
-                <TableColumn fx:id="cabinCol" text="Mökki" />
+                <TableColumn fx:id="cabinCol" prefWidth="62.0" text="Mökin ID" />
 
-                <TableColumn fx:id="nameCol" text="Nimi" />
-                <TableColumn fx:id="addressCol" text="Osoite" />
-                <TableColumn fx:id="capacityCol" text="Kapasiteetti" />
+                <TableColumn fx:id="nameCol" prefWidth="48.0" text="Nimi" />
+                <TableColumn fx:id="addressCol" prefWidth="124.0" text="Osoite" />
+                <TableColumn fx:id="capacityCol" prefWidth="86.0" text="Kapasiteetti" />
                 <TableColumn fx:id="priceCol" text="Hinta" />
                 <TableColumn fx:id="roomsCol" text="Huoneet" />
                 <TableColumn fx:id="bathroomsCol" text="Vessat" />
                 <TableColumn fx:id="statusCol" text="Tila" />
-
-                <!-- untouched extra columns -->
-                <TableColumn text="Mökki" />
-                <TableColumn text="Varauksia" />
-                <TableColumn text="Vuorokaudet" />
-                <TableColumn prefWidth="109.0" text="Käyttöaste (%)" />
+                <TableColumn fx:id="varauksetCol" text="Varauksia" />
+                <TableColumn fx:id="vuorokaudetCol" text="Vuorokaudet" />
                 <TableColumn prefWidth="52.0" text="Kokonaistulot" />
+                <TableColumn fx:id="kayttoasteCol" prefWidth="109.0" text="Käyttöaste (%)" />
 
             </columns>
         </TableView>
@@ -108,7 +88,7 @@
                 <children>
                     <Label text="Mökkejä yhteensä:" />
                     <Label text="Varauksia yhteensä:" GridPane.rowIndex="1" />
-                    <Label text="Käyttöaste keskimäärin:" GridPane.rowIndex="2" />
+                    <Label text="Vuorokausia yhteensä:" GridPane.rowIndex="2" />
                     <Label text="Kokonaistulot:" GridPane.rowIndex="3" />
 
                     <Label text="-" GridPane.columnIndex="1" />
@@ -116,6 +96,16 @@
                     <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
 
             </GridPane>
         </VBox>
