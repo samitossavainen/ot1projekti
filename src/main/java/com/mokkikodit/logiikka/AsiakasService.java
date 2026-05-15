@@ -45,7 +45,15 @@ public class AsiakasService {
      */
     public void lisaa(Asiakas a) {
         validate(a);
-        repo.save(a);
+
+        boolean valid = sanitycheck(a);
+        if (valid) {
+            repo.save(a);
+        }
+        else {
+            repo.update(a); // asiakas aktivoitaan, mutta uusilla tiedoilla.
+        }
+
     }
 
     /**
@@ -110,6 +118,12 @@ public class AsiakasService {
         if (isEmpty(a.getOsoite())) {
             throw new IllegalArgumentException("Osoite puuttuu.");
         }
+
+    }
+
+    private boolean sanitycheck(Asiakas a) { // funktiolla katotaan jos sähköposti on olemassa jo databeississä
+        Asiakas b = repo.findBySapo(a.getSapo());
+        return b == null;
     }
 
     /**

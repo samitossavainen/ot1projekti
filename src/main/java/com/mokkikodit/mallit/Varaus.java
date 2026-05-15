@@ -2,6 +2,7 @@ package com.mokkikodit.mallit;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Varaus {
 
@@ -17,11 +18,11 @@ public class Varaus {
 
     private double kokonaissumma;
 
-    // ---------- EMPTY CONSTRUCTOR ----------
+    // ---------- ETYHJÄ KONSTRUKTORI ----------
     public Varaus() {
     }
 
-    // ---------- FULL CONSTRUCTOR (for SELECT) ----------
+    // ---------- KOKO KONSTUKTORI (SELECT-lauseelle) ----------
     public Varaus(int varausId,
                   String asiakasEmail,
                   int mokkiId,
@@ -41,7 +42,7 @@ public class Varaus {
         this.kokonaissumma = kokonaissumma;
     }
 
-    // ---------- GETTERS ----------
+    // ---------- GETTERIT ----------
     public int getVarausId() {
         return varausId;
     }
@@ -74,7 +75,7 @@ public class Varaus {
         return kokonaissumma;
     }
 
-    // ---------- SETTERS ----------
+    // ---------- SETTERIT ----------
     public void setVarausId(int varausId) {
         this.varausId = varausId;
     }
@@ -103,8 +104,27 @@ public class Varaus {
         this.kokonaissumma = kokonaissumma;
     }
 
-    // DB handles this, but setter kept for mapping flexibility
+    // DB hoitaa tämän, mutta setteri on säilytetty joustavuuden takaamiseksi
     public void setLuontiPvm(LocalDateTime luontiPvm) {
         this.luontiPvm = luontiPvm;
+    }
+
+    // =====================================================
+    // VUOROKAUDET
+    // =====================================================
+
+    /**
+     * Laskee varauksen keston päivinä.
+     * Sääntö: 1 päivä = 24 tuntia tai saman päivän varaus = 1 päivä.
+     */
+    public long getVuorokaudet() {
+
+        if (alkuPvm == null || loppuPvm == null) {
+            return 0;
+        }
+
+        long days = ChronoUnit.DAYS.between(alkuPvm, loppuPvm) + 1;
+
+        return Math.max(days, 0);
     }
 }

@@ -15,17 +15,27 @@ public class DateUtil {
     private static final DateTimeFormatter DATETIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+
     public static LocalDate parseDate(Object dbValue) {
         if (dbValue == null) return null;
 
+        String value = dbValue.toString();
+
         try {
-            return LocalDate.parse(dbValue.toString(), DATE_FORMAT);
+            // Jos sisältää ajan → otetaan vain päiväosa
+            if (value.length() > 10) {
+                return LocalDate.parse(value.substring(0, 10), DATE_FORMAT);
+            }
+
+            return LocalDate.parse(value, DATE_FORMAT);
+
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(
-                    "Virheellinen päivämääräformaatti: " + dbValue, e
+                    "Virheellinen päivämääräformaatti: " + value, e
             );
         }
     }
+
 
     public static LocalDateTime parseDateTime(Object dbValue) {
         if (dbValue == null) return null;
