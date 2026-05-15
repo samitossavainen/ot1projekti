@@ -51,6 +51,7 @@ public class LaskuService {
      * Marks invoice as paid (DB update).
      */
     public void markAsPaid(int laskuId) {
+
         Lasku lasku = repository.findById(laskuId);
 
         if (lasku == null) {
@@ -59,9 +60,15 @@ public class LaskuService {
             );
         }
 
+        // Päivitä laskun tila
         lasku.merkitseMaksetuksi();
-
         repository.update(lasku);
+
+        // LISÄÄ MAKSU maksut-tauluun
+        repository.merkitseMaksetuksi(
+                lasku.getLaskuId(),
+                lasku.getSumma()
+        );
     }
 
     /**
