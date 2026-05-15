@@ -118,7 +118,7 @@ public class LaskutRaporttiController {
 
         laskuPvmCol.setCellValueFactory(data ->
                 new SimpleStringProperty(
-                        data.getValue().getAikaleima().toString()
+                        data.getValue().getAikaleima().toString().replace("T", " ")
                 ));
 
         eraPvmCol.setCellValueFactory(data ->
