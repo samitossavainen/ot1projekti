@@ -170,8 +170,23 @@ public class LaskutController {
 
         searchField.clear();
         statusFilterComboBox.setValue("Kaikki");
+
+        int id = selectedLasku != null ? selectedLasku.getLaskuId() : -1;
+
         refreshTable();
         applyFilters();
+
+        if (id != -1) {
+            selectedLasku = laskut.stream()
+                    .filter(l -> l.getLaskuId() == id)
+                    .findFirst()
+                    .orElse(null);
+
+            if (selectedLasku != null) {
+                populateFields(selectedLasku);
+                tableLaskut.getSelectionModel().select(selectedLasku);
+            }
+        }
     }
 
     private void refreshTable() {
@@ -246,11 +261,27 @@ public class LaskutController {
                 return;
             }
         }
-        populateFields(selectedLasku);
+
+        int id = selectedLasku.getLaskuId();
+
+        refreshTable();
+
+        selectedLasku = laskut.stream()
+                .filter(l -> l.getLaskuId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (selectedLasku != null) {
+            populateFields(selectedLasku);
+
+            tableLaskut.getSelectionModel().select(selectedLasku);
+
+            tableLaskut.scrollTo(selectedLasku);
+        }
+
         showSavedStatus("Lasku merkitty maksetuksi");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
-        refreshTable();
     }
 
     private void showSavedStatus(String text) {

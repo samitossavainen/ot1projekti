@@ -128,6 +128,9 @@ public class MainController {
                 ((AsiakasRaporttiController) controller).setAsiakasService(
                         new AsiakasService(new AsiakasRepository())
                 );
+                ((AsiakasRaporttiController) controller).setVarausService(
+                        new VarausService(new VarausRepository())
+                );
             }
 
             if (controller instanceof VarausRaporttiController) {

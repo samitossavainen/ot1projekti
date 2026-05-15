@@ -113,6 +113,37 @@ public class LaskuRepository {
         }
     }
 
+    public void merkitseMaksetuksi(int laskuId, double summa) {
+
+        String updateSql = "UPDATE maksut SET maksettu_summa=?, maksupäivä=? WHERE lasku_ID=?";
+        String insertSql = "INSERT INTO maksut (lasku_ID, maksettu_summa, maksupäivä) VALUES (?, ?, ?)";
+
+        try (Connection c = Tietokanta.getYhteys()) {
+
+            // 1. yritetään päivittää olemassa oleva
+            PreparedStatement update = c.prepareStatement(updateSql);
+            update.setDouble(1, summa);
+            update.setString(2, LocalDate.now().toString());
+            update.setInt(3, laskuId);
+
+            int rows = update.executeUpdate();
+
+            // 2. jos ei löytynyt → luodaan uusi
+            if (rows == 0) {
+
+                PreparedStatement insert = c.prepareStatement(insertSql);
+                insert.setInt(1, laskuId);
+                insert.setDouble(2, summa);
+                insert.setString(3, LocalDate.now().toString());
+
+                insert.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Lasku map(ResultSet rs) throws SQLException {
 
         Lasku l = new Lasku();
@@ -125,7 +156,13 @@ public class LaskuRepository {
         l.setSumma(rs.getDouble("summa"));
         l.setTila(rs.getString("tila"));
         l.setMaksupaiva(DateUtil.parseDate(rs.getString("maksupäivä")));
-        l.setMaksettu(rs.getDouble("maksettu_summa"));
+        double maksettu = rs.getDouble("maksettu_summa");
+
+        if (rs.wasNull()) {
+            maksettu = 0;
+        }
+
+        l.setMaksettu(maksettu);
 
         return l;
     }

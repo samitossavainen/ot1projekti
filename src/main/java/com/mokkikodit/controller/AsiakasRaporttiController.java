@@ -20,13 +20,10 @@ public class AsiakasRaporttiController {
 
     @FXML private ComboBox<Asiakas> asiakasComboBox;
 
+    @FXML private Label customerCountLabel;
     @FXML private Label totalBookingsLabel;
     @FXML private Label confirmedLabel;
     @FXML private Label canceledLabel;
-    @FXML private Label firstBookingLabel;
-    @FXML private Label latestBookingLabel;
-    @FXML private DatePicker alkuDatePicker;
-    @FXML private DatePicker loppuDatePicker;
 
     @FXML private TableColumn<Asiakas, String> emailCol;
     @FXML private TableColumn<Asiakas, String> nimiCol;
@@ -49,6 +46,7 @@ public class AsiakasRaporttiController {
 
     public void setVarausService(VarausService varausService) {
         this.varausService = varausService;
+        applyFilters();
     }
 
     @FXML
@@ -59,10 +57,13 @@ public class AsiakasRaporttiController {
         filteredAsiakkaat = new FilteredList<>(asiakkaat, a -> true);
 
         tableRaportti.setItems(filteredAsiakkaat);
+        tableRaportti.setSelectionModel(null);
+        tableRaportti.setFocusTraversable(false);
 
         setupFilters();
-
         setupComboBox();
+
+        updateSummary();
     }
 
     private void setupTable() {
@@ -101,40 +102,12 @@ public class AsiakasRaporttiController {
 
     private void setupFilters() {
 
-        alkuDatePicker.setOnAction(e -> applyFilters());
-        loppuDatePicker.setOnAction(e -> applyFilters());
         asiakasComboBox.setOnAction(e -> applyFilters());
     }
 
     private void applyFilters() {
 
         filteredAsiakkaat.setPredicate(a -> {
-
-            if (varausService == null) return true;
-
-            List<Varaus> varaukset =
-                    varausService.haeAsiakkaanVaraukset(a.getSapo());
-
-            LocalDate alku = alkuDatePicker.getValue();
-            LocalDate loppu = loppuDatePicker.getValue();
-
-            boolean löytyy = false;
-
-            for (Varaus v : varaukset) {
-
-                if (alku != null && v.getLoppuPvm().isBefore(alku))
-                    continue;
-
-                if (loppu != null && v.getAlkuPvm().isAfter(loppu))
-                    continue;
-
-                löytyy = true;
-                break;
-            }
-
-            if ((alku != null || loppu != null) && !löytyy) {
-                return false;
-            }
 
             Asiakas selected = asiakasComboBox.getValue();
 
@@ -148,11 +121,11 @@ public class AsiakasRaporttiController {
         updateSummary();
     }
 
-
-
     private void updateSummary() {
 
         if (varausService == null) return;
+
+        customerCountLabel.setText(String.valueOf(filteredAsiakkaat.size()));
 
         int total = 0;
         int confirmed = 0;
@@ -194,21 +167,22 @@ public class AsiakasRaporttiController {
         totalBookingsLabel.setText(String.valueOf(total));
         confirmedLabel.setText(String.valueOf(confirmed));
         canceledLabel.setText(String.valueOf(canceled));
-
-        firstBookingLabel.setText(first != null ? first.toString() : "-");
-        latestBookingLabel.setText(last != null ? last.toString() : "-");
     }
 
-
     private void setupComboBox() {
-
-        asiakasComboBox.getSelectionModel().clearSelection();
 
         asiakasComboBox.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Asiakas item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNimi());
+
+                if (empty) {
+                    setText(null);
+                } else if (item == null) {
+                    setText("Kaikki");
+                } else {
+                    setText(item.getNimi() + " (" + item.getSapo() + ")");
+                }
             }
         });
 
@@ -216,7 +190,12 @@ public class AsiakasRaporttiController {
             @Override
             protected void updateItem(Asiakas item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNimi());
+
+                if (empty || item == null) {
+                    setText("Kaikki");
+                } else {
+                    setText(item.getNimi() + " (" + item.getSapo() + ")");
+                }
             }
         });
     }
@@ -227,9 +206,24 @@ public class AsiakasRaporttiController {
 
         asiakkaat.setAll(service.haeKaikki());
 
-        asiakasComboBox.setItems(asiakkaat);
+        ObservableList<Asiakas> lista = FXCollections.observableArrayList();
 
-        updateSummary();
+        lista.add(null);
+        lista.addAll(asiakkaat);
+
+        asiakasComboBox.setItems(lista);
+
+        asiakasComboBox.setValue(null); // default
+
+        applyFilters();
+    }
+
+    // Näkymän päivitys
+    @FXML
+    private void refreshView() {
+
+        asiakasComboBox.setValue(null);
+        applyFilters();
     }
 
     @FXML
