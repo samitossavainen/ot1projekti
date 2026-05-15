@@ -57,7 +57,7 @@
     -fx-background-color: rgba(46, 204, 113, 0.25);
 }
 
-/* maksettu */
+/* varaus maksettu */
 .table-cell.cell-paid {
     -fx-background-color: rgba(52, 152, 219, 0.25);
 }
@@ -67,8 +67,23 @@
     -fx-background-color: rgba(46, 204, 113, 0.35);
 }
 
-/* poissa käytöstä */
+/* Poissa käytöstä tai peruttu */
 .table-cell.cell-inactive {
     -fx-background-color: rgba(231, 76, 60, 0.25);
 }
+
+/* Myöhässä */
+.table-cell.cell-late {
+    -fx-background-color: rgba(243, 156, 18, 0.30);
+}
+
+/* Lasku Lähetetty */
+.table-cell.cell-sent {
+    -fx-background-color: rgba(52, 152, 219, 0.25);
+}
+/* Lasku Maksettu */
+.table-cell.cell-laskuPaid {
+    -fx-background-color: rgba(46, 204, 113, 0.25);
+}
+
 
