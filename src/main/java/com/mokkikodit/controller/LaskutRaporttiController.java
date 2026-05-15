@@ -146,7 +146,7 @@ public class LaskutRaporttiController {
         tilaComboBox.getItems().addAll(
                 "Kaikki",
                 "Maksettu",
-                "Avoin",
+                "Lähetetty",
                 "Myöhässä"
         );
 
@@ -236,7 +236,7 @@ public class LaskutRaporttiController {
                 maksetut++;
             }
 
-            if (tila.equalsIgnoreCase("Avoin")) {
+            if (tila.equalsIgnoreCase("Lähetetty")) {
                 avoimet++;
                 avoinSumma += lasku.getSumma();
             }
