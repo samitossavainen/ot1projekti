@@ -106,6 +106,42 @@ public class MainController {
                 );
             }
 
+            if (controller instanceof LaskutRaporttiController) {
+                ((LaskutRaporttiController) controller).setLaskuService(
+                        new LaskuService(new LaskuRepository())
+                );
+            }
+
+            if (controller instanceof MokkiRaporttiController) {
+                ((MokkiRaporttiController) controller).setMokkiService(
+                        new MokkiService(new MokkiRepository())
+                );
+                ((MokkiRaporttiController) controller).setLaskuService(
+                        new LaskuService(new LaskuRepository())
+                );
+                ((MokkiRaporttiController) controller).setVarausService(
+                        new VarausService(new VarausRepository())
+                );
+            }
+
+            if (controller instanceof AsiakasRaporttiController) {
+                ((AsiakasRaporttiController) controller).setAsiakasService(
+                        new AsiakasService(new AsiakasRepository())
+                );
+            }
+
+            if (controller instanceof VarausRaporttiController) {
+                ((VarausRaporttiController) controller).setAsiakasService(
+                        new AsiakasService(new AsiakasRepository())
+                );
+                ((VarausRaporttiController) controller).setVarausService(
+                        new VarausService(new VarausRepository())
+                );
+                ((VarausRaporttiController) controller).setMokkiService(
+                        new MokkiService(new MokkiRepository())
+                );
+            }
+
             contentArea.getChildren().setAll(view);
 
         } catch (IOException e) {

@@ -23,7 +23,7 @@
     </padding>
 
     <children>
-        <Button mnemonicParsing="false"  onAction="#goBack" text="&lt;- Palaa takaisin" style="-fx-base: #8A8A8A; -fx-text-fill: white;"/>
+        <Button mnemonicParsing="false" onAction="#goBack" style="-fx-base: #8A8A8A; -fx-text-fill: white;" text="&lt;- Palaa takaisin" />
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <children>
                 <Label text="ASIAKASRAPORTTI" textFill="#574520">
@@ -39,9 +39,9 @@
                 <!-- PÄIVÄMÄÄRÄT -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <DatePicker promptText="Alku" />
+                        <DatePicker fx:id="alkuDatePicker" promptText="Alku" />
                         <Label text="-" HBox.hgrow="ALWAYS" />
-                        <DatePicker promptText="Loppu" />
+                        <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />
                         <Label text="Asiakas:">
                             <HBox.margin>
                                 <Insets />
@@ -60,12 +60,11 @@
         <TableView fx:id="tableRaportti" VBox.vgrow="ALWAYS">
 
             <columns>
-                <TableColumn text="Varaus ID" />
-                <TableColumn text="Mökki" />
-                <TableColumn text="Alku" />
-                <TableColumn text="Loppu" />
-                <TableColumn prefWidth="52.0" text="Yöt" />
-            <TableColumn text="Varaustila" />
+                <TableColumn fx:id="emailCol" text="Sähköposti" />
+                <TableColumn fx:id="nimiCol" text="Nimi" />
+                <TableColumn fx:id="phoneCol" text="Puhelinumero" />
+                <TableColumn fx:id="addressCol" prefWidth="52.0" text="Osoite" />
+            <TableColumn fx:id="varaustenMaaraCol" prefWidth="81.0" text="Varaustenmäärä" />
             </columns>
         </TableView>
 
@@ -89,7 +88,7 @@
                     <Label text="Ensimmäinen varaus:" GridPane.rowIndex="3" />
                     <Label fx:id="totalBookingsLabel" text="Label" GridPane.columnIndex="1" />
                     <Label fx:id="confirmedLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label fx:id="cancelledLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="canceledLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     <Label fx:id="firstBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                <Label text="Viimeisin varaus:" GridPane.rowIndex="4" />
                <Label fx:id="latestBookingLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />

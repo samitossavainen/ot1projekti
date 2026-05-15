@@ -33,8 +33,22 @@ public class VarausService {
         repo.tallenna(v);
     }
 
+    public List<Varaus> haeAsiakkaanVaraukset(String email) {
+
+        return getAllVaraukset().stream()
+                .filter(v -> v.getAsiakasEmail() != null
+                        && v.getAsiakasEmail().equalsIgnoreCase(email))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     public void updateVaraus(Varaus v) {
         validate(v);
+
+        tarkistaPaallekaisyys(v);
+
+        double kokonaissumma = laskeKokonaissumma(v);
+        v.setKokonaissumma(kokonaissumma);
+
         repo.paivita(v);
     }
 
@@ -104,6 +118,11 @@ public class VarausService {
 
             // ohitetaan peruutettu tilan varaukset
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
+                continue;
+            }
+
+            // ohitetaan sama varaus
+            if (v.getVarausId() == uusi.getVarausId()){
                 continue;
             }
 
