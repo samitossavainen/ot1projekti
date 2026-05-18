@@ -80,6 +80,8 @@ public class LaskutRaporttiController {
         filteredLaskut = new FilteredList<>(laskut, p -> true);
 
         tableRaportti.setItems(filteredLaskut);
+        tableRaportti.setSelectionModel(null);
+        tableRaportti.setFocusTraversable(false);
 
         setupFilters();
     }
