@@ -63,8 +63,6 @@
                 <TableColumn fx:id="statusCol" text="Tila" />
                 <TableColumn fx:id="varauksetCol" text="Varauksia" />
                 <TableColumn fx:id="vuorokaudetCol" text="Vuorokaudet" />
-                <TableColumn prefWidth="52.0" text="Kokonaistulot" />
-                <TableColumn fx:id="kayttoasteCol" prefWidth="109.0" text="Käyttöaste (%)" />
 
             </columns>
         </TableView>
@@ -91,10 +89,10 @@
                     <Label text="Vuorokausia yhteensä:" GridPane.rowIndex="2" />
                     <Label text="Kokonaistulot:" GridPane.rowIndex="3" />
 
-                    <Label text="-" GridPane.columnIndex="1" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    <Label text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <Label fx:id="mokkejaYhteensaLabel" text="-" GridPane.columnIndex="1" />
+                    <Label fx:id="varauksiaYhteensaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="vuorokausiaYhteensaLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label fx:id="kokonaistulotLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />
