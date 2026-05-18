@@ -253,7 +253,7 @@ public class MokkiRaporttiController {
         mokkiComboBox.setValue("Kaikki");
     }
 
-    // SUMMARY
+    // Yhteenveto
     private void updateYhteenveto() {
 
         String selectedMokki = mokkiComboBox.getValue();
