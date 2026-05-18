@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -150,7 +151,11 @@ public class MokkiController {
         });
 
         filteredMokit = new FilteredList<>(mokit);
-        tableCabins.setItems(filteredMokit);
+
+        SortedList<Mokki> sortedMokit = new SortedList<>(filteredMokit);
+        sortedMokit.comparatorProperty().bind(tableCabins.comparatorProperty());
+        tableCabins.setItems(sortedMokit);
+
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
                         "Kaikki",
