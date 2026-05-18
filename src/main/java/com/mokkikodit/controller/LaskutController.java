@@ -327,7 +327,7 @@ public class LaskutController {
         );
 
         maksettuSummaLabel.setText(
-                "maksettu".equalsIgnoreCase(m.getTila())
+                (m.getTila() != null )
                         ? m.getMaksettu() + " €"
                         : "-"
         );
