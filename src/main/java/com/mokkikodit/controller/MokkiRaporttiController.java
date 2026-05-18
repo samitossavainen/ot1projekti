@@ -6,15 +6,15 @@ import com.mokkikodit.logiikka.VarausService;
 import com.mokkikodit.mallit.Mokki;
 import com.mokkikodit.mallit.Varaus;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 
 public class MokkiRaporttiController {
 
+    // SERVICES
     private MokkiService service;
     private LaskuService LaskuService;
     private VarausService VarausService;
 
+    // DATA
     private final ObservableList<Mokki> mokit = FXCollections.observableArrayList();
     private FilteredList<Mokki> filteredMokit;
 
@@ -34,7 +36,13 @@ public class MokkiRaporttiController {
     private Map<Integer, Long> vuorokausiMap;
 
     private List<Varaus> allVaraukset = new ArrayList<>();
-    private Map<Integer, Double> occupancyMap = new HashMap<>();
+
+    // FILTERS
+    @FXML private DatePicker alkuDatePicker;
+    @FXML private DatePicker loppuDatePicker;
+
+    @FXML private ComboBox<String> tilaComboBox;
+    @FXML private ComboBox<String> mokkiComboBox;
 
     // TABLE
     @FXML private TableView<Mokki> tableRaportti;
@@ -50,11 +58,6 @@ public class MokkiRaporttiController {
 
     @FXML private TableColumn<Mokki, Integer> varauksetCol;
     @FXML private TableColumn<Mokki, Integer> vuorokaudetCol;
-    @FXML private TableColumn<Mokki, Double> kayttoasteCol;
-
-    // DATE FILTER
-    @FXML private DatePicker alkuDatePicker;
-    @FXML private DatePicker loppuDatePicker;
 
     // SUMMARY
     @FXML private Label mokkejaYhteensaLabel;
@@ -70,15 +73,53 @@ public class MokkiRaporttiController {
     @FXML private Label capacityLabel;
     @FXML private Label roomsLabel;
     @FXML private Label tilaLabel;
-    @FXML private Label lisatiedotLabel;
     @FXML private Label summaryLabel;
     @FXML private Label statusLabel;
 
+    // INIT
     @FXML
     public void initialize() {
 
         filteredMokit = new FilteredList<>(mokit, m -> true);
         tableRaportti.setItems(filteredMokit);
+        tableRaportti.setSelectionModel(null);
+        tableRaportti.setFocusTraversable(false);
+
+        setupTable();
+        setupFilters();
+
+        ChangeListener<Object> refresh = (obs, oldV, newV) -> {
+            applyFilters();
+            updateYhteenveto();
+        };
+
+        if (alkuDatePicker != null) {
+            alkuDatePicker.valueProperty().addListener(refresh);
+        }
+
+        if (loppuDatePicker != null) {
+            loppuDatePicker.valueProperty().addListener(refresh);
+        }
+    }
+
+    // SERVICES
+    public void setMokkiService(MokkiService service) {
+        this.service = service;
+        refreshTable();
+    }
+
+    public void setLaskuService(LaskuService laskuService) {
+        this.LaskuService = laskuService;
+        refreshTable();
+    }
+
+    public void setVarausService(VarausService varausService) {
+        this.VarausService = varausService;
+        refreshTable();
+    }
+
+    // TABLE SETUP
+    private void setupTable() {
 
         cabinCol.setCellValueFactory(d ->
                 new SimpleIntegerProperty(d.getValue().getMokkiId()).asObject());
@@ -117,67 +158,59 @@ public class MokkiRaporttiController {
             long days = vuorokausiMap != null ? vuorokausiMap.getOrDefault(id, 0L) : 0L;
             return new SimpleIntegerProperty((int) days).asObject();
         });
+    }
 
-        // prevents crash if column missing in FXML
-        if (kayttoasteCol != null) {
+    // FILTERS SETUP (FIXED)
+    private void setupFilters() {
 
-            kayttoasteCol.setCellValueFactory(d -> {
-                int id = d.getValue().getMokkiId();
-                double value = occupancyMap.getOrDefault(id, 0.0);
-                return new SimpleDoubleProperty(value).asObject();
-            });
+        tilaComboBox.getItems().setAll(
+                "Kaikki",
+                "Käytössä",
+                "Poissa käytöstä"
+        );
+        tilaComboBox.setValue("Kaikki");
 
-            kayttoasteCol.setCellFactory(col -> new TableCell<Mokki, Double>() {
-                @Override
-                protected void updateItem(Double item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(String.format("%.1f %%", item));
-                    }
+        mokkiComboBox.getItems().add("Kaikki");
+        mokkiComboBox.setValue("Kaikki");
+
+        tilaComboBox.setOnAction(e -> applyFilters());
+        mokkiComboBox.setOnAction(e -> applyFilters());
+    }
+
+    // FILTER LOGIC (FIXED)
+    private void applyFilters() {
+
+        filteredMokit.setPredicate(m -> {
+
+            // TILA
+            String tila = tilaComboBox.getValue();
+            if (tila != null && !tila.equals("Kaikki")) {
+
+                String mokkiTila = (m.getTila() == 1)
+                        ? "Käytössä"
+                        : "Poissa käytöstä";
+
+                if (!mokkiTila.equalsIgnoreCase(tila)) {
+                    return false;
                 }
-            });
-        }
+            }
 
-        tableRaportti.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldVal, newVal) -> {
-                    if (newVal != null) {
-                        populateReport(newVal);
-                        updateSelectedMokkiSummary(newVal);
-                    }
-                });
+            // MÖKKI
+            String mokki = mokkiComboBox.getValue();
+            if (mokki != null && !mokki.equals("Kaikki")) {
+                if (!m.getNimi().equalsIgnoreCase(mokki)) {
+                    return false;
+                }
+            }
 
-        ChangeListener<Object> refresh = (obs, oldV, newV) -> {
-            tableRaportti.refresh();
-            updateYhteenveto();
-        };
+            return true;
+        });
 
-        if (alkuDatePicker != null) {
-            alkuDatePicker.valueProperty().addListener(refresh);
-        }
-
-        if (loppuDatePicker != null) {
-            loppuDatePicker.valueProperty().addListener(refresh);
-        }
+        tableRaportti.refresh();
+        updateYhteenveto();
     }
 
-    // SERVICES
-    public void setMokkiService(MokkiService service) {
-        this.service = service;
-        refreshTable();
-    }
-
-    public void setLaskuService(LaskuService laskuService) {
-        this.LaskuService = laskuService;
-        refreshTable();
-    }
-
-    public void setVarausService(VarausService varausService) {
-        this.VarausService = varausService;
-        refreshTable();
-    }
-
+    // DATA LOAD
     private void refreshTable() {
 
         if (service == null) return;
@@ -186,9 +219,7 @@ public class MokkiRaporttiController {
 
         if (VarausService != null) {
 
-            allVaraukset = VarausService.getAllVaraukset().stream()
-                    .map(v -> (Varaus) v)
-                    .collect(Collectors.toList());
+            allVaraukset = VarausService.getAllVaraukset();
 
             varausMap = allVaraukset.stream()
                     .collect(Collectors.groupingBy(
@@ -206,12 +237,26 @@ public class MokkiRaporttiController {
                     ));
         }
 
+        loadMokkiComboBox();
         updateYhteenveto();
     }
 
+    private void loadMokkiComboBox() {
+
+        mokkiComboBox.getItems().clear();
+        mokkiComboBox.getItems().add("Kaikki");
+
+        for (Mokki m : mokit) {
+            mokkiComboBox.getItems().add(m.getNimi());
+        }
+
+        mokkiComboBox.setValue("Kaikki");
+    }
+
+    // SUMMARY
     private void updateYhteenveto() {
 
-        int mokkeja = mokit.size();
+        int mokkeja = filteredMokit.size();
 
         long varauksia = varausMap != null
                 ? varausMap.values().stream().mapToLong(Long::longValue).sum()
@@ -235,36 +280,7 @@ public class MokkiRaporttiController {
         kokonaistulotLabel.setText(String.format("%.2f €", tulot));
     }
 
-    private void updateSelectedMokkiSummary(Mokki m) {
-
-        long varaukset = varausMap != null ? varausMap.getOrDefault(m.getMokkiId(), 0L) : 0;
-        long vuorokausia = vuorokausiMap != null ? vuorokausiMap.getOrDefault(m.getMokkiId(), 0L) : 0;
-
-        double tulot = vuorokausia * m.getHinta();
-
-        mokkejaYhteensaLabel.setText("1");
-        varauksiaYhteensaLabel.setText(String.valueOf(varaukset));
-        vuorokausiaYhteensaLabel.setText(String.valueOf(vuorokausia));
-        kokonaistulotLabel.setText(String.format("%.2f €", tulot));
-    }
-
-    private void populateReport(Mokki m) {
-
-        nimiLabel.setText(m.getNimi());
-        addressLabel.setText(m.getOsoite() != null ? m.getOsoite() : "");
-        capacityLabel.setText(String.valueOf(m.getKapasiteetti()));
-        roomsLabel.setText(String.valueOf(m.getHuoneet()));
-        vessatLabel.setText(String.valueOf(m.getVessat()));
-        pricePerNightLabel.setText(m.getHinta() + " €/yö");
-        statusLabel.setText(m.getTila() == 1 ? "Käytössä" : "Poissa käytöstä");
-
-        summaryLabel.setText(
-                m.getNimi() + " · " +
-                        m.getKapasiteetti() + " hlö · " +
-                        m.getHinta() + " €/yö"
-        );
-    }
-
+    // Paluu napista raporttinäkymään
     @FXML
     private void goBack() {
         MainController.getInstance().showRaportit();

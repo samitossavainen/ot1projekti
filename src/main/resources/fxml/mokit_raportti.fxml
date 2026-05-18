@@ -37,9 +37,9 @@
                             </padding>
                         </Label>
                         <DatePicker fx:id="loppuDatePicker" promptText="Loppu" />                        <Label text="Tila:" />
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="tilaComboBox" prefWidth="150.0" />
                         <Label text="Mökki:" />
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="mokkiComboBox" prefWidth="150.0" />
                     </children>
                 </HBox>
 
