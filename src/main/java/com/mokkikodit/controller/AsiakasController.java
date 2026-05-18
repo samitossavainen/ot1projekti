@@ -5,6 +5,7 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -113,7 +114,10 @@ public class AsiakasController {
         });
 
         filteredAsiakkaat = new FilteredList<>(asiakkaat);
-        tableAsiakkaat.setItems(filteredAsiakkaat);
+
+        SortedList<Asiakas> sortedAsiakkaat = new SortedList<>(filteredAsiakkaat);
+        sortedAsiakkaat.comparatorProperty().bind(tableAsiakkaat.comparatorProperty());
+        tableAsiakkaat.setItems(sortedAsiakkaat);
 
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
