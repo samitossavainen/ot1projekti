@@ -46,7 +46,7 @@ public class MainApp extends Application {
         }
 
         // Määritä sovelluksen ikkuna
-        stage.setTitle("Mökkikodit oy");
+        stage.setTitle("Mökkikodit Oy");
         stage.setScene(scene);
 
         // Ikkunan alkuperäinen koko
