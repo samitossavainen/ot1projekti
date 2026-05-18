@@ -113,29 +113,18 @@ public class LaskuRepository {
         }
     }
 
-    public void merkitseMaksetuksi(int laskuId, double summa) {
+    public void merkitseMaksetuksi(int laskuId) {
 
-        String updateSql = "UPDATE maksut SET maksupäivä=? WHERE lasku_ID=?";
-        String insertSql = "INSERT INTO maksut (lasku_ID, maksupäivä) VALUES (?, ?)";
+        String updateSql =
+                "UPDATE maksut SET maksupäivä=? WHERE lasku_ID=?";
 
         try (Connection c = Tietokanta.getYhteys()) {
 
-            // 1. yritetään päivittää olemassa oleva
             PreparedStatement update = c.prepareStatement(updateSql);
             update.setString(1, LocalDate.now().toString());
             update.setInt(2, laskuId);
 
-            int rows = update.executeUpdate();
-
-            // 2. jos ei löytynyt → luodaan uusi
-            if (rows == 0) {
-
-                PreparedStatement insert = c.prepareStatement(insertSql);
-                insert.setInt(1, laskuId);
-                insert.setDouble(2, 0.0);
-
-                insert.executeUpdate();
-            }
+            update.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
