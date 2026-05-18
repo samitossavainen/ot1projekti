@@ -20,61 +20,74 @@ public class LaskuService {
     }
 
     /**
-     * Creates invoice from reservation and saves to DB.
+     * Luo laskun varauksesta ja tallentaa sen tietokantaan.
      */
     public Lasku createLasku(Varaus varaus,
                              double hintaPerYo) {
 
+        // Lasketaan varauksen kesto päivinä
         long paivat = ChronoUnit.DAYS.between(
                 varaus.getAlkuPvm(),
                 varaus.getLoppuPvm()
         );
 
+        // Lasketaan laskun loppusumma: päivät * hinta per yö
         double summa = paivat * hintaPerYo;
 
+        // Luodaan uusi lasku-olio
         Lasku lasku = new Lasku(
                 varaus.getVarausId(),
-                LocalDate.now().plusDays(14), // example due date
+                LocalDate.now().plusDays(14), // eräpäivä 14 päivän päähän
                 summa
         );
 
+        // Tallennetaan lasku tietokantaan
         repository.save(lasku);
 
         return lasku;
     }
 
     /**
-     * Returns all invoices from database.
+     * Palauttaa kaikki laskut tietokannasta.
      */
     public List<Lasku> getAllLaskut() {
+        // Haetaan kaikki laskut repositorysta
         return repository.findAll();
     }
 
     /**
-     * Marks invoice as paid (DB update).
+     * Merkitsee laskun maksetuksi (tietokannan päivitys).
      */
     public void markAsPaid(int laskuId) {
 
+        // Haetaan lasku tietokannasta ID:n perusteella
         Lasku lasku = repository.findById(laskuId);
 
+        // Jos laskua ei löydy, heitetään poikkeus
         if (lasku == null) {
             throw new IllegalArgumentException(
                     "Laskua ei löytynyt ID:llä " + laskuId
             );
         }
 
+        // Päivitetään lasku maksetuksi domain-oliossa
         lasku.merkitseMaksetuksi();
+
+        // Päivitetään lasku tietokantaan
         repository.update(lasku);
 
+        // Varmistetaan erillinen päivitys maksutilaan repositoryssa (redundanssi / synkronointi)
         repository.merkitseMaksetuksi(
                 lasku.getLaskuId()
         );
 
+        // Haetaan varaus, joka liittyy laskuun
         Varaus varaus = varausService.getAllVaraukset().stream()
                 .filter(v -> v.getVarausId() == lasku.getVarausId())
                 .findFirst()
                 .orElse(null);
 
+        // Jos varaus löytyy, päivitetään sen tila maksetuksi
         if (varaus != null) {
             varaus.setTila("maksettu");
             varausService.updateVaraus(varaus);
@@ -82,9 +95,10 @@ public class LaskuService {
     }
 
     /**
-     * Deletes invoice from database.
+     * Poistaa laskun tietokannasta.
      */
     public void deleteLasku(int id) {
+        // Poistetaan lasku tietokannasta ID:n perusteella
         repository.delete(id);
     }
 }

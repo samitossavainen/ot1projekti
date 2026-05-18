@@ -19,9 +19,9 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 
         /*
-         * Lataa pää-FXML-tiedosto.
-         * Objects.requireNonNull() estää mahdollisen NullPointerException-virheen.
-         * jos resurssipolku on virheellinen tai tiedosto puuttuu.
+         * Lataa pää-FXML-tiedosto sovelluksen käyttöliittymää varten.
+         * Objects.requireNonNull() -tyyppinen tarkistus varmistaa,
+         * että resurssi löytyy ennen käyttöä (ei tule NullPointerException-virhettä).
          */
         URL fxmlLocation = getClass().getResource("/fxml/main.fxml");
 
@@ -31,11 +31,11 @@ public class MainApp extends Application {
 
         FXMLLoader loader = new FXMLLoader(fxmlLocation);
 
-        // Luo kohtaus ladatusta FXML-tiedostosta
+        // Luodaan Scene ladatun FXML-rakenteen perusteella
         Scene scene = new Scene(loader.load());
 
         /*
-         * Ladataan CSS-tyylitiedosto
+         * Ladataan CSS-tyylitiedosto käyttöliittymän ulkoasun määrittämiseksi
          */
         URL cssLocation = getClass().getResource("/css/styles.css");
 
@@ -45,25 +45,27 @@ public class MainApp extends Application {
             System.err.println("CSS file not found: /css/styles.css");
         }
 
-        // Määritä sovelluksen ikkuna
+        // Asetetaan sovelluksen pääikkunan otsikko
         stage.setTitle("Mökkikodit Oy");
+
+        // Asetetaan Scene ikkunaan
         stage.setScene(scene);
 
-        // Ikkunan alkuperäinen koko
+        // Määritetään ikkunan oletuskoko
         stage.setWidth(WINDOW_WIDTH);
         stage.setHeight(WINDOW_HEIGHT);
 
-        // Ikkunan pienin sallittu koko
+        // Määritetään ikkunan minimikoko
         stage.setMinWidth(MIN_WIDTH);
         stage.setMinHeight(MIN_HEIGHT);
 
-        // Avaa ikkuna
+        // Näytetään sovelluksen ikkuna
         stage.show();
     }
 
     /**
-     * Sovelluksen aloituskohta.
-     * JavaFX-ajoympäristö toimittaa args-parametrin.
+     * Sovelluksen käynnistyspiste (JavaFX entry point).
+     * launch(args) käynnistää JavaFX-sovelluksen elinkaaren.
      */
     @SuppressWarnings("unused")
     public static void main(String[] args) {

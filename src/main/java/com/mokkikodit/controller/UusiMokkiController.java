@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 public class UusiMokkiController {
 
+    // UI-kentät uuden mökin tietojen syöttämiseen
     @FXML private TextField nimiField;
     @FXML private TextField capacityField;
     @FXML private TextField roomsField;
@@ -21,22 +22,29 @@ public class UusiMokkiController {
     @FXML private TextArea addressArea;
     @FXML private TextArea lisatiedotArea;
 
+    // Mökkipalvelu (liiketoimintalogiikka)
     private final MokkiService service =
             new MokkiService(new MokkiRepository());
 
+    // Ilmaisee lisättiinkö mökki onnistuneesti
     private boolean mokkiLisatty = false;
 
+    // Peruuta-toiminto (sulkee ikkunan ilman tallennusta)
     @FXML
     private void cancel(ActionEvent event) {
         close(event);
     }
 
+    // Luo uusi mökki ja tallenna se järjestelmään
     @FXML
     private void create(ActionEvent event) {
 
+        // Luodaan uusi Mokki-olio
         Mokki m = new Mokki();
 
         try {
+            // Asetetaan käyttäjän syöttämät arvot olioon
+
             m.setNimi(nimiField.getText());
             m.setKapasiteetti(Integer.parseInt(capacityField.getText()));
             m.setHuoneet(Integer.parseInt(roomsField.getText()));
@@ -45,12 +53,17 @@ public class UusiMokkiController {
             m.setOsoite(addressArea.getText());
             m.setLisatiedot(lisatiedotArea.getText());
 
+            // Tallennetaan mökki palvelun kautta
             service.lisaa(m);
+
             mokkiLisatty = true;
+
+            // Suljetaan ikkuna onnistuneen lisäyksen jälkeen
             close(event);
 
         } catch (NumberFormatException e) {
 
+            // Virhe: käyttäjä syötti väärän tyyppistä dataa (ei numeroa)
             showError(
                     "Virheellinen syöte",
                     "Tarkista kapasiteetin, huoneiden, vessojen ja hinnan arvot.\n" +
@@ -59,6 +72,7 @@ public class UusiMokkiController {
 
         } catch (IllegalArgumentException e) {
 
+            // Liiketoimintalogiikan validointivirhe
             showError(
                     "Mökkiä ei voitu lisätä",
                     e.getMessage()
@@ -66,6 +80,7 @@ public class UusiMokkiController {
         }
     }
 
+    // Sulkee nykyisen ikkunan
     private void close(ActionEvent event) {
         Stage stage =
                 (Stage) ((Node) event.getSource())
@@ -74,10 +89,12 @@ public class UusiMokkiController {
         stage.close();
     }
 
+    // Palauttaa tiedon siitä lisättiinkö mökki onnistuneesti
     public boolean isMokkiLisatty() {
         return mokkiLisatty;
     }
 
+    // Näyttää virheikkunan käyttäjälle
     private void showError(String header, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Virhe");

@@ -7,26 +7,28 @@ import java.time.format.DateTimeParseException;
 
 public class DateUtil {
 
-    // SQLite DATE: YYYY-MM-DD
+    // SQLite DATE-muoto: YYYY-MM-DD
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ISO_LOCAL_DATE;
 
-    // SQLite DATETIME: YYYY-MM-DD HH:MM:SS
+    // SQLite DATETIME-muoto: YYYY-MM-DD HH:MM:SS
     private static final DateTimeFormatter DATETIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
+    // Muuntaa tietokannasta tulevan arvon LocalDate-muotoon
     public static LocalDate parseDate(Object dbValue) {
         if (dbValue == null) return null;
 
         String value = dbValue.toString();
 
         try {
-            // Jos sisältää ajan → otetaan vain päiväosa
+            // Jos arvo sisältää myös ajan, otetaan vain päivämääräosa
             if (value.length() > 10) {
                 return LocalDate.parse(value.substring(0, 10), DATE_FORMAT);
             }
 
+            // Pelkkä päivämäärä voidaan parsia suoraan
             return LocalDate.parse(value, DATE_FORMAT);
 
         } catch (DateTimeParseException e) {
@@ -37,13 +39,14 @@ public class DateUtil {
     }
 
 
+    // Muuntaa tietokannasta tulevan arvon LocalDateTime-muotoon
     public static LocalDateTime parseDateTime(Object dbValue) {
         if (dbValue == null) return null;
 
         String value = dbValue.toString();
 
         try {
-            // Täysi datetime: yyyy-MM-dd HH:mm:ss
+            // Täysi datetime-muoto (yyyy-MM-dd HH:mm:ss)
             if (value.length() > 10) {
                 return LocalDateTime.parse(
                         value,
@@ -51,7 +54,7 @@ public class DateUtil {
                 );
             }
 
-            // Pelkkä päivämäärä: yyyy-MM-dd → kello 00:00
+            // Jos vain päivämäärä, asetetaan aika 00:00
             return LocalDate.parse(value).atStartOfDay();
 
         } catch (DateTimeParseException e) {
@@ -61,7 +64,7 @@ public class DateUtil {
         }
     }
 
-
+    // Utility-luokka: estetään olion luonti
     private DateUtil() {
     }
 }

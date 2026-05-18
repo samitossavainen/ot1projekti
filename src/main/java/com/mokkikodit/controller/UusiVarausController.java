@@ -20,6 +20,7 @@ import java.time.LocalDate;
 
 public class UusiVarausController {
 
+    // UI-komponentit varauksen luontiin
     @FXML
     private ComboBox<Asiakas> asiakasComboBox;
     @FXML
@@ -28,23 +29,30 @@ public class UusiVarausController {
     private DatePicker alkuDatePicker;
     @FXML
     private DatePicker loppuDatePicker;
+
+    // Varauspalvelu (liiketoimintalogiikka)
     private VarausService varausService;
 
+    // Repositoriot asiakas- ja mökkidatan hakemiseen
     private final AsiakasRepository asiakasRepo =
             new AsiakasRepository();
 
     private final MokkiRepository mokkiRepo =
             new MokkiRepository();
 
+    // Callback kun varaus on luotu
     private Runnable onVarausCreated;
 
+    // Onnistumismerkintä
     private boolean varausLisatty = false;
 
 
+    // Asetetaan palvelu ulkopuolelta (dependency injection)
     public void setVarausService(VarausService varausService) {
         this.varausService = varausService;
     }
 
+    // Asetetaan callback, jota kutsutaan onnistuneen varauksen jälkeen
     public void setOnVarausCreated(Runnable onVarausCreated) {
         this.onVarausCreated = onVarausCreated;
     }
@@ -53,12 +61,12 @@ public class UusiVarausController {
     @FXML
     public void initialize() {
 
-        // Asiakkaiden sähköpostit
+        // Ladataan asiakkaat comboboxiin
         asiakasComboBox.setItems(
                 FXCollections.observableArrayList(asiakasRepo.findAllAvailable())
         );
 
-        // Mökit
+        // Ladataan mökit comboboxiin
         mokkiComboBox.setItems(
                 FXCollections.observableArrayList(
                         mokkiRepo.findAllAvailable()
@@ -71,11 +79,14 @@ public class UusiVarausController {
     private void vahvista(ActionEvent event) {
 
         try {
+            // Tarkistetaan syötteiden validius
             validateInputs();
 
+            // Haetaan valitut arvot UI:sta
             Asiakas asiakas = asiakasComboBox.getValue();
             Mokki mokki = mokkiComboBox.getValue();
 
+            // Luodaan uusi varausolio
             Varaus v = new Varaus();
             v.setAsiakasEmail(asiakas.getSapo());
             v.setMokkiId(mokki.getMokkiId());
@@ -84,25 +95,34 @@ public class UusiVarausController {
             v.setTila("aktiivinen");
             v.setKokonaissumma(0.0);
 
+            // Tallennetaan varaus palvelun kautta
             varausService.addVaraus(v);
+
             varausLisatty = true;
 
+            // Kutsutaan callbackia jos sellainen on asetettu
             if (onVarausCreated != null){
                 onVarausCreated.run();
             }
 
+            // Näytetään onnistumisviesti
             DialogUtil.showInfo("Varaus luotu onnistuneesti!");
+
+            // Suljetaan ikkuna
             close(event);
 
         } catch (IllegalArgumentException e) {
+            // Käyttäjän syötevirhe
             DialogUtil.showError(e.getMessage());
         } catch (Exception e) {
+            // Yleinen virhetilanne
             DialogUtil.showError("Virhe varauksen luonnissa.");
             e.printStackTrace();
         }
     }
 
 
+    // Syötteiden validointi ennen tallennusta
     private void validateInputs() {
 
         if (varausService == null) {
@@ -138,11 +158,13 @@ public class UusiVarausController {
     }
 
 
+    // Peruuta-nappi
     @FXML
     private void cancel(ActionEvent event) {
         close(event);
     }
 
+    // Sulkee ikkunan
     private void close(ActionEvent event) {
 
         Stage stage = (Stage) ((Node) event.getSource())
@@ -152,6 +174,7 @@ public class UusiVarausController {
         stage.close();
     }
 
+    // Palauttaa tiedon onnistuneesta lisäyksestä
     public boolean isVarausLisatty() {
         return varausLisatty;
     }

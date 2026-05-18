@@ -45,19 +45,29 @@ public class AsiakasController {
 
     @FXML private Label statusLabel;
 
+    // Muokkaustilan hallinta
     private boolean editMode = false;
 
+    // Palvelu, joka hoitaa asiakkaiden haun ja päivitykset
     private AsiakasService service;
 
+    // Valittu asiakas taulukosta
     private Asiakas selectedAsiakas;
+
+    // Muokkausta varten luotu kopio asiakkaasta
     private Asiakas muokattavaAsiakas;
+
+    // Viimeksi lisätty asiakas (korostusta varten)
     private Asiakas viimeksiLisattyAsiakas;
 
+    // Kaikki asiakkaat muistissa
     private final ObservableList<Asiakas> asiakkaat =
             FXCollections.observableArrayList();
 
+    // Hakusuodatus
     private FilteredList<Asiakas> filteredAsiakkaat;
 
+    // Asetetaan palvelu controllerille ja päivitetään taulukko
     public void setAsiakasService(AsiakasService service) {
         this.service = service;
         refreshTable();
@@ -66,65 +76,79 @@ public class AsiakasController {
     @FXML
     public void initialize() {
 
+        // Sarakkeiden arvojen sitominen Asiakas-olioon
 
         nimiCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
+                new SimpleStringProperty(
                         data.getValue().getNimi()
                 ));
 
         emailCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
+                new SimpleStringProperty(
                         data.getValue().getSapo()
                 ));
 
         phoneCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
+                new SimpleStringProperty(
                         data.getValue().getPuhelinnumero()
                 ));
 
         addressCol.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(
+                new SimpleStringProperty(
                         data.getValue().getOsoite()
                 ));
 
+        // Status-teksti aluksi piilossa
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
+
+        // Oletusteksti muokkausnapille
         editButton.setText("Muokkaa");
 
+        // Alustetaan näkymä lukutilaan
         setEditMode(false);
 
+        // Yksi valinta kerrallaan taulukosta
         tableAsiakkaat.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        // Kun käyttäjä valitsee asiakkaan taulukosta
         tableAsiakkaat.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
 
                     selectedAsiakas = newSelection;
 
+                    // Täytetään kentät valitulla asiakkaalla
                     if (newSelection != null) {
                         populateFields(newSelection);
                     }
+
+                    // Poista-nappi käytössä vain jos valinta on olemassa
                     deleteButton.setDisable(newSelection == null);
                 });
 
+        // Estetään taulukon valinta muokkaustilassa
         tableAsiakkaat.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
             if (editMode) {
                 event.consume();
             }
         });
 
+        // Suodatuslista hakua varten
         filteredAsiakkaat = new FilteredList<>(asiakkaat);
 
         SortedList<Asiakas> sortedAsiakkaat = new SortedList<>(filteredAsiakkaat);
         sortedAsiakkaat.comparatorProperty().bind(tableAsiakkaat.comparatorProperty());
         tableAsiakkaat.setItems(sortedAsiakkaat);
 
+        // Haku muuttuu reaaliajassa
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
+
         applyFilters();
 
-        // Rivin korostus värillä asiakkaan lisäyksen ja tallennuksen jälkeen.
+        // Rivin korostus viimeksi lisätylle asiakkaalle
         tableAsiakkaat.setRowFactory(tv -> {
             TableRow<Asiakas> row = new TableRow<>();
             PauseTransition clear = new PauseTransition(Duration.seconds(2));
@@ -135,6 +159,7 @@ public class AsiakasController {
 
                 if (item == null) return;
 
+                // Korostetaan juuri lisätty asiakas
                 if (viimeksiLisattyAsiakas != null
                         && item.getSapo().equals(viimeksiLisattyAsiakas.getSapo())) {
 
@@ -152,22 +177,24 @@ public class AsiakasController {
         });
     }
 
+    // Päivitetään näkymä (ei muokkaustilassa)
     @FXML
     private void refreshView() {
-
         if (editMode) return;
 
         searchField.clear();
         refreshTable();
     }
 
+    // Ladataan asiakkaat palvelusta
     private void refreshTable() {
         if (service == null) return;
-        asiakkaat.setAll(service.haeKaikki());
 
+        asiakkaat.setAll(service.haeKaikki());
         applyFilters();
     }
 
+    // Hakusuodatus asiakkaisiin
     private void applyFilters() {
 
         String search = searchField.getText() == null
@@ -176,16 +203,17 @@ public class AsiakasController {
 
         filteredAsiakkaat.setPredicate(asiakas -> {
 
-            // piilotetaan poistettu
+            // Poistetut/piilotetut asiakkaat
             if (asiakas.getTila() == 0) {
                 return false;
             }
 
-            // ei hakua → näytetään kaikki aktiiviset
+            // Jos ei hakua → näytetään kaikki
             if (search.isEmpty()) {
                 return true;
             }
 
+            // Haku useista kentistä
             return (asiakas.getNimi() != null &&
                     asiakas.getNimi().toLowerCase().contains(search))
                     || (asiakas.getSapo() != null &&
@@ -197,6 +225,7 @@ public class AsiakasController {
         });
     }
 
+    // Täytetään näkymän kentät valitulla asiakkaalla
     private void populateFields(Asiakas a) {
 
         nimiLabel.setText(a.getNimi());
@@ -213,9 +242,9 @@ public class AsiakasController {
                         a.getSapo() + " · " +
                         a.getPuhelinnumero()
         );
-
     }
 
+    // Vaihdetaan muokkaustila päälle/pois
     @FXML
     private void toggleEdit() {
 
@@ -225,10 +254,11 @@ public class AsiakasController {
         else cancelEdit();
     }
 
+    // Siirrytään muokkaustilaan
     private void enterEditMode() {
         editMode = true;
 
-        // Luodaan muokattava kopio asiakkaasta
+        // Tehdään kopio muokkausta varten
         muokattavaAsiakas = new Asiakas();
         muokattavaAsiakas.setNimi(selectedAsiakas.getNimi());
         muokattavaAsiakas.setPuhelinnumero(selectedAsiakas.getPuhelinnumero());
@@ -241,12 +271,14 @@ public class AsiakasController {
         addressArea.setText(muokattavaAsiakas.getOsoite());
 
         setEditMode(true);
+
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
 
         searchField.setDisable(true);
     }
 
+    // Perutaan muokkaus
     private void cancelEdit() {
         editMode = false;
         muokattavaAsiakas = null;
@@ -261,12 +293,12 @@ public class AsiakasController {
         searchField.clear();
     }
 
+    // Tallennetaan muutokset
     @FXML
     private void saveChanges() {
 
         if (muokattavaAsiakas == null) return;
 
-        // Päivitetään kopio asiakas oliosta
         muokattavaAsiakas.setNimi(nimiField.getText());
         muokattavaAsiakas.setPuhelinnumero(phoneField.getText());
         muokattavaAsiakas.setOsoite(addressArea.getText());
@@ -290,6 +322,7 @@ public class AsiakasController {
             return;
         }
 
+        // Päivitetään valittu asiakas näkymään
         selectedAsiakas.setNimi(muokattavaAsiakas.getNimi());
         selectedAsiakas.setPuhelinnumero(muokattavaAsiakas.getPuhelinnumero());
         selectedAsiakas.setOsoite(muokattavaAsiakas.getOsoite());
@@ -303,16 +336,19 @@ public class AsiakasController {
         editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
         populateFields(selectedAsiakas);
+
         showSavedStatus("Tallennettu");
         statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
         viimeksiLisattyAsiakas = selectedAsiakas;
+
         refreshTable();
 
         searchField.setDisable(false);
         searchField.clear();
     }
 
+    // Asiakkaan tilan muutos (poisto/aktivointi)
     @FXML
     private void toggleCustomerStatus() {
 
@@ -322,6 +358,7 @@ public class AsiakasController {
         Stage stage = (Stage) tableAsiakkaat.getScene().getWindow();
         boolean onKaytossa = selectedAsiakas.getTila() == 1;
 
+        // Vahvistusdialogi ennen poistoa
         boolean confirmed = DialogUtil.confirm(
                 stage,
                 "Vahvista",
@@ -336,7 +373,7 @@ public class AsiakasController {
             service.poista(selectedAsiakas.getSapo());
             selectedAsiakas.deaktivoiAsiakas();
 
-            // Poistetaan asiakas tableviewistä
+            // Tyhjennetään valinta
             tableAsiakkaat.getSelectionModel().clearSelection();
             selectedAsiakas = null;
 
@@ -349,12 +386,13 @@ public class AsiakasController {
             showSavedStatus("Asiakas poistettu");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         }
+
         refreshTable();
     }
 
+    // Vaihdetaan UI:n editointi-/lukutila
     private void setEditMode(boolean editable) {
 
-        // LABELIT (lukutila)
         nimiLabel.setVisible(!editable);
         nimiLabel.setManaged(!editable);
 
@@ -364,7 +402,6 @@ public class AsiakasController {
         addressLabel.setVisible(!editable);
         addressLabel.setManaged(!editable);
 
-        // KENTÄT (muokkaus)
         nimiField.setVisible(editable);
         nimiField.setManaged(editable);
 
@@ -378,6 +415,7 @@ public class AsiakasController {
         saveButton.setManaged(editable);
     }
 
+    // Näytetään käyttäjälle statusviesti
     private void showSavedStatus(String text) {
         statusLabel.setText(text);
         statusLabel.setVisible(true);
@@ -391,6 +429,7 @@ public class AsiakasController {
         pause.play();
     }
 
+    // Avataan uuden asiakkaan ikkuna
     @FXML
     private void openNewCustomerWindow() {
 
@@ -413,6 +452,7 @@ public class AsiakasController {
 
             stage.showAndWait();
 
+            // Jos asiakas lisättiin onnistuneesti
             if (dialogController.isAsiakasLisatty()) {
 
                 refreshTable();
@@ -421,6 +461,7 @@ public class AsiakasController {
                     viimeksiLisattyAsiakas =
                             asiakkaat.get(asiakkaat.size() - 1);
                 }
+
                 showAddCustomerStatus("Asiakas lisätty");
                 addCustomerStatusLabel.setStyle("-fx-text-fill: #1e7f43;");
             }
@@ -429,7 +470,8 @@ public class AsiakasController {
             e.printStackTrace();
         }
     }
-    //Näytetään käyttäjälle että asiakas lisättiin onnistuneesti
+
+    // Näytetään lisäyksen statusviesti
     private void showAddCustomerStatus(String text) {
         addCustomerStatusLabel.setText(text);
         addCustomerStatusLabel.setVisible(true);

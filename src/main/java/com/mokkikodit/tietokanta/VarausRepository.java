@@ -11,6 +11,7 @@ import com.mokkikodit.util.DateUtil;
 
 public class VarausRepository {
 
+    // Hakee kaikki varaukset tietokannasta
     public List<Varaus> haeKaikki() {
         List<Varaus> lista = new ArrayList<>();
 
@@ -20,6 +21,7 @@ public class VarausRepository {
              Statement stmt = yhteys.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            // Käydään kaikki varausrivit läpi ja muodostetaan Varaus-oliot
             while (rs.next()) {
                 Varaus v = new Varaus();
 
@@ -33,17 +35,19 @@ public class VarausRepository {
                 String loppuStr = rs.getString("loppumispvm");
                 String luontiStr = rs.getString("luontipvm");
 
+                // Alkamispäivä muunnetaan LocalDateksi
                 if (alkuStr != null) {
                     v.setAlkuPvm(DateUtil.parseDate(rs.getString("alkamispvm")));
                 }
 
+                // Loppumispäivä muunnetaan LocalDateksi
                 if (loppuStr != null) {
                     v.setLoppuPvm(DateUtil.parseDate(rs.getString("loppumispvm")));
                 }
 
+                // Luontiaika muunnetaan LocalDateTimeksi
                 if (luontiStr != null) {
                     v.setLuontiPvm(DateUtil.parseDateTime(rs.getString("luontipvm")));
-
                 }
 
                 lista.add(v);
@@ -56,6 +60,7 @@ public class VarausRepository {
         return lista;
     }
 
+    // Hakee kaikki varaukset tietylle mökille
     public List<Varaus> findByMokkiId(int mokkiId) {
         List<Varaus> lista = new ArrayList<>();
 
@@ -67,6 +72,8 @@ public class VarausRepository {
             ps.setInt(1, mokkiId);
 
             try (ResultSet rs = ps.executeQuery()) {
+
+                // Käydään mökkiin liittyvät varaukset läpi
                 while (rs.next()) {
 
                     Varaus v = new Varaus();
@@ -81,6 +88,7 @@ public class VarausRepository {
                     String loppuStr = rs.getString("loppumispvm");
                     String luontiStr = rs.getString("luontipvm");
 
+                    // Päivämäärien muunnos
                     if (alkuStr != null) {
                         v.setAlkuPvm(DateUtil.parseDate(alkuStr));
                     }
@@ -107,6 +115,8 @@ public class VarausRepository {
     // =========================
     // INSERT
     // =========================
+
+    // Tallentaa uuden varauksen tietokantaan
     public void tallenna(Varaus v) {
 
         String sql =
@@ -131,6 +141,7 @@ public class VarausRepository {
         }
     }
 
+    // Päivittää olemassa olevan varauksen tiedot
     public void paivita(Varaus v) {
 
         String sql =
@@ -155,6 +166,7 @@ public class VarausRepository {
         }
     }
 
+    // Merkitsee varauksen peruutetuksi (ei poista tietoa)
     public void peruuta(int id) {
 
         String sql =

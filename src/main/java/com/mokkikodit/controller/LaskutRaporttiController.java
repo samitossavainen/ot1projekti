@@ -34,7 +34,7 @@ public class LaskutRaporttiController {
     @FXML private ComboBox<String> asiakasComboBox;
 
     // -------------------------------------------------
-    // TAULU
+    // TAULU (raporttinäkymä)
     // -------------------------------------------------
 
     @FXML private TableView<Lasku> tableRaportti;
@@ -61,11 +61,14 @@ public class LaskutRaporttiController {
     // DATA
     // -------------------------------------------------
 
+    // Kaikki laskut muistissa
     private final ObservableList<Lasku> laskut =
             FXCollections.observableArrayList();
 
+    // Suodatettu lista raporttia varten
     private FilteredList<Lasku> filteredLaskut;
 
+    // Palvelu laskudatan hakemiseen
     private LaskuService laskuService;
 
     // -------------------------------------------------
@@ -75,14 +78,19 @@ public class LaskutRaporttiController {
     @FXML
     public void initialize() {
 
+        // Taulukon sarakkeiden asetukset
         setupTable();
 
+        // Suodatettu lista (aluksi kaikki mukana)
         filteredLaskut = new FilteredList<>(laskut, p -> true);
 
         tableRaportti.setItems(filteredLaskut);
+
+        // Raporttinäkymä ei ole klikattava
         tableRaportti.setSelectionModel(null);
         tableRaportti.setFocusTraversable(false);
 
+        // Suodattimien alustus
         setupFilters();
     }
 
@@ -90,6 +98,7 @@ public class LaskutRaporttiController {
     // SERVICE (PALVELU)
     // -------------------------------------------------
 
+    // Asetetaan palvelu ja ladataan data
     public void setLaskuService(LaskuService service) {
         this.laskuService = service;
 
@@ -145,6 +154,7 @@ public class LaskutRaporttiController {
 
     private void setupFilters() {
 
+        // Status-suodatin
         tilaComboBox.getItems().addAll(
                 "Kaikki",
                 "Maksettu",
@@ -154,6 +164,7 @@ public class LaskutRaporttiController {
 
         tilaComboBox.setValue("Kaikki");
 
+        // Kaikki suodattimet käynnistävät päivityksen
         tilaComboBox.setOnAction(e -> applyFilters());
 
         asiakasComboBox.setOnAction(e -> applyFilters());
@@ -163,12 +174,13 @@ public class LaskutRaporttiController {
         loppuDatePicker.setOnAction(e -> applyFilters());
     }
 
+    // Suodatuslogiikka (päivämäärä + tila + asiakas)
     private void applyFilters() {
 
         filteredLaskut.setPredicate(lasku -> {
 
             // -------------------------
-            // PÄIVÄMÄÄRÄSUODATIN
+            // PÄIVÄMÄÄRÄSUODATUS
             // -------------------------
 
             LocalDate alku = alkuDatePicker.getValue();
@@ -185,7 +197,7 @@ public class LaskutRaporttiController {
             }
 
             // -------------------------
-            // TILASUODATIN
+            // TILASUODATUS
             // -------------------------
 
             String tila = tilaComboBox.getValue();
@@ -198,7 +210,7 @@ public class LaskutRaporttiController {
             }
 
             // -------------------------
-            // ASIAKASSUODATIN
+            // ASIAKASSUODATUS
             // -------------------------
 
             String asiakas = asiakasComboBox.getValue();
@@ -230,6 +242,7 @@ public class LaskutRaporttiController {
 
         double avoinSumma = 0;
 
+        // Lasketaan tilastot suodatetusta datasta
         for (Lasku lasku : filteredLaskut) {
 
             String tila = lasku.getTila();
@@ -249,6 +262,7 @@ public class LaskutRaporttiController {
             }
         }
 
+        // Päivitetään UI-yhteenvedot
         yhteensaLabel.setText(String.valueOf(yhteensa));
         maksetutLabel.setText(String.valueOf(maksetut));
         avoimetLabel.setText(String.valueOf(avoimet));
@@ -261,6 +275,7 @@ public class LaskutRaporttiController {
     // DATA
     // -------------------------------------------------
 
+    // Ladataan laskut palvelusta
     private void refreshTable() {
 
         if (laskuService == null) return;
@@ -270,6 +285,7 @@ public class LaskutRaporttiController {
         updateSummary();
     }
 
+    // Ladataan asiakkaat ComboBoxiin laskuista
     private void loadCustomers() {
 
         asiakasComboBox.getItems().clear();
@@ -289,7 +305,7 @@ public class LaskutRaporttiController {
     }
 
     // -------------------------------------------------
-    // Paluu napista raporttinäkymään
+    // Paluu raporttinäkymään
     // -------------------------------------------------
 
     @FXML

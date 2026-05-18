@@ -9,6 +9,7 @@ import java.util.List;
 
 public class AsiakasRepository {
 
+    // Hakee kaikki asiakkaat tietokannasta
     public List<Asiakas> findAll() {
 
         List<Asiakas> lista = new ArrayList<>();
@@ -19,6 +20,7 @@ public class AsiakasRepository {
              Statement stmt = yhteys.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            // Käydään kaikki rivit läpi ja muodostetaan Asiakas-oliot
             while (rs.next()) {
                 Asiakas a = new Asiakas();
                 a.setNimi(rs.getString("nimi"));
@@ -37,6 +39,7 @@ public class AsiakasRepository {
         return lista;
     }
 
+    // Hakee vain käytettävissä olevat asiakkaat (tila = 1)
     public List<Asiakas> findAllAvailable() {
 
         List<Asiakas> lista = new ArrayList<>();
@@ -47,6 +50,7 @@ public class AsiakasRepository {
              Statement stmt = yhteys.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
+            // Suodatetaan asiakkaat, joilla tila == 1
             while (rs.next()) {
                 if (rs.getInt("tila") == 1)  {
                     Asiakas a = new Asiakas();
@@ -67,6 +71,7 @@ public class AsiakasRepository {
         return lista;
     }
 
+    // Hakee asiakkaan sähköpostin perusteella (sapo = primary key)
     public Asiakas findBySapo(String sapo) {
 
         String sql = "SELECT * FROM asiakas WHERE sapo = ?";
@@ -78,6 +83,7 @@ public class AsiakasRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
 
+                // Jos asiakas löytyy, luodaan ja palautetaan olio
                 if (rs.next()) {
                     Asiakas a = new Asiakas();
                     a.setSapo(rs.getString("sapo"));
@@ -93,9 +99,11 @@ public class AsiakasRepository {
             throw new RuntimeException("Asiakkaan haku epäonnistui", e);
         }
 
+        // Palautetaan null jos asiakasta ei löydy
         return null;
     }
 
+    // Tallentaa uuden asiakkaan tietokantaan
     public void save(Asiakas a) {
 
         String sql = "INSERT INTO asiakas (sapo, puhelinnumero, nimi, osoite) VALUES (?, ?, ?, ?)";
@@ -115,6 +123,7 @@ public class AsiakasRepository {
         }
     }
 
+    // Päivittää olemassa olevan asiakkaan tiedot (sapo ei muutu)
     public void update(Asiakas a) {
 
         // asiakkaan tietoja päivittäessä sapo ei voi muuttua koska se on PK
@@ -136,6 +145,7 @@ public class AsiakasRepository {
         }
     }
 
+    // Poistaa asiakkaan tietokannasta sähköpostin perusteella
     public void delete(String sapo) {
 
         String sql = "DELETE FROM asiakas WHERE sapo = ?";

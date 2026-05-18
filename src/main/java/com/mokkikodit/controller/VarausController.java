@@ -90,6 +90,7 @@ public class VarausController {
     @FXML
     public void initialize() {
 
+        // Estetään kalenterivalitsimien käyttö, jos ei muokkaustilaa
         alkuDatePickerDetail.setOnShowing(e -> {
             if (!editMode) alkuDatePickerDetail.hide();
         });
@@ -98,18 +99,21 @@ public class VarausController {
             if (!editMode) loppuDatePickerDetail.hide();
         });
 
+        // Varaus ID -sarake
         idCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleIntegerProperty(
                         data.getValue().getVarausId()
                 )
         );
 
+        // Asiakkaan sähköposti sarakkeeseen
         asiakasCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
                         data.getValue().getAsiakasEmail()
                 )
         );
 
+        // Mökin nimi haetaan palvelun kautta
         mokkiCol.setCellValueFactory(data -> {
             Mokki m = null;
 
@@ -124,24 +128,28 @@ public class VarausController {
             return new javafx.beans.property.SimpleStringProperty(text);
         });
 
+        // Varauksen tila näkyvään muotoon
         tilaCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(
                         varauksenTilanEsitys(data.getValue().getTila())
                 )
         );
 
+        // Alkupäivä
         alkuCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleObjectProperty<>(
                         data.getValue().getAlkuPvm()
                 )
         );
 
+        // Loppupäivä
         loppuCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleObjectProperty<>(
                         data.getValue().getLoppuPvm()
                 )
         );
 
+        // Kokonaissumma
         kokonaisSummaCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleObjectProperty<>(
                         data.getValue().getKokonaissumma()
@@ -156,6 +164,7 @@ public class VarausController {
 
         tableVaraukset.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        // Valinnan muutoksen käsittely
         tableVaraukset.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
@@ -168,13 +177,14 @@ public class VarausController {
                     updateReservationStatus();
                 });
 
+        // Estetään klikkaus muokkaustilassa
         tableVaraukset.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
             if (editMode) {
                 event.consume();
             }
         });
 
-
+        // Suodatetaan pois peruutetut varaukset
         filteredVaraukset = new FilteredList<>(
                 varaukset,
                 v -> !"peruutettu".equalsIgnoreCase(v.getTila())
@@ -184,6 +194,7 @@ public class VarausController {
         sortedVaraus.comparatorProperty().bind(tableVaraukset.comparatorProperty());
         tableVaraukset.setItems(sortedVaraus);
 
+        // Tilasuodatin
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
                         "Kaikki",
@@ -193,12 +204,12 @@ public class VarausController {
         );
         statusFilterComboBox.setValue("Aktiivinen");
 
-
-
+        // Hakukenttä
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
 
+        // Päivämääräsuodattimet
         alkuDatePickerFilter.valueProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
@@ -210,9 +221,10 @@ public class VarausController {
         statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
+
         applyFilters();
 
-        // Rivin korostus värillä mökin lisäyksen ja tallennuksen jälkeen.
+        // Rivin korostus viimeksi lisätylle varaukselle
         tableVaraukset.setRowFactory(tv -> {
             TableRow<Varaus> row = new TableRow<>();
 
@@ -240,14 +252,13 @@ public class VarausController {
             return row;
         });
 
-        // Solun korostus värillä
+        // Tilan värikorostus solussa
         tilaCol.setCellFactory(col -> new TableCell<Varaus, String>() {
 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
 
-                // nollaa tyylit
                 getStyleClass().removeAll("cell-active", "cell-paid");
 
                 if (empty || item == null) {
@@ -256,7 +267,6 @@ public class VarausController {
                 }
                 setText(item);
 
-                // lisätään CSS-luokka
                 if ("Aktiivinen".equalsIgnoreCase(item)) {
                     getStyleClass().add("cell-active");
                 } else if ("Maksettu".equalsIgnoreCase(item)) {
@@ -264,6 +274,7 @@ public class VarausController {
                 }
             }
         });
+
         applyFilters();
     }
 
@@ -286,7 +297,8 @@ public class VarausController {
         if (service == null) return;
         varaukset.setAll(service.getAllVaraukset());
     }
-    // Tietojen suodatus tauluun usealla tavalla
+
+    // Suodatuslogiikka
     private void applyFilters() {
 
         String search = searchField.getText() == null
@@ -300,10 +312,12 @@ public class VarausController {
 
         filteredVaraukset.setPredicate(v -> {
 
+            // Peruutetut aina pois
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
                 return false;
             }
 
+            // Mökin ja asiakkaan haku suodatusta varten
             Mokki m = mokkiService != null
                     ? mokkiService.haeIdlla(v.getMokkiId())
                     : null;
@@ -316,19 +330,10 @@ public class VarausController {
                     search.isEmpty()
                             || String.valueOf(v.getVarausId()).contains(search)
                             || v.getAsiakasEmail().toLowerCase().contains(search)
-
-                            // Suodatus asiakkaan nimellä
-                            || (
-                            a != null &&
-                                    a.getNimi() != null &&
-                                    a.getNimi().toLowerCase().contains(search)
-                    )
-                            // Suodatus mökin nimellä
-                            || (
-                            m != null &&
-                                    m.getNimi() != null &&
-                                    m.getNimi().toLowerCase().contains(search)
-                    );
+                            || (a != null && a.getNimi() != null &&
+                            a.getNimi().toLowerCase().contains(search))
+                            || (m != null && m.getNimi() != null &&
+                            m.getNimi().toLowerCase().contains(search));
 
             boolean matchesTila = true;
 
@@ -341,12 +346,10 @@ public class VarausController {
             boolean matchesDate = true;
 
             if (alkuFilter != null) {
-                // Varaus ei saa päättyä ennen alkusuodatinta
                 matchesDate = !v.getLoppuPvm().isBefore(alkuFilter);
             }
 
             if (matchesDate && loppuFilter != null) {
-                // Varaus ei saa alkaa loppusuodattimen jälkeen
                 matchesDate = !v.getAlkuPvm().isAfter(loppuFilter);
             }
 
@@ -354,14 +357,14 @@ public class VarausController {
         });
     }
 
+    // Täyttää näkymän valitun varauksen tiedoilla
     private void populateFields(Varaus v) {
 
         if (v == null) return;
 
-        // LABELIT (lukutila)
         varausIdLabel.setText("#" + v.getVarausId() + "   |");
 
-        // ASIAKKAAN TIEDOT (haetaan AsiakasServicen kautta)
+        // Asiakastiedot
         Asiakas a = null;
 
         if (asiakasService != null && v.getAsiakasEmail() != null) {
@@ -378,7 +381,6 @@ public class VarausController {
             phoneLabel.setText("-");
         }
 
-        // MÖKIN HAKU
         Mokki m = null;
 
         if (mokkiService != null) {
@@ -387,26 +389,19 @@ public class VarausController {
 
         updateTilaLabels(v);
 
-        alkuLabel.setText(
-                v.getAlkuPvm() != null ? v.getAlkuPvm().toString() : ""
-        );
+        alkuLabel.setText(v.getAlkuPvm() != null ? v.getAlkuPvm().toString() : "");
+        loppuLabel.setText(v.getLoppuPvm() != null ? v.getLoppuPvm().toString() : "");
 
-        loppuLabel.setText(
-                v.getLoppuPvm() != null ? v.getLoppuPvm().toString() : ""
-        );
-
-        // KENTÄT (muokkaus)
         alkuDatePickerDetail.setValue(v.getAlkuPvm());
         loppuDatePickerDetail.setValue(v.getLoppuPvm());
 
-        // Luontipäivä
         luontiLabel.setText(
                 v.getLuontiPvm() != null
                         ? v.getLuontiPvm().toLocalDate().toString()
                         : ""
         );
 
-        // YHTEENVETO
+        // Yhteenveto
         if (m != null) {
             summaryLabel.setText(
                     m.getNimi()
@@ -427,13 +422,12 @@ public class VarausController {
         else cancelEdit();
     }
 
+    // Siirtyy muokkaustilaan
     private void enterEditMode() {
-
         if (selectedVaraus == null) return;
 
         editMode = true;
 
-        // Luodaan muokattava kopio varauksesta
         muokattavaVaraus = new Varaus();
         muokattavaVaraus.setVarausId(selectedVaraus.getVarausId());
         muokattavaVaraus.setAsiakasEmail(selectedVaraus.getAsiakasEmail());
@@ -443,18 +437,17 @@ public class VarausController {
         muokattavaVaraus.setTila(selectedVaraus.getTila());
         muokattavaVaraus.setKokonaissumma(selectedVaraus.getKokonaissumma());
 
-        // Näytetään kopion tiedot muokkauskentissä
         alkuDatePickerDetail.setValue(muokattavaVaraus.getAlkuPvm());
         loppuDatePickerDetail.setValue(muokattavaVaraus.getLoppuPvm());
 
         setEditMode(true);
 
         editButton.setText("Peru muokkaus");
-        editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
 
         searchField.setDisable(true);
     }
 
+    // Peruuttaa muokkauksen
     private void cancelEdit() {
 
         editMode = false;
@@ -464,7 +457,6 @@ public class VarausController {
         setEditMode(false);
 
         editButton.setText("Muokkaa");
-        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
 
         searchField.setDisable(false);
     }
@@ -474,7 +466,6 @@ public class VarausController {
 
         if (muokattavaVaraus == null) return;
 
-        // Päivitetään kopio varauksesta muokkauskenttien arvoilla
         muokattavaVaraus.setAlkuPvm(alkuDatePickerDetail.getValue());
         muokattavaVaraus.setLoppuPvm(loppuDatePickerDetail.getValue());
 
@@ -484,67 +475,39 @@ public class VarausController {
             service.updateVaraus(muokattavaVaraus);
 
         } catch (IllegalArgumentException e) {
-
             statusLabel.setText(e.getMessage());
-            statusLabel.setStyle("-fx-text-fill: #B04A30;");
             statusLabel.setVisible(true);
             statusLabel.setManaged(true);
-
-            PauseTransition pause = new PauseTransition(Duration.seconds(2));
-            pause.setOnFinished(ev -> {
-                statusLabel.setVisible(false);
-                statusLabel.setManaged(false);
-            });
-            pause.play();
-
             return;
         }
 
-        // Päivitetään näkymässä oleva valittu varaus
         selectedVaraus.setAlkuPvm(muokattavaVaraus.getAlkuPvm());
         selectedVaraus.setLoppuPvm(muokattavaVaraus.getLoppuPvm());
 
-        selectedVaraus.setKokonaissumma(muokattavaVaraus.getKokonaissumma());
-
         viimeksiLisattyVaraus = selectedVaraus;
+
         populateFields(selectedVaraus);
 
         muokattavaVaraus = null;
         editMode = false;
+
         setEditMode(false);
 
         editButton.setText("Muokkaa");
-        editButton.setStyle("-fx-base: #7A9E2E; -fx-text-fill: white;");
-
-        showSavedStatus("Tallennettu");
-        statusLabel.setStyle("-fx-text-fill: #1e7f43;");
 
         refreshTable();
-
-        searchField.setDisable(false);
-        searchField.clear();
     }
 
     private void setEditMode(boolean editable) {
 
-        // LABELIT (lukutila)
         alkuLabel.setVisible(!editable);
-        alkuLabel.setManaged(!editable);
-
         loppuLabel.setVisible(!editable);
-        loppuLabel.setManaged(!editable);
 
-        // KENTÄT (muokkaus)
         alkuDatePickerDetail.setVisible(editable);
-        alkuDatePickerDetail.setManaged(editable);
-
         loppuDatePickerDetail.setVisible(editable);
-        loppuDatePickerDetail.setManaged(editable);
 
         saveButton.setVisible(editable);
-        saveButton.setManaged(editable);
 
-        // Haku- ja suodatukset
         searchField.setDisable(editable);
         statusFilterComboBox.setDisable(editable);
         alkuDatePickerFilter.setDisable(editable);
@@ -566,7 +529,6 @@ public class VarausController {
 
     @FXML
     private void openNewReservationWindow() {
-
         if (editMode) return;
 
         try {
@@ -583,13 +545,9 @@ public class VarausController {
             stage.initOwner(tableVaraukset.getScene().getWindow());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
-            stage.sizeToScene();
-            stage.setResizable(false);
             stage.showAndWait();
 
             if (ctrl.isVarausLisatty()) {
-
-                tableVaraukset.getSortOrder().clear();
                 refreshTable();
 
                 if (!varaukset.isEmpty()) {
@@ -609,7 +567,6 @@ public class VarausController {
         if (editMode) return;
         if (selectedVaraus == null) return;
 
-        // Estä maksetun varauksen peruutus
         if ("maksettu".equalsIgnoreCase(selectedVaraus.getTila())) {
             DialogUtil.showInfo("Maksettua varausta ei voi peruuttaa.");
             return;
@@ -624,14 +581,11 @@ public class VarausController {
 
         if (!confirmed) return;
 
-        // Soft delete
         selectedVaraus.setTila("peruutettu");
 
         service.peruutaVaraus(selectedVaraus.getVarausId());
         varaukset.remove(selectedVaraus);
 
-        showSavedStatus("Varaus peruttu");
-        statusLabel.setStyle("-fx-text-fill: #B04A30;");
         selectedVaraus = null;
         tableVaraukset.getSelectionModel().clearSelection();
     }
@@ -641,8 +595,6 @@ public class VarausController {
         boolean hasSelection = selectedVaraus != null;
 
         cancelButton.setDisable(!hasSelection);
-        cancelButton.setText("Peru varaus");
-        cancelButton.setStyle("-fx-base: #B04A30; -fx-text-fill: white;");
     }
 
     private String varauksenTilanEsitys(String tila) {
@@ -659,6 +611,8 @@ public class VarausController {
                 return tila;
         }
     }
+
+    // Päivittää tilalabelit näkymässä
     private void updateTilaLabels(Varaus v) {
         String tilaText = (v == null)
                 ? "-"
