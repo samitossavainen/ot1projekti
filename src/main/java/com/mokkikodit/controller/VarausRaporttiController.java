@@ -92,6 +92,8 @@ public class VarausRaporttiController {
         filteredVaraukset = new FilteredList<>(varaukset, v -> true);
 
         tableRaportti.setItems(filteredVaraukset);
+        tableRaportti.setSelectionModel(null);
+        tableRaportti.setFocusTraversable(false);
 
         setupFilters();
     }
