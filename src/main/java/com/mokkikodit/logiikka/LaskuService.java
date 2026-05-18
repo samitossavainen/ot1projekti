@@ -11,9 +11,12 @@ import java.util.List;
 public class LaskuService {
 
     private final LaskuRepository repository;
+    private final VarausService varausService;
 
-    public LaskuService(LaskuRepository repository) {
+    public LaskuService(LaskuRepository repository,
+                        VarausService varausService) {
         this.repository = repository;
+        this.varausService = varausService;
     }
 
     /**
@@ -60,15 +63,23 @@ public class LaskuService {
             );
         }
 
-        // Päivitä laskun tila
         lasku.merkitseMaksetuksi();
         repository.update(lasku);
 
-        // LISÄÄ MAKSU maksut-tauluun
         repository.merkitseMaksetuksi(
                 lasku.getLaskuId(),
                 lasku.getSumma()
         );
+
+        Varaus varaus = varausService.getAllVaraukset().stream()
+                .filter(v -> v.getVarausId() == lasku.getVarausId())
+                .findFirst()
+                .orElse(null);
+
+        if (varaus != null) {
+            varaus.setTila("maksettu");
+            varausService.updateVaraus(varaus);
+        }
     }
 
     /**
