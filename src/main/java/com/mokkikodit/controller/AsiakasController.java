@@ -329,7 +329,7 @@ public class AsiakasController {
         if (!confirmed) return;
 
         if (onKaytossa) {
-            service.deaktivoiAsiakas(selectedAsiakas.getSapo());
+            service.poista(selectedAsiakas.getSapo());
             selectedAsiakas.deaktivoiAsiakas();
 
             // Poistetaan asiakas tableviewistä
