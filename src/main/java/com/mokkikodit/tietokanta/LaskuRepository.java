@@ -115,16 +115,15 @@ public class LaskuRepository {
 
     public void merkitseMaksetuksi(int laskuId, double summa) {
 
-        String updateSql = "UPDATE maksut SET maksettu_summa=?, maksupäivä=? WHERE lasku_ID=?";
-        String insertSql = "INSERT INTO maksut (lasku_ID, maksettu_summa, maksupäivä) VALUES (?, ?, ?)";
+        String updateSql = "UPDATE maksut SET maksupäivä=? WHERE lasku_ID=?";
+        String insertSql = "INSERT INTO maksut (lasku_ID, maksupäivä) VALUES (?, ?)";
 
         try (Connection c = Tietokanta.getYhteys()) {
 
             // 1. yritetään päivittää olemassa oleva
             PreparedStatement update = c.prepareStatement(updateSql);
-            update.setDouble(1, summa);
-            update.setString(2, LocalDate.now().toString());
-            update.setInt(3, laskuId);
+            update.setString(1, LocalDate.now().toString());
+            update.setInt(2, laskuId);
 
             int rows = update.executeUpdate();
 
@@ -133,8 +132,7 @@ public class LaskuRepository {
 
                 PreparedStatement insert = c.prepareStatement(insertSql);
                 insert.setInt(1, laskuId);
-                insert.setDouble(2, summa);
-                insert.setString(3, LocalDate.now().toString());
+                insert.setDouble(2, 0.0);
 
                 insert.executeUpdate();
             }
