@@ -12,6 +12,7 @@ import java.util.List;
 
 public class LaskuRepository {
 
+    // Hakee kaikki laskut tietokannasta ja laskee maksetut summat mukaan
     public List<Lasku> findAll() {
 
         List<Lasku> lista = new ArrayList<>();
@@ -22,6 +23,7 @@ public class LaskuRepository {
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
+            // Käydään kaikki laskurivit läpi ja mapataan olioiksi
             while (rs.next()) {
                 lista.add(map(rs));
             }
@@ -33,6 +35,7 @@ public class LaskuRepository {
         return lista;
     }
 
+    // Hakee yksittäisen laskun ID:n perusteella
     public Lasku findById(Integer id) {
 
         String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo, COALESCE(SUM(m.maksettu_summa), 0) AS maksettu_summa, MAX(m.maksupäivä) AS maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID WHERE l.lasku_ID = ? GROUP BY l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo";
@@ -43,6 +46,8 @@ public class LaskuRepository {
             ps.setInt(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
+
+                // Jos löytyy, palautetaan mapattu Lasku-olio
                 if (rs.next()) {
                     return map(rs);
                 }
@@ -55,6 +60,7 @@ public class LaskuRepository {
         return null;
     }
 
+    // Tallentaa uuden laskun tietokantaan
     public void save(Lasku l) {
 
         String sql =
@@ -75,6 +81,7 @@ public class LaskuRepository {
         }
     }
 
+    // Päivittää laskun tietoja
     public void update(Lasku m) {
 
         String sql =
@@ -90,7 +97,6 @@ public class LaskuRepository {
             ps.setDouble(3, m.getSumma());
             ps.setInt(4, m.getLaskuId());
 
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -98,6 +104,7 @@ public class LaskuRepository {
         }
     }
 
+    // Poistaa laskun tietokannasta ID:n perusteella
     public void delete(int id) {
 
         String sql = "DELETE FROM laskut WHERE lasku_ID = ?";
@@ -113,6 +120,7 @@ public class LaskuRepository {
         }
     }
 
+    // Merkitsee laskun maksetuksi asettamalla maksupäivän
     public void merkitseMaksetuksi(int laskuId) {
 
         String updateSql =
@@ -121,6 +129,8 @@ public class LaskuRepository {
         try (Connection c = Tietokanta.getYhteys()) {
 
             PreparedStatement update = c.prepareStatement(updateSql);
+
+            // Asetetaan maksupäiväksi tämän päivän päivämäärä
             update.setString(1, LocalDate.now().toString());
             update.setInt(2, laskuId);
 
@@ -131,6 +141,7 @@ public class LaskuRepository {
         }
     }
 
+    // Muuntaa ResultSet-rivin Lasku-olioksi (mapper-metodi)
     private Lasku map(ResultSet rs) throws SQLException {
 
         Lasku l = new Lasku();
@@ -144,6 +155,8 @@ public class LaskuRepository {
         l.setSumma(rs.getDouble("summa"));
         l.setTila(rs.getString("tila"));
         l.setMaksupaiva(DateUtil.parseDate(rs.getString("maksupäivä")));
+
+        // Haetaan maksettu summa ja tarkistetaan NULL-arvo
         double maksettu = rs.getDouble("maksettu_summa");
 
         if (rs.wasNull()) {

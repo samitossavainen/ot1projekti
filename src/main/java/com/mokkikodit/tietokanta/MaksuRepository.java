@@ -9,6 +9,7 @@ import java.util.List;
 
 public class MaksuRepository {
 
+    // Hakee kaikki maksut tietokannasta
     public List<Maksu> findAll() {
 
         List<Maksu> lista = new ArrayList<>();
@@ -19,6 +20,7 @@ public class MaksuRepository {
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
+            // Käydään kaikki maksurivit läpi ja mapataan olioiksi
             while (rs.next()) {
                 lista.add(map(rs));
             }
@@ -30,6 +32,7 @@ public class MaksuRepository {
         return lista;
     }
 
+    // Tallentaa uuden maksun tietokantaan
     public void tallenna(Maksu m) {
 
         String sql = "INSERT INTO maksut (lasku_ID, maksettu_summa) VALUES (?, ?)";
@@ -40,7 +43,7 @@ public class MaksuRepository {
             ps.setInt(1, m.getLaskuId());
             ps.setDouble(2, m.getMaksettuSumma());
 
-            // maksupäivä tulee tietokannan DEFAULTista (datetime('now','localtime'))
+            // maksupäivä tulee tietokannan DEFAULT-arvona (esim. datetime('now','localtime'))
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -48,6 +51,7 @@ public class MaksuRepository {
         }
     }
 
+    // Muuntaa ResultSet-rivin Maksu-olioksi (mapper-metodi)
     private Maksu map(ResultSet rs) throws SQLException {
 
         Maksu m = new Maksu();
@@ -56,9 +60,10 @@ public class MaksuRepository {
         m.setLaskuId(rs.getInt("lasku_ID"));
         m.setMaksettuSumma(rs.getDouble("maksettu_summa"));
 
-        // SQLite: "YYYY-MM-DD HH:MM:SS"
-        // Java: LocalDate → otetaan vain päivämäärä
+        // SQLite tallentaa päivämäärän muodossa "YYYY-MM-DD HH:MM:SS"
+        // Java-mallissa käytetään LocalDatea → otetaan vain päivämääräosa
         String maksuPaivaStr = rs.getString("maksupäivä");
+
         if (maksuPaivaStr != null) {
             m.setMaksuPaiva(
                     DateUtil.parseDate(maksuPaivaStr.substring(0, 10))

@@ -20,6 +20,7 @@ import com.mokkikodit.util.DialogUtil;
 
 public class MokkiController {
 
+    // UI-komponentit (FXML-sidottuja näkymiä)
     @FXML private TableView<Mokki> tableCabins;
 
     @FXML private TextField nimiField;
@@ -59,19 +60,25 @@ public class MokkiController {
 
     @FXML private Label statusLabel;
 
+    // Muokkaustilan tila
     private boolean editMode = false;
 
+    // Liiketoimintalogiikan palvelu mökeille
     private MokkiService service;
 
+    // Valittu ja muokattava mökki
     private Mokki selectedMokki;
     private Mokki muokattavaMokki;
     private Mokki viimeksiLisattyMokki;
 
+    // Kaikki mökit muistissa UI:ta varten
     private final ObservableList<Mokki> mokit =
             FXCollections.observableArrayList();
 
+    // Suodatettu lista hakua ja filttereitä varten
     private FilteredList<Mokki> filteredMokit;
 
+    // Asetetaan service ulkopuolelta ja päivitetään taulukko
     public void setMokkiService(MokkiService service){
         this.service = service;
         refreshTable();
@@ -79,6 +86,8 @@ public class MokkiController {
 
     @FXML
     public void initialize() {
+
+        // Taulukon sarakkeiden sidonta Mökin tietoihin
 
         cabinCol.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleIntegerProperty(
@@ -115,7 +124,7 @@ public class MokkiController {
                         data.getValue().getVessat()
                 ).asObject());
 
-
+        // Tilan muunnos tekstiksi UI:ta varten
         statusCol.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         data.getValue().getTila() == 1
@@ -123,15 +132,17 @@ public class MokkiController {
                                 : "Poissa käytöstä"
                 ));
 
-
+        // Statuslabel aluksi piilossa
         statusLabel.setVisible(false);
         statusLabel.setManaged(false);
         editButton.setText("Muokkaa");
 
         setEditMode(false);
 
+        // Yhden rivin valinta taulukossa
         tableCabins.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        // Kun käyttäjä valitsee rivin, päivitetään näkymä
         tableCabins.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldSelection, newSelection) -> {
@@ -144,18 +155,21 @@ public class MokkiController {
                     updateCabinStatus();
                 });
 
+        // Estetään valinta muokkaustilassa
         tableCabins.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
             if (editMode) {
                 event.consume();
             }
         });
 
+        // Suodatuslista hakua varten
         filteredMokit = new FilteredList<>(mokit);
 
         SortedList<Mokki> sortedMokit = new SortedList<>(filteredMokit);
         sortedMokit.comparatorProperty().bind(tableCabins.comparatorProperty());
         tableCabins.setItems(sortedMokit);
 
+        // Statusfiltteri
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
                         "Kaikki",
@@ -165,15 +179,17 @@ public class MokkiController {
         );
         statusFilterComboBox.setValue("Kaikki");
 
+        // Hakukenttä reagoi muutoksiin
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
 
+        // Filtteri reagoi muutoksiin
         statusFilterComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
             applyFilters();
         });
 
-        // Rivin korostus värillä varauksen lisäyksen ja tallennuksen jälkeen.
+        // Rivin korostus viimeksi lisätylle mökille
         tableCabins.setRowFactory(tv -> {
             TableRow<Mokki> row = new TableRow<>();
 
@@ -201,7 +217,7 @@ public class MokkiController {
             return row;
         });
 
-        // Solun korostus värillä
+        // Solujen värikoodaus tilan mukaan
         statusCol.setCellFactory(col -> new TableCell<Mokki, String>() {
 
             @Override
@@ -224,9 +240,11 @@ public class MokkiController {
                 }
             }
         });
+
         applyFilters();
     }
 
+    // Päivitä näkymä (jos ei muokkaustilassa)
     @FXML
     private void refreshView() {
 
@@ -238,10 +256,13 @@ public class MokkiController {
         applyFilters();
     }
 
+    // Lataa mökit palvelusta
     private void refreshTable() {
         if (service == null) return;
         mokit.setAll(service.haeKaikki());
     }
+
+    // Haku + statusfiltteri
     private void applyFilters() {
 
         String search = searchField.getText() == null
@@ -276,11 +297,12 @@ public class MokkiController {
         });
     }
 
+    // Täyttää kentät valitun mökin tiedoilla
     private void populateFields(Mokki m) {
 
         if (m == null) return;
 
-        // LABELIT (lukutila)
+        // LABEL-näkymä
         nimiLabel.setText(m.getNimi());
         capacityLabel.setText(String.valueOf(m.getKapasiteetti()));
         roomsLabel.setText(String.valueOf(m.getHuoneet()));
@@ -291,7 +313,7 @@ public class MokkiController {
         tilaLabel.setText(m.getTila() == 1 ? "Käytössä" : "Poissa käytöstä");
         cabinIdLabel.setText("#" + m.getMokkiId() + "   |");
 
-        // KENTÄT (muokkaus)
+        // EDIT-kentät
         nimiField.setText(m.getNimi());
         capacityField.setText(String.valueOf(m.getKapasiteetti()));
         roomsField.setText(String.valueOf(m.getHuoneet()));
@@ -300,7 +322,7 @@ public class MokkiController {
         addressArea.setText(m.getOsoite() != null ? m.getOsoite() : "");
         lisatiedotArea.setText(m.getLisatiedot() != null ? m.getLisatiedot() : "");
 
-        // YHTEENVETO
+        // Yhteenveto
         summaryLabel.setText(
                 m.getNimi() + " · " +
                         m.getKapasiteetti() + " hlö · " +
@@ -317,10 +339,12 @@ public class MokkiController {
         else cancelEdit();
     }
 
+    // Siirtyy muokkaustilaan
     private void enterEditMode() {
+
         editMode = true;
 
-        // Luodaan muokattava kopio
+        // Luodaan kopio muokkaukseen
         muokattavaMokki = new Mokki();
         muokattavaMokki.setMokkiId(selectedMokki.getMokkiId());
         muokattavaMokki.setNimi(selectedMokki.getNimi());
@@ -332,8 +356,7 @@ public class MokkiController {
         muokattavaMokki.setLisatiedot(selectedMokki.getLisatiedot());
         muokattavaMokki.setTila(selectedMokki.getTila());
 
-
-        // Näytetään kopion tiedot kentissä
+        // Asetetaan kenttiin kopion tiedot
         nimiField.setText(muokattavaMokki.getNimi());
         capacityField.setText(String.valueOf(muokattavaMokki.getKapasiteetti()));
         roomsField.setText(String.valueOf(muokattavaMokki.getHuoneet()));
@@ -344,13 +367,16 @@ public class MokkiController {
         lisatiedotArea.setText(muokattavaMokki.getLisatiedot());
 
         setEditMode(true);
+
         editButton.setText("Peru muokkaus");
         editButton.setStyle("-fx-base: #8A8A8A; -fx-text-fill: white;");
 
         searchField.setDisable(true);
     }
 
+    // Peru muokkaus
     private void cancelEdit() {
+
         editMode = false;
         muokattavaMokki = null;
 
@@ -364,12 +390,12 @@ public class MokkiController {
         searchField.clear();
     }
 
+    // Tallentaa muutokset
     @FXML
     private void saveChanges() {
 
         if (muokattavaMokki == null) return;
 
-        // Päivitetään kopio mökkioliosta
         muokattavaMokki.setNimi(nimiField.getText());
         muokattavaMokki.setKapasiteetti(Integer.parseInt(capacityField.getText()));
         muokattavaMokki.setHuoneet(Integer.parseInt(roomsField.getText()));
@@ -397,7 +423,6 @@ public class MokkiController {
             return;
         }
 
-        // Haetaan päivitetyt tiedot tietokannasta
         selectedMokki = service.haeIdlla(muokattavaMokki.getMokkiId());
         populateFields(selectedMokki);
         viimeksiLisattyMokki = selectedMokki;
@@ -418,6 +443,8 @@ public class MokkiController {
         searchField.setDisable(false);
         searchField.clear();
     }
+
+    // Vaihda mökin tila (käytössä / pois käytöstä)
     @FXML
     private void toggleCabinStatus() {
 
@@ -440,28 +467,26 @@ public class MokkiController {
 
         if (!confirmed) return;
 
-        // Päivitetään tietokanta
         if (onKaytossa) {
             service.deaktivoiMokki(selectedMokki.getMokkiId());
-            selectedMokki.deaktivoi();   // tila = 0
+            selectedMokki.deaktivoi();
             showSavedStatus("Mökki poistettu käytöstä");
             statusLabel.setStyle("-fx-text-fill: #B04A30;");
         } else {
             service.aktivoiMokki(selectedMokki.getMokkiId());
-            selectedMokki.aktivoi();     // tila = 1
+            selectedMokki.aktivoi();
             showSavedStatus("Mökki otettu käyttöön");
             statusLabel.setStyle("-fx-text-fill: #1e7f43;");
         }
 
-        // Päivitetään näkymä
         tableCabins.refresh();
         populateFields(selectedMokki);
         updateCabinStatus();
     }
 
+    // Vaihtaa UI:n muokkaus/luku-tilan
     private void setEditMode(boolean editable) {
 
-        // LABELIT (lukutila)
         nimiLabel.setVisible(!editable);
         nimiLabel.setManaged(!editable);
 
@@ -486,7 +511,6 @@ public class MokkiController {
         tilaLabel.setVisible(!editable);
         tilaLabel.setManaged(!editable);
 
-        // KENTÄT (muokkaus)
         nimiField.setVisible(editable);
         nimiField.setManaged(editable);
 
@@ -514,7 +538,9 @@ public class MokkiController {
         statusFilterComboBox.setDisable(editable);
     }
 
+    // Näyttää lyhyen onnistumisviestin
     private void showSavedStatus(String text) {
+
         statusLabel.setText(text);
         statusLabel.setVisible(true);
         statusLabel.setManaged(true);
@@ -527,6 +553,7 @@ public class MokkiController {
         pause.play();
     }
 
+    // Avaa uuden mökin lisäysikkunan
     @FXML
     private void openNewCabinWindow() {
 
@@ -564,7 +591,8 @@ public class MokkiController {
             e.printStackTrace();
         }
     }
-    //Näytetään käyttäjälle että mökki lisättiin onnistuneesti
+
+    // Näyttää ilmoituksen lisäyksestä
     private void showAddCabinStatus(String text) {
         addCabinStatusLabel.setText(text);
         addCabinStatusLabel.setVisible(true);
@@ -578,6 +606,7 @@ public class MokkiController {
         pause.play();
     }
 
+    // Päivittää delete/activate -napin tilan
     private void updateCabinStatus() {
 
         if (selectedMokki == null) {
@@ -588,11 +617,9 @@ public class MokkiController {
         deleteButton.setDisable(false);
 
         if (selectedMokki.getTila() == 0) {
-            // MökkI EI käytössä → Ota käyttöön
             deleteButton.setText("Ota käyttöön");
             deleteButton.setStyle("-fx-base: #4F8F8B; -fx-text-fill: white;");
         } else {
-            // MökkI käytössä → Poista käytöstä
             deleteButton.setText("Poista käytöstä");
             deleteButton.setStyle("-fx-base: #B04A30; -fx-text-fill: white;");
         }

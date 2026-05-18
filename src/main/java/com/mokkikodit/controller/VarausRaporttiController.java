@@ -30,7 +30,7 @@ import java.time.LocalDate;
 public class VarausRaporttiController {
 
     // -------------------------------------------------
-    // SUODATTIMET
+    // SUODATTIMET (käyttäjän raporttisuodatukset)
     // -------------------------------------------------
 
     @FXML private DatePicker alkuDatePicker;
@@ -41,7 +41,7 @@ public class VarausRaporttiController {
     @FXML private ComboBox<String> asiakasComboBox;
 
     // -------------------------------------------------
-    // TAULU
+    // TAULU (raportin päätaulu varauksille)
     // -------------------------------------------------
 
     @FXML private TableView<Varaus> tableRaportti;
@@ -55,7 +55,7 @@ public class VarausRaporttiController {
     @FXML private TableColumn<Varaus, Double> summaCol;
 
     // -------------------------------------------------
-    // YHTEENVETO
+    // YHTEENVETO (raportin laskennalliset tunnusluvut)
     // -------------------------------------------------
 
     @FXML private Label yhteensaLabel;
@@ -64,7 +64,7 @@ public class VarausRaporttiController {
     @FXML private Label kokonaissummaLabel;
 
     // -------------------------------------------------
-    // SERVICE-PALVELUT
+    // SERVICE-PALVELUT (liiketoimintalogiikan rajapinnat)
     // -------------------------------------------------
 
     private VarausService varausService;
@@ -72,7 +72,7 @@ public class VarausRaporttiController {
     private MokkiService mokkiService;
 
     // -------------------------------------------------
-    // DATA
+    // DATA (kaikki varaukset + suodatettu näkymä)
     // -------------------------------------------------
 
     private final ObservableList<Varaus> varaukset =
@@ -81,25 +81,29 @@ public class VarausRaporttiController {
     private FilteredList<Varaus> filteredVaraukset;
 
     // -------------------------------------------------
-    // ALOITA (INITIALIZE)
+    // ALOITA (INITIALIZE) - näkymän alustus
     // -------------------------------------------------
 
     @FXML
     public void initialize() {
 
+        // Asetetaan taulun sarakkeet
         setupTable();
 
+        // Luodaan suodatettu lista (oletuksena kaikki näkyy)
         filteredVaraukset = new FilteredList<>(varaukset, v -> true);
 
+        // Liitetään taulu suodatettuun dataan
         tableRaportti.setItems(filteredVaraukset);
         tableRaportti.setSelectionModel(null);
         tableRaportti.setFocusTraversable(false);
 
+        // Asetetaan suodattimien tapahtumakuuntelijat
         setupFilters();
     }
 
     // -------------------------------------------------
-    // SERVICE-PALVELUT
+    // SERVICE-PALVELUT (setterit kontrollereiden injektointiin)
     // -------------------------------------------------
 
     public void setVarausService(VarausService service) {
@@ -119,7 +123,7 @@ public class VarausRaporttiController {
     }
 
     // -------------------------------------------------
-    // TAULUN ASETTAMINEN
+    // TAULUN ASETTAMINEN (sarakkeiden datamappaus)
     // -------------------------------------------------
 
     private void setupTable() {
@@ -185,7 +189,7 @@ public class VarausRaporttiController {
     }
 
     // -------------------------------------------------
-    // SUODATTIMET
+    // SUODATTIMET (käyttäjän valinnat ja rajaukset)
     // -------------------------------------------------
 
     private void setupFilters() {
@@ -199,6 +203,7 @@ public class VarausRaporttiController {
 
         tilaComboBox.setValue("Kaikki");
 
+        // Kaikki suodattimet päivittävät näkymän muutoksessa
         tilaComboBox.setOnAction(e -> applyFilters());
 
         mokkiComboBox.setOnAction(e -> applyFilters());
@@ -289,11 +294,12 @@ public class VarausRaporttiController {
             return true;
         });
 
+        // Päivitetään yhteenvedot aina suodatuksen jälkeen
         updateSummary();
     }
 
     // -------------------------------------------------
-    // YHTEENVETO
+    // YHTEENVETO (raportin laskelmat)
     // -------------------------------------------------
 
     private void updateSummary() {
@@ -318,10 +324,9 @@ public class VarausRaporttiController {
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
                 perutut++;
             }
-
-
         }
 
+        // Näytetään raportin tunnusluvut käyttöliittymässä
         yhteensaLabel.setText(String.valueOf(yhteensa));
 
         varatutLabel.setText(String.valueOf(aktiiviset));
@@ -334,7 +339,7 @@ public class VarausRaporttiController {
     }
 
     // -------------------------------------------------
-    // TIETOJEN LATAUS
+    // TIETOJEN LATAUS (varaukset ja listat UI:lle)
     // -------------------------------------------------
 
     private void refreshTable() {
@@ -391,7 +396,7 @@ public class VarausRaporttiController {
     }
 
     // -------------------------------------------------
-    // AVUSTAJAT
+    // AVUSTAJAT (apumetodit UI-esityksiin)
     // -------------------------------------------------
 
     private String formatTila(String tila) {

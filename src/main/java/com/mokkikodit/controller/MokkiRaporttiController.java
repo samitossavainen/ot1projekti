@@ -23,28 +23,31 @@ import java.util.stream.Collectors;
 
 public class MokkiRaporttiController {
 
-    // SERVICES
+    // === PALVELUT (liiketoimintalogiikka) ===
     private MokkiService service;
     private LaskuService LaskuService;
     private VarausService VarausService;
 
-    // DATA
+    // === DATA ===
+    // Kaikki mökit ja suodatettu lista
     private final ObservableList<Mokki> mokit = FXCollections.observableArrayList();
     private FilteredList<Mokki> filteredMokit;
 
+    // Raporttilaskentaa varten: varaukset ja vuorokaudet per mökki
     private Map<Integer, Long> varausMap;
     private Map<Integer, Long> vuorokausiMap;
 
+    // Kaikki varaukset (käytetään aggregointiin)
     private List<Varaus> allVaraukset = new ArrayList<>();
 
-    // FILTERS
+    // === SUODATTIMET (UI) ===
     @FXML private DatePicker alkuDatePicker;
     @FXML private DatePicker loppuDatePicker;
 
     @FXML private ComboBox<String> tilaComboBox;
     @FXML private ComboBox<String> mokkiComboBox;
 
-    // TABLE
+    // === TAULUKKO ===
     @FXML private TableView<Mokki> tableRaportti;
 
     @FXML private TableColumn<Mokki, Integer> cabinCol;
@@ -59,13 +62,13 @@ public class MokkiRaporttiController {
     @FXML private TableColumn<Mokki, Integer> varauksetCol;
     @FXML private TableColumn<Mokki, Integer> vuorokaudetCol;
 
-    // SUMMARY
+    // === YHTEENVETO ===
     @FXML private Label mokkejaYhteensaLabel;
     @FXML private Label varauksiaYhteensaLabel;
     @FXML private Label vuorokausiaYhteensaLabel;
     @FXML private Label kokonaistulotLabel;
 
-    // DETAIL
+    // === YKSITYISKOHDAT ===
     @FXML private Label nimiLabel;
     @FXML private Label addressLabel;
     @FXML private Label pricePerNightLabel;
@@ -76,18 +79,22 @@ public class MokkiRaporttiController {
     @FXML private Label summaryLabel;
     @FXML private Label statusLabel;
 
-    // INIT
+    // === INITIALISOINTI ===
     @FXML
     public void initialize() {
 
+        // Suodatettu lista taulukkoa varten
         filteredMokit = new FilteredList<>(mokit, m -> true);
         tableRaportti.setItems(filteredMokit);
+
+        // Ei valintaa eikä fokusointia (raporttinäkymä read-only)
         tableRaportti.setSelectionModel(null);
         tableRaportti.setFocusTraversable(false);
 
         setupTable();
         setupFilters();
 
+        // Yhteinen listener päivittää sekä suodatuksen että yhteenvedon
         ChangeListener<Object> refresh = (obs, oldV, newV) -> {
             applyFilters();
             updateYhteenveto();
@@ -102,7 +109,7 @@ public class MokkiRaporttiController {
         }
     }
 
-    // SERVICES
+    // === SERVICE-INJEKTIO ===
     public void setMokkiService(MokkiService service) {
         this.service = service;
         refreshTable();
@@ -118,7 +125,7 @@ public class MokkiRaporttiController {
         refreshTable();
     }
 
-    // TABLE SETUP
+    // === TAULUKON RAKENNUS ===
     private void setupTable() {
 
         cabinCol.setCellValueFactory(d ->
@@ -147,12 +154,14 @@ public class MokkiRaporttiController {
                         d.getValue().getTila() == 1 ? "Käytössä" : "Poissa käytöstä"
                 ));
 
+        // Varausten määrä per mökki
         varauksetCol.setCellValueFactory(d -> {
             int id = d.getValue().getMokkiId();
             long count = varausMap != null ? varausMap.getOrDefault(id, 0L) : 0L;
             return new SimpleIntegerProperty((int) count).asObject();
         });
 
+        // Vuorokausien määrä per mökki
         vuorokaudetCol.setCellValueFactory(d -> {
             int id = d.getValue().getMokkiId();
             long days = vuorokausiMap != null ? vuorokausiMap.getOrDefault(id, 0L) : 0L;
@@ -160,7 +169,7 @@ public class MokkiRaporttiController {
         });
     }
 
-    // FILTERS SETUP (FIXED)
+    // === FILTTERIT ===
     private void setupFilters() {
 
         tilaComboBox.getItems().setAll(
@@ -177,12 +186,12 @@ public class MokkiRaporttiController {
         mokkiComboBox.setOnAction(e -> applyFilters());
     }
 
-    // FILTER LOGIC (FIXED)
+    // === SUODATUSLOGIIKKA ===
     private void applyFilters() {
 
         filteredMokit.setPredicate(m -> {
 
-            // TILA
+            // Suodatus tilan mukaan
             String tila = tilaComboBox.getValue();
             if (tila != null && !tila.equals("Kaikki")) {
 
@@ -195,7 +204,7 @@ public class MokkiRaporttiController {
                 }
             }
 
-            // MÖKKI
+            // Suodatus mökin nimen mukaan
             String mokki = mokkiComboBox.getValue();
             if (mokki != null && !mokki.equals("Kaikki")) {
                 if (!m.getNimi().equalsIgnoreCase(mokki)) {
@@ -210,7 +219,7 @@ public class MokkiRaporttiController {
         updateYhteenveto();
     }
 
-    // DATA LOAD
+    // === DATAN LATAUS ===
     private void refreshTable() {
 
         if (service == null) return;
@@ -221,12 +230,14 @@ public class MokkiRaporttiController {
 
             allVaraukset = VarausService.getAllVaraukset();
 
+            // Lasketaan varaukset per mökki
             varausMap = allVaraukset.stream()
                     .collect(Collectors.groupingBy(
                             Varaus::getMokkiId,
                             Collectors.counting()
                     ));
 
+            // Lasketaan vuorokaudet per mökki
             vuorokausiMap = allVaraukset.stream()
                     .collect(Collectors.groupingBy(
                             Varaus::getMokkiId,
@@ -241,6 +252,7 @@ public class MokkiRaporttiController {
         updateYhteenveto();
     }
 
+    // Täyttää mökki-comboboxin
     private void loadMokkiComboBox() {
 
         mokkiComboBox.getItems().clear();
@@ -253,12 +265,11 @@ public class MokkiRaporttiController {
         mokkiComboBox.setValue("Kaikki");
     }
 
-    // Yhteenveto
+    // === YHTEENVETO ===
     private void updateYhteenveto() {
 
         String selectedMokki = mokkiComboBox.getValue();
 
-        // rajattu lista: joko kaikki tai yksi mökki
         List<Mokki> targetMokit;
 
         if (selectedMokki != null && !selectedMokki.equals("Kaikki")) {
@@ -297,7 +308,7 @@ public class MokkiRaporttiController {
         kokonaistulotLabel.setText(String.format("%.2f €", tulot));
     }
 
-    // Paluu napista raporttinäkymään
+    // === PALUU PÄÄNÄKYMÄÄN ===
     @FXML
     private void goBack() {
         MainController.getInstance().showRaportit();
