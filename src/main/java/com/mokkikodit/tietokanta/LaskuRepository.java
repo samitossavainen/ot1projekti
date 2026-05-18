@@ -16,7 +16,12 @@ public class LaskuRepository {
 
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID";
+        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä " +
+                "FROM laskut l " +
+                "LEFT JOIN varaus v " +
+                "ON l.varaus_ID = v.varaus_ID " +
+                "LEFT JOIN maksut m " +
+                "ON l.lasku_ID = m.lasku_ID";
 
         try (Connection c = Tietokanta.getYhteys();
              Statement st = c.createStatement();
@@ -35,7 +40,13 @@ public class LaskuRepository {
 
     public Lasku findById(Integer id) {
 
-        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID WHERE l.lasku_ID=?";
+        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä " +
+                "FROM laskut l " +
+                "LEFT JOIN varaus v " +
+                "ON l.varaus_ID = v.varaus_ID " +
+                "LEFT JOIN maksut m " +
+                "ON l.lasku_ID = m.lasku_ID " +
+                "WHERE l.lasku_ID=?";
 
         try (Connection c = Tietokanta.getYhteys();
              PreparedStatement ps = c.prepareStatement(sql)) {
