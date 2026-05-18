@@ -58,7 +58,8 @@
             <columns>
                 <TableColumn fx:id="laskuCol" text="Lasku ID" />
                 <TableColumn fx:id="varausCol" text="Varaus ID" />
-                <TableColumn fx:id="asiakasCol" text="Asiakas" />
+                <TableColumn fx:id="asiakasnmiCol" text="Asiakas" />
+                <TableColumn fx:id="asiakasCol" text="Sähköposti" />
                 <TableColumn fx:id="erapvmCol" text="Eräpäivä" />
                 <TableColumn fx:id="summaCol" text="Summa" />
                 <TableColumn fx:id="tilaCol" text="Tila" />

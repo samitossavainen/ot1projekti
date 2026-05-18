@@ -253,20 +253,37 @@ public class MokkiRaporttiController {
         mokkiComboBox.setValue("Kaikki");
     }
 
-    // SUMMARY
+    // Yhteenveto
     private void updateYhteenveto() {
+
+        String selectedMokki = mokkiComboBox.getValue();
+
+        // rajattu lista: joko kaikki tai yksi mökki
+        List<Mokki> targetMokit;
+
+        if (selectedMokki != null && !selectedMokki.equals("Kaikki")) {
+            targetMokit = mokit.stream()
+                    .filter(m -> m.getNimi().equalsIgnoreCase(selectedMokki))
+                    .collect(Collectors.toList());
+        } else {
+            targetMokit = mokit;
+        }
 
         int mokkeja = filteredMokit.size();
 
         long varauksia = varausMap != null
-                ? varausMap.values().stream().mapToLong(Long::longValue).sum()
+                ? targetMokit.stream()
+                .mapToLong(m -> varausMap.getOrDefault(m.getMokkiId(), 0L))
+                .sum()
                 : 0;
 
         long vuorokausia = vuorokausiMap != null
-                ? vuorokausiMap.values().stream().mapToLong(Long::longValue).sum()
+                ? targetMokit.stream()
+                .mapToLong(m -> vuorokausiMap.getOrDefault(m.getMokkiId(), 0L))
+                .sum()
                 : 0;
 
-        double tulot = mokit.stream()
+        double tulot = targetMokit.stream()
                 .mapToDouble(m ->
                         vuorokausiMap != null
                                 ? vuorokausiMap.getOrDefault(m.getMokkiId(), 0L) * m.getHinta()

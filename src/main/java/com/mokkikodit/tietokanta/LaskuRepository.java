@@ -16,12 +16,7 @@ public class LaskuRepository {
 
         List<Lasku> lista = new ArrayList<>();
 
-        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä " +
-                "FROM laskut l " +
-                "LEFT JOIN varaus v " +
-                "ON l.varaus_ID = v.varaus_ID " +
-                "LEFT JOIN maksut m " +
-                "ON l.lasku_ID = m.lasku_ID";
+        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo, COALESCE(SUM(m.maksettu_summa), 0) AS maksettu_summa, MAX(m.maksupäivä) AS maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID GROUP BY l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo ";
 
         try (Connection c = Tietokanta.getYhteys();
              Statement st = c.createStatement();
@@ -40,13 +35,7 @@ public class LaskuRepository {
 
     public Lasku findById(Integer id) {
 
-        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, v.sapo, m.maksettu_summa, m.maksupäivä " +
-                "FROM laskut l " +
-                "LEFT JOIN varaus v " +
-                "ON l.varaus_ID = v.varaus_ID " +
-                "LEFT JOIN maksut m " +
-                "ON l.lasku_ID = m.lasku_ID " +
-                "WHERE l.lasku_ID=?";
+        String sql = "SELECT l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo, COALESCE(SUM(m.maksettu_summa), 0) AS maksettu_summa, MAX(m.maksupäivä) AS maksupäivä FROM laskut l LEFT JOIN varaus v ON l.varaus_ID = v.varaus_ID LEFT JOIN maksut m ON l.lasku_ID = m.lasku_ID WHERE l.lasku_ID = ? GROUP BY l.lasku_ID, l.tila, l.aikaleima, l.eräpäivä, l.summa, l.varaus_ID, l.asiakkaan_nimi, v.sapo";
 
         try (Connection c = Tietokanta.getYhteys();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -124,31 +113,18 @@ public class LaskuRepository {
         }
     }
 
-    public void merkitseMaksetuksi(int laskuId, double summa) {
+    public void merkitseMaksetuksi(int laskuId) {
 
-        String updateSql = "UPDATE maksut SET maksettu_summa=?, maksupäivä=? WHERE lasku_ID=?";
-        String insertSql = "INSERT INTO maksut (lasku_ID, maksettu_summa, maksupäivä) VALUES (?, ?, ?)";
+        String updateSql =
+                "UPDATE maksut SET maksupäivä=? WHERE lasku_ID=?";
 
         try (Connection c = Tietokanta.getYhteys()) {
 
-            // 1. yritetään päivittää olemassa oleva
             PreparedStatement update = c.prepareStatement(updateSql);
-            update.setDouble(1, summa);
-            update.setString(2, LocalDate.now().toString());
-            update.setInt(3, laskuId);
+            update.setString(1, LocalDate.now().toString());
+            update.setInt(2, laskuId);
 
-            int rows = update.executeUpdate();
-
-            // 2. jos ei löytynyt → luodaan uusi
-            if (rows == 0) {
-
-                PreparedStatement insert = c.prepareStatement(insertSql);
-                insert.setInt(1, laskuId);
-                insert.setDouble(2, summa);
-                insert.setString(3, LocalDate.now().toString());
-
-                insert.executeUpdate();
-            }
+            update.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,6 +137,7 @@ public class LaskuRepository {
 
         l.setLaskuId(rs.getInt("lasku_ID"));
         l.setVarausId(rs.getInt("varaus_ID"));
+        l.setAsiakasnmi(rs.getString("asiakkaan_nimi"));
         l.setSapo(rs.getString("sapo"));
         l.setAikaleima(DateUtil.parseDateTime(rs.getString("aikaleima")));
         l.setErapaiva(DateUtil.parseDate(rs.getString("eräpäivä")));
