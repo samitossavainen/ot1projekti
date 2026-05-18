@@ -155,7 +155,7 @@ public class VarausRaporttiController {
             }
 
             String nimi = (a != null)
-                    ? a.getNimi()
+                    ? a.getNimi() + " ("+a.getSapo()+")"
                     : data.getValue().getAsiakasEmail();
 
             return new SimpleStringProperty(nimi);
@@ -276,7 +276,7 @@ public class VarausRaporttiController {
                 );
 
                 String nimi = (a != null)
-                        ? a.getNimi()
+                        ? a.getNimi() + " ("+a.getSapo()+")"
                         : v.getAsiakasEmail();
 
                 if (!nimi.equalsIgnoreCase(asiakas)) {
@@ -309,13 +309,15 @@ public class VarausRaporttiController {
                     "maksettu".equalsIgnoreCase(v.getTila())) {
 
                 aktiiviset++;
+
+                summa += v.getKokonaissumma();
             }
 
             if ("peruutettu".equalsIgnoreCase(v.getTila())) {
                 perutut++;
             }
 
-            summa += v.getKokonaissumma();
+
         }
 
         yhteensaLabel.setText(String.valueOf(yhteensa));
@@ -375,7 +377,7 @@ public class VarausRaporttiController {
             );
 
             String nimi = (a != null)
-                    ? a.getNimi()
+                    ? a.getNimi() + " ("+a.getSapo()+")"
                     : v.getAsiakasEmail();
 
             if (!asiakasComboBox.getItems().contains(nimi)) {

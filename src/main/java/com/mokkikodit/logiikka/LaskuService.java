@@ -11,9 +11,12 @@ import java.util.List;
 public class LaskuService {
 
     private final LaskuRepository repository;
+    private final VarausService varausService;
 
-    public LaskuService(LaskuRepository repository) {
+    public LaskuService(LaskuRepository repository,
+                        VarausService varausService) {
         this.repository = repository;
+        this.varausService = varausService;
     }
 
     /**
@@ -51,6 +54,7 @@ public class LaskuService {
      * Marks invoice as paid (DB update).
      */
     public void markAsPaid(int laskuId) {
+
         Lasku lasku = repository.findById(laskuId);
 
         if (lasku == null) {
@@ -60,8 +64,22 @@ public class LaskuService {
         }
 
         lasku.merkitseMaksetuksi();
-
         repository.update(lasku);
+
+        repository.merkitseMaksetuksi(
+                lasku.getLaskuId(),
+                lasku.getSumma()
+        );
+
+        Varaus varaus = varausService.getAllVaraukset().stream()
+                .filter(v -> v.getVarausId() == lasku.getVarausId())
+                .findFirst()
+                .orElse(null);
+
+        if (varaus != null) {
+            varaus.setTila("maksettu");
+            varausService.updateVaraus(varaus);
+        }
     }
 
     /**

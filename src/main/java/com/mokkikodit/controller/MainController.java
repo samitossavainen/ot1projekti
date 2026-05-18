@@ -101,32 +101,47 @@ public class MainController {
             }
 
             if (controller instanceof LaskutController) {
-                ((LaskutController) controller).setLaskuService(
-                        new LaskuService(new LaskuRepository())
+
+                VarausService vs = new VarausService(new VarausRepository());
+
+                LaskuService ls = new LaskuService(
+                        new LaskuRepository(),
+                        vs
                 );
+
+                ((LaskutController) controller).setLaskuService(ls);
             }
 
             if (controller instanceof LaskutRaporttiController) {
+
+                VarausService vs = new VarausService(new VarausRepository());
+
                 ((LaskutRaporttiController) controller).setLaskuService(
-                        new LaskuService(new LaskuRepository())
+                        new LaskuService(new LaskuRepository(), vs)
                 );
             }
 
             if (controller instanceof MokkiRaporttiController) {
+
+                VarausService vs = new VarausService(new VarausRepository());
+
                 ((MokkiRaporttiController) controller).setMokkiService(
                         new MokkiService(new MokkiRepository())
                 );
+
                 ((MokkiRaporttiController) controller).setLaskuService(
-                        new LaskuService(new LaskuRepository())
+                        new LaskuService(new LaskuRepository(), vs)
                 );
-                ((MokkiRaporttiController) controller).setVarausService(
-                        new VarausService(new VarausRepository())
-                );
+
+                ((MokkiRaporttiController) controller).setVarausService(vs);
             }
 
             if (controller instanceof AsiakasRaporttiController) {
                 ((AsiakasRaporttiController) controller).setAsiakasService(
                         new AsiakasService(new AsiakasRepository())
+                );
+                ((AsiakasRaporttiController) controller).setVarausService(
+                        new VarausService(new VarausRepository())
                 );
             }
 

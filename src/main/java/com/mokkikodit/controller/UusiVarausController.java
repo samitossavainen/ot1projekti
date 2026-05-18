@@ -55,13 +55,13 @@ public class UusiVarausController {
 
         // Asiakkaiden sähköpostit
         asiakasComboBox.setItems(
-                FXCollections.observableArrayList(asiakasRepo.findAll())
+                FXCollections.observableArrayList(asiakasRepo.findAllAvailable())
         );
 
         // Mökit
         mokkiComboBox.setItems(
                 FXCollections.observableArrayList(
-                        mokkiRepo.findAll()
+                        mokkiRepo.findAllAvailable()
                 )
         );
     }
