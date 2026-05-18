@@ -67,8 +67,7 @@ public class LaskuService {
         repository.update(lasku);
 
         repository.merkitseMaksetuksi(
-                lasku.getLaskuId(),
-                lasku.getSumma()
+                lasku.getLaskuId()
         );
 
         Varaus varaus = varausService.getAllVaraukset().stream()

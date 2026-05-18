@@ -240,12 +240,12 @@ public class LaskutRaporttiController {
 
             if (tila.equalsIgnoreCase("Lähetetty")) {
                 avoimet++;
-                avoinSumma += lasku.getSumma();
+                avoinSumma += lasku.getSumma() - lasku.getMaksettu();
             }
 
             if (tila.equalsIgnoreCase("Myöhässä")) {
                 myohassa++;
-                avoinSumma += lasku.getSumma();
+                avoinSumma += lasku.getSumma() - lasku.getMaksettu();
             }
         }
 
