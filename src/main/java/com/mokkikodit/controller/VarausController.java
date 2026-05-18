@@ -7,6 +7,7 @@ import com.mokkikodit.mallit.Mokki;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -178,7 +179,11 @@ public class VarausController {
                 varaukset,
                 v -> !"peruutettu".equalsIgnoreCase(v.getTila())
         );
-        tableVaraukset.setItems(filteredVaraukset);
+
+        SortedList<Varaus> sortedVaraus = new SortedList<>(filteredVaraukset);
+        sortedVaraus.comparatorProperty().bind(tableVaraukset.comparatorProperty());
+        tableVaraukset.setItems(sortedVaraus);
+
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
                         "Kaikki",

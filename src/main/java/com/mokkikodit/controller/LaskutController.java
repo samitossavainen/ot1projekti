@@ -9,6 +9,7 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -118,7 +119,10 @@ public class LaskutController {
                     }
                 });
         filteredLasku = new FilteredList<>(laskut);
-        tableLaskut.setItems(filteredLasku);
+
+        SortedList<Lasku> sortedLasku = new SortedList<>(filteredLasku);
+        sortedLasku.comparatorProperty().bind(tableLaskut.comparatorProperty());
+        tableLaskut.setItems(sortedLasku);
 
         statusFilterComboBox.setItems(
                 FXCollections.observableArrayList(
@@ -329,7 +333,7 @@ public class LaskutController {
         );
 
         maksettuSummaLabel.setText(
-                "maksettu".equalsIgnoreCase(m.getTila())
+                (m.getTila() != null )
                         ? m.getMaksettu() + " €"
                         : "-"
         );
